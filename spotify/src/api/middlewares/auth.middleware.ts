@@ -1,8 +1,8 @@
 import AuthRequest from "../../interfaces/request.interface";
 import { validateSignature } from "../../utils/index";
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 
-export default async (req: AuthRequest, res: Response, next: NextFunction) => {
+export default async (req: Request, res: Response, next: NextFunction) => {
 	const isAuthorized = await validateSignature(req);
 	if (isAuthorized) {
 		return next();

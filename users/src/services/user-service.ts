@@ -37,7 +37,7 @@ class UserService {
 	async signUp(data: ISignUp) {
 		//TODO: Add genres music preferences
 		const { email, password, username, image } = data;
-
+	
 		if (!email || !password || !username || !image) {
 			return formateData(null);
 		}
@@ -78,7 +78,7 @@ class UserService {
 		const documentResult = await this.repository.deleteDocument(model, id);
 		return formateData(documentResult);
 	}
-	
+
 	async addToLibrary(
 		id: string,
 		doc: Partial<IAlbum> | Partial<IArtist> | Partial<ITrack>,

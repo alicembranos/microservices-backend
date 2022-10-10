@@ -20,7 +20,7 @@ class User {
 	}
 
 	async getDocumentByField<T>(model: Model<T>, field: string) {
-		return await model.findOne({ field }).lean().exec();
+		return await model.findOne({ field: field }).lean().exec();
 	}
 
 	async updateDocument<T>(model: Model<T>, id: string, data: Partial<T>) {

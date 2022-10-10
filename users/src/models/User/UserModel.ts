@@ -70,6 +70,6 @@ const UserSchema = new Schema<IUser>(
 	}
 );
 
-const UserModel = model<IUser>("Artist", UserSchema);
+const UserModel = model<IUser>("User", UserSchema);
 
 export default UserModel;

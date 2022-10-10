@@ -46,7 +46,7 @@ const generatePassword = async (password: string): Promise<string> => {
 };
 
 const validatePassword = async (enteredPassword: string, hashedPassword: string) => {
-	return (await generatePassword(enteredPassword)) === hashedPassword;
+	return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
 const generateSignature = async (payload: IPayload) => {
@@ -57,7 +57,7 @@ const validateSignature = async (req: Request) => {
 	const authorization = req.headers["authorization"];
 	if (authorization) {
 		const payload = await jwt.verify(authorization.split(" ")[1], config.app.PRIVATE_KEY as Secret);
-		req.user = payload;
+		req.user = payload as IPayload;
 		return true;
 	}
 	return false;

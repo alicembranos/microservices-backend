@@ -11,8 +11,8 @@ const StartServer = async () => {
 		try {
 			config.logger.info("DB connected");
 
-			//seed database
-			// await seedDatabase();
+			// seed database
+			await seedDatabase();
 
 			serverApp(app);
 
