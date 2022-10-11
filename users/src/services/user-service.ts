@@ -18,6 +18,7 @@ class UserService {
 
 	async signIn(data: Ilogin) {
 		const { email, password } = data;
+
 		const user = await this.repository.getDocumentByField(database.User, email);
 
 		if (!user) {
@@ -104,12 +105,15 @@ class UserService {
 		payload = JSON.parse(payload);
 
 		const { event, data } = payload;
+		console.log('payload', payload)
 
 		const { userId, playlist, library, type } = data;
+		console.log('data que llega',userId, playlist, library, type )
 
 		switch (event) {
 			case "ADD_TO_LIBRARY":
 			case "REMOVE_FROM_LIBRARY":
+				console.log('entro aqui')
 				this.addToLibrary(userId, library, type);
 				break;
 			case "ADD_TO_PLAYLIST":

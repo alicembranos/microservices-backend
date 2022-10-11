@@ -46,6 +46,7 @@ export default (app, channel: Channel) => {
 				);
 
 				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(data));
+				return res.status(200).send({ ok: true, data });
 			} catch (error) {
 				res.status(400).send({ ok: false, msg: handleError(error) });
 			}

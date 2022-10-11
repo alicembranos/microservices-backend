@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Document, Model } from "mongoose";
 import IAlbum from "../interfaces/album.interface";
 import IArtist from "../interfaces/artist.interface";
 import IPlaylist from "../interfaces/playlist.interface";
@@ -19,8 +19,9 @@ class User {
 		return await model.findById(id).lean().exec();
 	}
 
+	//TODO: Make field generic (not email)
 	async getDocumentByField<T>(model: Model<T>, field: string) {
-		return await model.findOne({ field: field }).lean().exec();
+		return await model.findOne({ email: field }).lean().exec();
 	}
 
 	async updateDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
@@ -42,7 +43,8 @@ class User {
 		propDocument: string
 	) {
 		//TODO: fix type propDocumets(quick shortcut, typed as string)
-		const profile = await database.User.findById(userId);
+		const profile = await database.User.findById(userId) as Document;
+
 		if (profile) {
 			let documentLibrary = profile[propDocument];
 			type ArrayObject = typeof documentLibrary;

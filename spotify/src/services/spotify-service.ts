@@ -26,6 +26,7 @@ class SpotifyService {
 	}
 
 	async filter<T>(model: Model<T>, data: Partial<T>) {
+		console.log(data)
 		const documentResult = await this.repository.getDocumentByFilter(model, data);
 		return formateData(documentResult);
 	}

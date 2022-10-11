@@ -54,6 +54,7 @@ const UserSchema = new Schema<IUser>(
 				title: { type: String },
 				description: { type: String },
 				image: { type: String },
+				trackAudio: { type: String },
 				//! Do I need take every fields?
 				album: { _id: { type: String }, title: { type: String } },
 			},
