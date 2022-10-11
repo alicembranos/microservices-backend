@@ -1,4 +1,3 @@
-import { JwtPayload } from "jsonwebtoken";
 
 interface BodyPayload {
 	// [key: string]: string;
@@ -8,10 +7,6 @@ interface BodyPayload {
 interface UserPayload {
 	sub: string;
 	username: string;
-}
-
-export default interface AuthRequest extends Request {
-	user: UserPayload;
 }
 
 export { BodyPayload };

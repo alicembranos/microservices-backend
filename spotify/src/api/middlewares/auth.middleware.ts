@@ -1,4 +1,3 @@
-import AuthRequest from "../../interfaces/request.interface";
 import { validateSignature } from "../../utils/index";
 import { Response, NextFunction, Request } from "express";
 
