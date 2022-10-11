@@ -1,12 +1,5 @@
 version: "3"
 services:
-  nosql-db:
-    image: mongo
-    ports:
-      - "27018:27017"
-    container_name: nosql-db
-    volumes:
-      - ./db/:/data/db
   users:
     build:
       dockerfile: Dockerfile
@@ -15,8 +8,6 @@ services:
     ports:
       - "4001:4001"
     restart: always
-    depends_on:
-      - "nosql-db"
     volumes:
       - .:/app
       - /app/users/node_modules
@@ -30,8 +21,6 @@ services:
     ports:
       - "4002:4002"
     restart: always
-    depends_on:
-      - "nosql-db"
     volumes:
       - .:/app
       - /app/spotify/node_modules
