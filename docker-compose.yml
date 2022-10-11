@@ -1,0 +1,48 @@
+version: "3"
+services:
+  nosql-db:
+    image: mongo
+    ports:
+      - "27018:27017"
+    container_name: nosql-db
+    volumes:
+      - ./db/:/data/db
+  users:
+    build:
+      dockerfile: Dockerfile
+      context: ./users
+    container_name: users
+    ports:
+      - "4001:4001"
+    restart: always
+    depends_on:
+      - "nosql-db"
+    volumes:
+      - .:/app
+      - /app/users/node_modules
+    env_file:
+      - ./users/.env
+  spotify:
+    build:
+      dockerfile: Dockerfile
+      context: ./spotify
+    container_name: spotify
+    ports:
+      - "4002:4002"
+    restart: always
+    depends_on:
+      - "nosql-db"
+    volumes:
+      - .:/app
+      - /app/spotify/node_modules
+    env_file:
+      - ./spotify/.env
+  nginx-proxy:
+    build:
+      dockerfile: Dockerfile
+      context: ./proxy
+    depends_on:
+      - users
+      - spotify
+    ports:
+      - 80:80
