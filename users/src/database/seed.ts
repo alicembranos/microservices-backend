@@ -9,12 +9,12 @@ async function seedDatabase() {
 
 	// await db.Genre.deleteMany({});
 	// await db.Genre.create([...genres]);
-	await db.Artist.deleteMany({});
-	await db.Artist.create([...artists]);
-	await db.Album.deleteMany({});
-	await db.Album.create([...albums]);
-	await db.Track.deleteMany({});
-	await db.Track.create([...tracks]);
+	// await db.Artist.deleteMany({});
+	// await db.Artist.create([...artists]);
+	// await db.Album.deleteMany({});
+	// await db.Album.create([...albums]);
+	// await db.Track.deleteMany({});
+	// await db.Track.create([...tracks]);
 }
 
 function getRandomItem(arr = []) {
