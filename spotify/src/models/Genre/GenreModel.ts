@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import IGenre from "../../interfaces/genre.interface";
 
+//TODO Remove model
 const GenreSchema = new Schema<IGenre>(
 	{
 		name: {

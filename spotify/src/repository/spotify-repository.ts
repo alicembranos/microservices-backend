@@ -18,9 +18,6 @@ class Spotify {
 		return await model.findById(id).populate(populateField).lean().exec();
 	}
 
-	/** 
-	 * !this function will be only used for filter by genre?
-	 */
 	async getDocumentByFilter<T>(model: Model<T>, data: Partial<T>) {
 		const populateField = selectFieldsToPopulate(model);
 		return await model

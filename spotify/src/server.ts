@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -21,7 +21,7 @@ export default async (app) => {
 	tracks(app, channel);
 	playlists(app, channel);
 
-	app.use("/", (_req, res) => {
+	app.use("/", (_req: Request, res: Response) => {
 		res.status(200).send("Hello from Spotify Server");
 	});
 };

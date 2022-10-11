@@ -27,6 +27,7 @@ const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	}
 };
 
+//TODO: Refactor
 const formateData = <T>(data: T) => {
 	if (data) {
 		return data;
