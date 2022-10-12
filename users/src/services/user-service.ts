@@ -38,7 +38,7 @@ class UserService {
 	async signUp(data: ISignUp) {
 		//TODO: Add genres music preferences
 		const { email, password, username, image } = data;
-	
+
 		if (!email || !password || !username || !image) {
 			return formateData(null);
 		}
@@ -94,8 +94,14 @@ class UserService {
 		return formateData(userPlaylists);
 	}
 
-	async removePlaylist(id: string, playlist: string) {
-		const userPlaylists = await this.repository.removePlaylist(id, playlist);
+	//? Not needed
+	// async updatePlaylist(id: string, doc: Partial<IPlaylist>) {
+	// 	const userPlaylists = await this.repository.updatePlaylist(id, doc);
+	// 	return formateData(userPlaylists);
+	// }
+
+	async removePlaylist(id: string, doc: Partial<IPlaylist>) {
+		const userPlaylists = await this.repository.removePlaylist(id, doc);
 		return formateData(userPlaylists);
 	}
 
@@ -105,20 +111,20 @@ class UserService {
 		payload = JSON.parse(payload);
 
 		const { event, data } = payload;
-		console.log('payload', payload)
 
 		const { userId, playlist, library, type } = data;
-		console.log('data que llega',userId, playlist, library, type )
 
 		switch (event) {
 			case "ADD_TO_LIBRARY":
 			case "REMOVE_FROM_LIBRARY":
-				console.log('entro aqui')
 				this.addToLibrary(userId, library, type);
 				break;
 			case "ADD_TO_PLAYLIST":
 				this.addPlaylist(userId, playlist);
 				break;
+			// case "UPDATE_PLAYLIST":
+			// 	this.updatePlaylist(userId, playlist);
+			// 	break;
 			case "REMOVE_FROM_PLAYLIST":
 				this.removePlaylist(userId, playlist);
 				break;

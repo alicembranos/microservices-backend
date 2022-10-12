@@ -3,7 +3,6 @@ import { selectFieldsToPopulate } from "../utils/index";
 
 //Dealing with data base operations
 class Spotify {
-
 	async createDocument<T>(model: Model<T>, data: T) {
 		return await model.create(data);
 	}
@@ -32,6 +31,14 @@ class Spotify {
 		const populateField = selectFieldsToPopulate(model);
 		return await model
 			.findOneAndUpdate({ _id }, { ...data }, { new: true })
+			.populate(populateField)
+			.lean()
+			.exec();
+	}
+
+	async updateArrayInDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
+		const populateField = selectFieldsToPopulate(model);
+		return await model.findByIdAndUpdate(id, { $push: { ...data } }, { new: true })
 			.populate(populateField)
 			.lean()
 			.exec();

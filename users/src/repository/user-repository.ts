@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Types } from "mongoose";
 import IAlbum from "../interfaces/album.interface";
 import IArtist from "../interfaces/artist.interface";
 import IPlaylist from "../interfaces/playlist.interface";
@@ -43,7 +43,7 @@ class User {
 		propDocument: string
 	) {
 		//TODO: fix type propDocumets(quick shortcut, typed as string)
-		const profile = await database.User.findById(userId) as Document;
+		const profile = (await database.User.findById(userId)) as Document;
 
 		if (profile) {
 			let documentLibrary = profile[propDocument];
@@ -84,11 +84,28 @@ class User {
 		}
 	}
 
-	async removePlaylist(userId: string, playlistId: string) {
+	//? Not needed?
+	// async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
+	// 	const profile = await database.User.findById(userId);
+	// 	if (profile) {
+	// 		const newPlaylistArrayUpdated = profile.playlists.map((playlist) => {
+	// 			const playlistUpdate = playlist._id === doc._id ? { ...playlist, ...doc } : playlist;
+	// 			return playlistUpdate;
+	// 		});
+	// 		profile.playlists = newPlaylistArrayUpdated;
+	// 		const profileResult = await profile.save();
+
+	// 		return profileResult.playlists;
+	// 	}
+	// }
+
+	async removePlaylist(userId: string, doc: Partial<IPlaylist>) {
 		const profile = await database.User.findById(userId);
+		console.log(profile);
+		console.log(doc);
 		if (profile) {
 			const newPlaylists = profile.playlists.filter(
-				(item: Partial<IPlaylist>) => item._id !== playlistId
+				(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
 			);
 			profile.playlists = newPlaylists;
 			const profileResult = await profile.save();

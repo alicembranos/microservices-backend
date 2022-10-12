@@ -26,13 +26,18 @@ class SpotifyService {
 	}
 
 	async filter<T>(model: Model<T>, data: Partial<T>) {
-		console.log(data)
+		console.log(data);
 		const documentResult = await this.repository.getDocumentByFilter(model, data);
 		return formateData(documentResult);
 	}
 
 	async update<T>(model: Model<T>, id: string, data: Partial<T>) {
 		const documentResult = await this.repository.updateDocument(model, id, data);
+		return formateData(documentResult);
+	}
+
+	async updateArray<T>(model: Model<T>, id: string, data: Partial<T>) {
+		const documentResult = await this.repository.updateArrayInDocument(model, id, data);
 		return formateData(documentResult);
 	}
 
@@ -60,13 +65,13 @@ class SpotifyService {
 	}
 
 	//TODO: update playlist
-	async getPlaylistPayload<T>(userId: string, model: Model<T>, playlistId: string, event: string) {
-		const playlist = await this.repository.getDocumentById(model, playlistId);
+	async getPlaylistPayload<T>(userId: string, model: Model<T>, id: string, event: string) {
+		const playlist = await this.repository.getDocumentById(model, id);
 
 		if (playlist) {
 			const payload = {
 				event,
-				data: { userId, playlist },
+				data: { userId, playlist, id },
 			};
 			return formateData(payload);
 		}

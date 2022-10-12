@@ -31,30 +31,18 @@ export default (app, channel: Channel) => {
 		}
 	);
 
-	app.post("/playlist", auth, async ({ body }: Request, res: Response, _next: NextFunction) => {
-		try {
-			const data = await service.create(database.Playlist, body);
-			return res.status(200).send({ ok: true, data });
-		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
-		}
-	});
-
-	app.patch(
-		"/playlist/:id",
+	app.post(
+		"/playlist",
 		auth,
-		async (
-			{ params: { id }, user: { sub }, body }: Request,
-			res: Response,
-			_next: NextFunction
-		) => {
+		async ({ user: { sub: userId }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
-				const data = await service.update(database.Playlist, id, body);
+				const bodyWithUserId = { ...body, userId };
+				const data = await service.create(database.Playlist, bodyWithUserId);
 
 				const payload = await service.getPlaylistPayload(
-					sub,
+					userId,
 					database.Playlist,
-					id,
+					data._id,
 					"ADD_TO_PLAYLIST"
 				);
 
@@ -67,21 +55,39 @@ export default (app, channel: Channel) => {
 		}
 	);
 
+	//! not allow to modify title, image or description from the front
+	app.patch(
+		"/playlist/:id",
+		auth,
+		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
+			try {
+				const data = await service.updateArray(database.Playlist, id, body);
+				return res.status(200).send({ ok: true, data });
+			} catch (error) {
+				res.status(400).send({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
+
 	app.delete(
 		"/playlist/:id",
 		auth,
-		async ({ params: { id }, user: { sub } }: Request, res: Response, _next: NextFunction) => {
+		async (
+			{ params: { id }, user: { sub: userId } }: Request,
+			res: Response,
+			_next: NextFunction
+		) => {
 			try {
-				const data = await service.delete(database.Playlist, id);
-
 				const payload = await service.getPlaylistPayload(
-					sub,
+					userId,
 					database.Playlist,
 					id,
 					"REMOVE_FROM_PLAYLIST"
 				);
 
 				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(payload));
+
+				const data = await service.delete(database.Playlist, id);
 
 				return res.status(200).send({ ok: true, data });
 			} catch (error) {

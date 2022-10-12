@@ -1,10 +1,11 @@
-import { validateSignature } from "../../utils/index";
+import { handleError, validateSignature } from "../../utils/index";
 import { Response, NextFunction, Request } from "express";
 
 export default async (req: Request, res: Response, next: NextFunction) => {
-	const isAuthorized = await validateSignature(req);
-	if (isAuthorized) {
+	try {
+		await validateSignature(req);
 		return next();
+	} catch (error) {
+		return res.status(401).json({ ok: false, msg: handleError(error) });
 	}
-	return res.status(401).json({ ok: false, msg: "Not authorized" });
 };

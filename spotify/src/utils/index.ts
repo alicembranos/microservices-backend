@@ -61,14 +61,12 @@ const generateSignature = async (payload: IPayload) => {
 const validateSignature = async (req: Request) => {
 	const authorization = req.headers["authorization"];
 	if (authorization) {
-		const payload = (await jwt.verify(
+		const payload = (jwt.verify(
 			authorization.split(" ")[1],
 			config.app.PRIVATE_KEY as Secret
 		)) as IPayload;
 		req.user = payload;
-		return true;
 	}
-	return false;
 };
 
 //Message broker

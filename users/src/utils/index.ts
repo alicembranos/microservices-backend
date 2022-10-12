@@ -49,8 +49,9 @@ const validatePassword = async (enteredPassword: string, hashedPassword: string)
 	return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
+//! Expires token is modified
 const generateSignature = async (payload: IPayload) => {
-	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "1d" });
+	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "5d" });
 };
 
 const validateSignature = async (req: Request) => {
