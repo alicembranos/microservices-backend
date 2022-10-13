@@ -38,16 +38,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("../../utils/index");
 exports.default = (function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var isAuthorized;
+    var error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, index_1.validateSignature)(req)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, (0, index_1.validateSignature)(req)];
             case 1:
-                isAuthorized = _a.sent();
-                if (isAuthorized) {
-                    return [2 /*return*/, next()];
-                }
-                return [2 /*return*/, res.status(401).json({ ok: false, msg: "Not authorized" })];
+                _a.sent();
+                return [2 /*return*/, next()];
+            case 2:
+                error_1 = _a.sent();
+                return [2 /*return*/, res.status(401).json({ ok: false, msg: (0, index_1.handleError)(error_1) })];
+            case 3: return [2 /*return*/];
         }
     });
 }); });

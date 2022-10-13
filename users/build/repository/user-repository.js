@@ -139,7 +139,7 @@ var User = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, index_1.default.User.findById(userId)];
                     case 1:
-                        profile = _a.sent();
+                        profile = (_a.sent());
                         if (!profile) return [3 /*break*/, 3];
                         documentLibrary_1 = profile[propDocument];
                         if (documentLibrary_1.length > 0) {
@@ -188,7 +188,20 @@ var User = /** @class */ (function () {
             });
         });
     };
-    User.prototype.removePlaylist = function (userId, playlistId) {
+    //? Not needed?
+    // async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
+    // 	const profile = await database.User.findById(userId);
+    // 	if (profile) {
+    // 		const newPlaylistArrayUpdated = profile.playlists.map((playlist) => {
+    // 			const playlistUpdate = playlist._id === doc._id ? { ...playlist, ...doc } : playlist;
+    // 			return playlistUpdate;
+    // 		});
+    // 		profile.playlists = newPlaylistArrayUpdated;
+    // 		const profileResult = await profile.save();
+    // 		return profileResult.playlists;
+    // 	}
+    // }
+    User.prototype.removePlaylist = function (userId, doc) {
         return __awaiter(this, void 0, void 0, function () {
             var profile, newPlaylists, profileResult;
             return __generator(this, function (_a) {
@@ -196,8 +209,10 @@ var User = /** @class */ (function () {
                     case 0: return [4 /*yield*/, index_1.default.User.findById(userId)];
                     case 1:
                         profile = _a.sent();
+                        console.log(profile);
+                        console.log(doc);
                         if (!profile) return [3 /*break*/, 3];
-                        newPlaylists = profile.playlists.filter(function (item) { return item._id !== playlistId; });
+                        newPlaylists = profile.playlists.filter(function (item) { var _a; return ((_a = item._id) === null || _a === void 0 ? void 0 : _a.toString()) !== doc._id; });
                         profile.playlists = newPlaylists;
                         return [4 /*yield*/, profile.save()];
                     case 2:

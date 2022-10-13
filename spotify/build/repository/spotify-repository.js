@@ -123,6 +123,22 @@ var Spotify = /** @class */ (function () {
             });
         });
     };
+    Spotify.prototype.updateArrayInDocument = function (model, id, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var populateField;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        populateField = (0, index_1.selectFieldsToPopulate)(model);
+                        return [4 /*yield*/, model.findByIdAndUpdate(id, { $push: __assign({}, data) }, { new: true })
+                                .populate(populateField)
+                                .lean()
+                                .exec()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     Spotify.prototype.deleteDocument = function (model, id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

@@ -187,12 +187,17 @@ var UserService = /** @class */ (function () {
             });
         });
     };
-    UserService.prototype.removePlaylist = function (id, playlist) {
+    //? Not needed
+    // async updatePlaylist(id: string, doc: Partial<IPlaylist>) {
+    // 	const userPlaylists = await this.repository.updatePlaylist(id, doc);
+    // 	return formateData(userPlaylists);
+    // }
+    UserService.prototype.removePlaylist = function (id, doc) {
         return __awaiter(this, void 0, void 0, function () {
             var userPlaylists;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.removePlaylist(id, playlist)];
+                    case 0: return [4 /*yield*/, this.repository.removePlaylist(id, doc)];
                     case 1:
                         userPlaylists = _a.sent();
                         return [2 /*return*/, (0, index_1.formateData)(userPlaylists)];
@@ -207,18 +212,18 @@ var UserService = /** @class */ (function () {
                 console.log("Triggering... User Events");
                 payload = JSON.parse(payload);
                 event = payload.event, data = payload.data;
-                console.log('payload', payload);
                 userId = data.userId, playlist = data.playlist, library = data.library, type = data.type;
-                console.log('data que llega', userId, playlist, library, type);
                 switch (event) {
                     case "ADD_TO_LIBRARY":
                     case "REMOVE_FROM_LIBRARY":
-                        console.log('entro aqui');
                         this.addToLibrary(userId, library, type);
                         break;
                     case "ADD_TO_PLAYLIST":
                         this.addPlaylist(userId, playlist);
                         break;
+                    // case "UPDATE_PLAYLIST":
+                    // 	this.updatePlaylist(userId, playlist);
+                    // 	break;
                     case "REMOVE_FROM_PLAYLIST":
                         this.removePlaylist(userId, playlist);
                         break;

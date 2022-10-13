@@ -1,0 +1,563 @@
+{
+	"info": {
+		"_postman_id": "9b0b9efb-555f-491c-aee2-eea72327cbb4",
+		"name": "MICROSERVICES",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20899209"
+	},
+	"item": [
+		{
+			"name": "USERS",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"roger@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"username\": \"logicKing\",\r\n    \"image\": \"image_profile\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_USERS}}/signup",
+							"host": [
+								"{{BASE_USERS}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_USERS}}/user",
+							"host": [
+								"{{BASE_USERS}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_USERS}}/user/6344801993515b715ea8b41a",
+							"host": [
+								"{{BASE_USERS}}"
+							],
+							"path": [
+								"user",
+								"6344801993515b715ea8b41a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUser",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"alicembru@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_USERS}}/user/6344801993515b715ea8b41a",
+							"host": [
+								"{{BASE_USERS}}"
+							],
+							"path": [
+								"user",
+								"6344801993515b715ea8b41a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_USERS}}/user/6344801993515b715ea8b41a",
+							"host": [
+								"{{BASE_USERS}}"
+							],
+							"path": [
+								"user",
+								"6344801993515b715ea8b41a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signin/Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"alicia@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_USERS}}/signin",
+							"host": [
+								"{{BASE_USERS}}"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SPOTIFY",
+			"item": [
+				{
+					"name": "ARTISTS",
+					"item": [
+						{
+							"name": "GetAllArtists",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/artist",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"artist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GeArtistById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/artist/4VMYDCV2IEDYJArk749S6m",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"artist",
+										"4VMYDCV2IEDYJArk749S6m"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FilterArtistByGenre",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/genre?genres=pop",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"genre"
+									],
+									"query": [
+										{
+											"key": "genres",
+											"value": "pop"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddArtistToLibrary",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"_id\" : \"2BVE7Pqd8kxv9xEsuvoJoE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/artist/library",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"artist",
+										"library"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ALBUMS",
+					"item": [
+						{
+							"name": "GetAllAlbums",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/album",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"album"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GeAlbumById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/album/3RQQmkQEvNCY4prGKE6oc5",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"album",
+										"3RQQmkQEvNCY4prGKE6oc5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddAlbumToLibrary",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"_id\" : \"7jlqlUmgafE9UJSDIkV9EF\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/album/library",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"album",
+										"library"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TRACKS",
+					"item": [
+						{
+							"name": "GetAllTracks",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/track",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"track"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GeTrackById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/track/7FlfsfXds1wrLdiX4FFkrt",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"track",
+										"7FlfsfXds1wrLdiX4FFkrt"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddTrackToLibrary",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"_id\" : \"3mH7mkdQkMkpCBBw19SziT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/track/library",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"track",
+										"library"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PLAYLISTS",
+					"item": [
+						{
+							"name": "AddPlaylist",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Juanky Twitch Music\",\r\n    \"description\": \"Music taken from Juanky's twitch\",\r\n    \"image\": \"https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/playlist",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"playlist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAllPlaylists",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/playlist",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"playlist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetPlaylistById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/playlist/6346c219c06c65bdd43e00c6",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"playlist",
+										"6346c219c06c65bdd43e00c6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UpdatePlaylist",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"tracks\": \"1zagrZv5nnVunABwivZCte\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/playlist/6346c219c06c65bdd43e00c6",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"playlist",
+										"6346c219c06c65bdd43e00c6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeletePlaylist",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_SPOTIFY}}/playlist/6346c219c06c65bdd43e00c6",
+									"host": [
+										"{{BASE_SPOTIFY}}"
+									],
+									"path": [
+										"playlist",
+										"6346c219c06c65bdd43e00c6"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ2YzA4ZWY2MjQ1OWY4OWQyM2E1YmYiLCJ1c2VybmFtZSI6ImxvZ2ljS2luZyIsImlhdCI6MTY2NTU4MTE5OCwiZXhwIjoxNjY2MDEzMTk4fQ.IGviRlBIz4ZkYYucOtffjeJUDbw8y58qfnq9ncXpgvQ",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "INSTAGRAM",
+			"item": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ2YzA4ZWY2MjQ1OWY4OWQyM2E1YmYiLCJ1c2VybmFtZSI6ImxvZ2ljS2luZyIsImlhdCI6MTY2NTU4MTE5OCwiZXhwIjoxNjY2MDEzMTk4fQ.IGviRlBIz4ZkYYucOtffjeJUDbw8y58qfnq9ncXpgvQ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_SPOTIFY",
+			"value": "http://localhost:4002",
+			"type": "string"
+		},
+		{
+			"key": "BASE_USERS",
+			"value": "http://localhost:4001",
+			"type": "string"
+		}
+	]
+}

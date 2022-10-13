@@ -24,11 +24,9 @@ var PlaylistSchema = new mongoose_1.Schema({
             default: [],
         },
     ],
-    //TODO: Pending
-    //* Default User
     userId: {
         type: String,
-        default: "kahdkasdhf324234",
+        required: true,
     },
 }, { timestamps: true } //*get year of the playlist with createdAt field
 );

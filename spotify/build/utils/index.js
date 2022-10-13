@@ -117,17 +117,12 @@ exports.generateSignature = generateSignature;
 var validateSignature = function (req) { return __awaiter(void 0, void 0, void 0, function () {
     var authorization, payload;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                authorization = req.headers["authorization"];
-                if (!authorization) return [3 /*break*/, 2];
-                return [4 /*yield*/, jsonwebtoken_1.default.verify(authorization.split(" ")[1], config_1.default.app.PRIVATE_KEY)];
-            case 1:
-                payload = (_a.sent());
-                req.user = payload;
-                return [2 /*return*/, true];
-            case 2: return [2 /*return*/, false];
+        authorization = req.headers["authorization"];
+        if (authorization) {
+            payload = (jsonwebtoken_1.default.verify(authorization.split(" ")[1], config_1.default.app.PRIVATE_KEY));
+            req.user = payload;
         }
+        return [2 /*return*/];
     });
 }); };
 exports.validateSignature = validateSignature;

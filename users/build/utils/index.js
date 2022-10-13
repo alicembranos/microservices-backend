@@ -103,10 +103,11 @@ var validatePassword = function (enteredPassword, hashedPassword) { return __awa
     });
 }); };
 exports.validatePassword = validatePassword;
+//! Expires token is modified
 var generateSignature = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY, { expiresIn: "1d" })];
+            case 0: return [4 /*yield*/, jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY, { expiresIn: "5d" })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

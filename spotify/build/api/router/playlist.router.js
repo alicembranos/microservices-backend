@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -86,66 +97,68 @@ exports.default = (function (app, channel) {
         });
     });
     app.post("/playlist", auth_middleware_1.default, function (_a, res, _next) {
-        var body = _a.body;
+        var userId = _a.user.sub, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
-            var data, error_3;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, service.create(index_1.default.Playlist, body)];
-                    case 1:
-                        data = _b.sent();
-                        return [2 /*return*/, res.status(200).send({ ok: true, data: data })];
-                    case 2:
-                        error_3 = _b.sent();
-                        res.status(400).send({ ok: false, msg: (0, utils_1.handleError)(error_3) });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    });
-    app.patch("/playlist/:id", auth_middleware_1.default, function (_a, res, _next) {
-        var id = _a.params.id, sub = _a.user.sub, body = _a.body;
-        return __awaiter(void 0, void 0, void 0, function () {
-            var data, payload, error_4;
+            var bodyWithUserId, data, payload, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, service.update(index_1.default.Playlist, id, body)];
+                        bodyWithUserId = __assign(__assign({}, body), { userId: userId });
+                        return [4 /*yield*/, service.create(index_1.default.Playlist, bodyWithUserId)];
                     case 1:
                         data = _b.sent();
-                        return [4 /*yield*/, service.getPlaylistPayload(sub, index_1.default.Playlist, id, "ADD_TO_PLAYLIST")];
+                        return [4 /*yield*/, service.getPlaylistPayload(userId, index_1.default.Playlist, data._id, "ADD_TO_PLAYLIST")];
                     case 2:
                         payload = _b.sent();
                         (0, utils_1.publishMessage)(channel, config_1.default.app.USER_SERVICE, JSON.stringify(payload));
                         return [2 /*return*/, res.status(200).send({ ok: true, data: data })];
                     case 3:
-                        error_4 = _b.sent();
-                        res.status(400).send({ ok: false, msg: (0, utils_1.handleError)(error_4) });
+                        error_3 = _b.sent();
+                        res.status(400).send({ ok: false, msg: (0, utils_1.handleError)(error_3) });
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }
             });
         });
     });
-    app.delete("/playlist/:id", auth_middleware_1.default, function (_a, res, _next) {
-        var id = _a.params.id, sub = _a.user.sub;
+    //! not allow to modify title, image or description from the front
+    app.patch("/playlist/:id", auth_middleware_1.default, function (_a, res, _next) {
+        var id = _a.params.id, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
-            var data, payload, error_5;
+            var data, error_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, service.updateArray(index_1.default.Playlist, id, body)];
+                    case 1:
+                        data = _b.sent();
+                        return [2 /*return*/, res.status(200).send({ ok: true, data: data })];
+                    case 2:
+                        error_4 = _b.sent();
+                        res.status(400).send({ ok: false, msg: (0, utils_1.handleError)(error_4) });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    });
+    app.delete("/playlist/:id", auth_middleware_1.default, function (_a, res, _next) {
+        var id = _a.params.id, userId = _a.user.sub;
+        return __awaiter(void 0, void 0, void 0, function () {
+            var payload, data, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, service.delete(index_1.default.Playlist, id)];
+                        return [4 /*yield*/, service.getPlaylistPayload(userId, index_1.default.Playlist, id, "REMOVE_FROM_PLAYLIST")];
                     case 1:
-                        data = _b.sent();
-                        return [4 /*yield*/, service.getPlaylistPayload(sub, index_1.default.Playlist, id, "REMOVE_FROM_PLAYLIST")];
-                    case 2:
                         payload = _b.sent();
                         (0, utils_1.publishMessage)(channel, config_1.default.app.USER_SERVICE, JSON.stringify(payload));
+                        return [4 /*yield*/, service.delete(index_1.default.Playlist, id)];
+                    case 2:
+                        data = _b.sent();
                         return [2 /*return*/, res.status(200).send({ ok: true, data: data })];
                     case 3:
                         error_5 = _b.sent();

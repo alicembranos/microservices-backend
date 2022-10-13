@@ -113,6 +113,19 @@ var SpotifyService = /** @class */ (function () {
             });
         });
     };
+    SpotifyService.prototype.updateArray = function (model, id, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var documentResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.repository.updateArrayInDocument(model, id, data)];
+                    case 1:
+                        documentResult = _a.sent();
+                        return [2 /*return*/, (0, index_1.formateData)(documentResult)];
+                }
+            });
+        });
+    };
     SpotifyService.prototype.delete = function (model, id) {
         return __awaiter(this, void 0, void 0, function () {
             var documentResult;
@@ -147,18 +160,18 @@ var SpotifyService = /** @class */ (function () {
         });
     };
     //TODO: update playlist
-    SpotifyService.prototype.getPlaylistPayload = function (userId, model, playlistId, event) {
+    SpotifyService.prototype.getPlaylistPayload = function (userId, model, id, event) {
         return __awaiter(this, void 0, void 0, function () {
             var playlist, payload;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.getDocumentById(model, playlistId)];
+                    case 0: return [4 /*yield*/, this.repository.getDocumentById(model, id)];
                     case 1:
                         playlist = _a.sent();
                         if (playlist) {
                             payload = {
                                 event: event,
-                                data: { userId: userId, playlist: playlist },
+                                data: { userId: userId, playlist: playlist, id: id },
                             };
                             return [2 /*return*/, (0, index_1.formateData)(payload)];
                         }
