@@ -1,17 +1,12 @@
 import { Model } from "mongoose";
-import { Request } from "express";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import IPayload from "../interfaces/payload.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
+import swaggerUi from "swagger-ui-express";
+import * as swaggerDocument from "../documentation/swagger/swagger.json";
 
-/**
- * It takes a Mongoose model and returns a string or array of strings that represent the fields to
- * populate
- * @param model - The model that you want to populate.
- * @returns A function that takes a model and returns a string or string array.
- */
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
 		case "Artist":
@@ -28,11 +23,11 @@ const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 };
 
 //TODO: Refactor
-const formateData = <T>(data: T) => {
-	if (data) {
-		return data;
+const formateData = (data: any) => {
+	if (data?.length === 0 || !data) {
+		throw new Error("Data Not found!");
 	}
-	throw new Error("Data Not found!");
+	return data;
 };
 
 const handleError = (error: unknown): string => {
@@ -58,15 +53,9 @@ const generateSignature = async (payload: IPayload) => {
 	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "1d" });
 };
 
-const validateSignature = async (req: Request) => {
-	const authorization = req.headers["authorization"];
-	if (authorization) {
-		const payload = (jwt.verify(
-			authorization.split(" ")[1],
-			config.app.PRIVATE_KEY as Secret
-		)) as IPayload;
-		req.user = payload;
-	}
+const validateSignature = (auth: string): IPayload => {
+	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
+	return payload;
 };
 
 //Message broker
@@ -86,6 +75,10 @@ const publishMessage = (channel: Channel, service: string, msg: string) => {
 	console.log("Sent: ", msg);
 };
 
+const initSwagger = (app) => {
+	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+};
+
 export {
 	selectFieldsToPopulate,
 	formateData,
@@ -95,4 +88,5 @@ export {
 	createChannel,
 	publishMessage,
 	handleError,
+	initSwagger,
 };

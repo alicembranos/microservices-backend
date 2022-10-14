@@ -17,10 +17,11 @@ class Spotify {
 		return await model.findById(id).populate(populateField).lean().exec();
 	}
 
-	async getDocumentByFilter<T>(model: Model<T>, data: Partial<T>) {
+	async getDocumentByFilter<T>(model: Model<T>, data: Partial<T> | Array<Partial<T>>) {
+		const arrayData = Object.values(data).flat();
 		const populateField = selectFieldsToPopulate(model);
 		return await model
-			.find({ ...data })
+			.find({ genres: { $in: arrayData } })
 			.populate(populateField)
 			.lean()
 			.exec();
@@ -38,7 +39,8 @@ class Spotify {
 
 	async updateArrayInDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
 		const populateField = selectFieldsToPopulate(model);
-		return await model.findByIdAndUpdate(id, { $push: { ...data } }, { new: true })
+		return await model
+			.findByIdAndUpdate(id, { $push: { ...data } }, { new: true })
 			.populate(populateField)
 			.lean()
 			.exec();

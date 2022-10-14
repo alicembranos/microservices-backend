@@ -2,6 +2,7 @@ import express from "express";
 import config from "./config/config";
 import connect from "./database/connect";
 import serverApp from "./server";
+import { initSwagger } from "./utils/index";
 import { seedDatabase } from "./database/seed";
 
 const StartServer = async () => {
@@ -12,10 +13,11 @@ const StartServer = async () => {
 			config.logger.info("DB connected");
 
 			// seed database
-			await seedDatabase();
+			// await seedDatabase();
 
 			serverApp(app);
-
+			initSwagger(app);
+			
 			app.listen(config.app.PORT, () => {
 				config.logger.info(`Spotify is Listening at port ${config.app.PORT}`);
 			});

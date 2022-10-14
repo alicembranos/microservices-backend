@@ -26,7 +26,6 @@ class SpotifyService {
 	}
 
 	async filter<T>(model: Model<T>, data: Partial<T>) {
-		console.log(data);
 		const documentResult = await this.repository.getDocumentByFilter(model, data);
 		return formateData(documentResult);
 	}
@@ -61,7 +60,7 @@ class SpotifyService {
 			};
 			return formateData(payload);
 		}
-		return formateData(`${type} does not exist.`);
+		throw new Error(`${type} does not exist.`);
 	}
 
 	//TODO: update playlist
@@ -75,7 +74,7 @@ class SpotifyService {
 			};
 			return formateData(payload);
 		}
-		return formateData("Playlist does not exist.");
+		throw new Error("Playlist does not exist.");
 	}
 }
 

@@ -13,9 +13,9 @@ export default (app, channel: Channel) => {
 	app.get("/artist", async (_req: Request, res: Response, _next: NextFunction) => {
 		try {
 			const data = await service.getAll(database.Artist);
-			return res.status(200).send({ ok: true, data });
+			return res.status(200).json({ ok: true, data });
 		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
+			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
@@ -24,20 +24,19 @@ export default (app, channel: Channel) => {
 		async ({ params: { id } }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const data = await service.get(database.Artist, id);
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
 
 	app.get("/genre", async ({ query }: Request, res: Response, _next: NextFunction) => {
 		try {
-			console.log(query);
 			const data = await service.filter(database.Artist, query);
-			return res.status(200).send({ ok: true, data });
+			return res.status(200).json({ ok: true, data: data });
 		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
+			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
@@ -58,9 +57,9 @@ export default (app, channel: Channel) => {
 					"artists"
 				);
 				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(data));
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);

@@ -12,9 +12,9 @@ export default (app, channel: Channel) => {
 	app.get("/playlist", auth, async (_req: Request, res: Response, _next: NextFunction) => {
 		try {
 			const data = await service.getAll(database.Playlist);
-			return res.status(200).send({ ok: true, data });
+			return res.status(200).json({ ok: true, data });
 		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
+			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
@@ -24,9 +24,9 @@ export default (app, channel: Channel) => {
 		async ({ params: { id } }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const data = await service.get(database.Playlist, id);
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
@@ -48,9 +48,9 @@ export default (app, channel: Channel) => {
 
 				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(payload));
 
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
@@ -62,9 +62,9 @@ export default (app, channel: Channel) => {
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const data = await service.updateArray(database.Playlist, id, body);
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
@@ -89,9 +89,9 @@ export default (app, channel: Channel) => {
 
 				const data = await service.delete(database.Playlist, id);
 
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);

@@ -1,0 +1,859 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Spotify API",
+		"description": "API Rest Spotify endpoints that returns metadata about music artists, albums and tracks. Besides, API Rest Spotify allows to create, update and delete custom playlists.",
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"securityDefinitions": {
+		"Bearer": {
+			"name": "Authorization",
+			"in": "header",
+			"type": "apiKey"
+		}
+	},
+	"tags": [
+		{
+			"name": "Albums",
+			"description": "API for get albums in Spotify and add to user's library"
+		},
+		{
+			"name": "Artists",
+			"description": "API for get artists in Spotify and add to user's library"
+		},
+		{
+			"name": "Tracks",
+			"description": "API for get tracks in Spotify and add to user's library"
+		},
+		{
+			"name": "Playlists",
+			"description": "API for create/get/update/remove playlists"
+		}
+	],
+	"schemes": ["http", "https"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/album": {
+			"get": {
+				"tags": ["Albums"],
+				"summary": "Get all albums",
+				"description": "Get all the albums from the DB",
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/Album"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/album/{id}": {
+			"get": {
+				"tags": ["Albums"],
+				"summary": "Get album with given ID",
+				"description": "Get the request album by Id from the DB",
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The album ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "5r36AJ6VOJtp00oxSkBZ5h",
+								"image": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0",
+								"title": "Harry's House",
+								"releaseDate": "2022-05-20T00:00:00.000Z",
+								"totalTracks": 13,
+								"tracks": [],
+								"artist": {},
+								"createdAt": "2022-10-13T13:54:12.807Z",
+								"updatedAt": "2022-10-13T13:54:12.807Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Album"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/album/library": {
+			"put": {
+				"tags": ["Albums"],
+				"summary": "Add/remove album to/from library",
+				"description": "Add/remove album from the user's albums library sending the _id property in the body request object.",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/idBody"
+						},
+						"in": "body",
+						"name": "_id",
+						"required": true,
+						"description": "The album ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"schema": {
+							"$ref": "#/definitions/Album"
+						}
+					},
+					"400": {
+						"description": "Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/genre": {
+			"get": {
+				"tags": ["Artists"],
+				"summary": "Get all artists",
+				"description": "Get all the artists from the DB",
+				"parameters": [
+					{
+						"type": "string",
+						"in": "query",
+						"name": "genres",
+						"description": "Favorites genres"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/Artist"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/artist": {
+			"get": {
+				"tags": ["Artists"],
+				"summary": "Get all artists",
+				"description": "Get all the artists from the DB",
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/Artist"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/artist/{id}": {
+			"get": {
+				"tags": ["Artists"],
+				"summary": "Get artist with given ID",
+				"description": "Get the request artist by Id from the DB",
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The artist ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "4VMYDCV2IEDYJArk749S6m",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"followers": 29578688,
+								"name": "Daddy Yankee",
+								"popularity": 87,
+								"genres": ["latin hip hop", "reggaeton", "trap latino"],
+								"tracks": [],
+								"albums": [],
+								"createdAt": "2022-10-13T13:54:12.044Z",
+								"updatedAt": "2022-10-13T13:54:12.044Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Artist"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/artist/library": {
+			"put": {
+				"tags": ["Artists"],
+				"summary": "Add/remove artist to/from library",
+				"description": "Add/remove artist from the user's artists library sending the _id property in the body request object.",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/idBody"
+						},
+						"in": "body",
+						"name": "_id",
+						"required": true,
+						"description": "The artist ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"schema": {
+							"$ref": "#/definitions/Artist"
+						}
+					},
+					"400": {
+						"description": "Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/track": {
+			"get": {
+				"tags": ["Tracks"],
+				"summary": "Get all tracks",
+				"description": "Get all the tracks from the DB",
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/Tracks"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/track/{id}": {
+			"get": {
+				"tags": ["Tracks"],
+				"summary": "Get track with given ID",
+				"description": "Get the request track by Id from the DB",
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The track ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "3mH7mkdQkMkpCBBw19SziT",
+								"title": "DBD",
+								"duration": 204081,
+								"trackNumber": 1,
+								"trackAudio": "https://p.scdn.co/mp3-preview/a4d83ecb9c9d553a1eb29b3a04eae356f45bd33d?cid=21c1df3f3aa5483ea900f064ffa2d922",
+								"album": {},
+								"createdAt": "2022-10-13T14:19:18.938Z",
+								"updatedAt": "2022-10-13T14:19:18.938Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Track"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/track/library": {
+			"put": {
+				"tags": ["Tracks"],
+				"summary": "Add/remove track to/from library",
+				"description": "Add/remove track from the user's tracks library sending the _id property in the body request object.",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/idBody"
+						},
+						"in": "body",
+						"name": "_id",
+						"required": true,
+						"description": "The artist ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"schema": {
+							"$ref": "#/definitions/Track"
+						}
+					},
+					"400": {
+						"description": "Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/playlist": {
+			"get": {
+				"tags": ["Playlists"],
+				"summary": "Get all playlists",
+				"description": "Get all the playlists from the DB",
+				"security": [{ "Bearer": [] }],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/Playlist"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Playlists"],
+				"summary": "Create playlist",
+				"description": "Create a new playlist",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/PlaylistBody"
+						},
+						"in": "body",
+						"name": "PlaylistBody",
+						"required": true,
+						"description": "Playlist body data"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"title": "Julio's best songs",
+								"description": "Julio le gusta el reggeaton",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"isPublic": false,
+								"tracks": [],
+								"userId": "6346c08ef62459f89d23a5bf",
+								"_id": "63482476c55ae2e4b222de1e",
+								"createdAt": "2022-10-13T14:45:10.509Z",
+								"updatedAt": "2022-10-13T14:45:10.509Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Playlist"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/playlist/{id}": {
+			"get": {
+				"tags": ["Playlists"],
+				"summary": "Get track with given ID",
+				"description": "Get the request playlist by Id from the DB",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The playlist ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "63482331d3edb640e9eb8556",
+								"title": "Alicia's best songs",
+								"description": "Music fr depression",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"isPublic": false,
+								"tracks": [],
+								"userId": "6346c08ef62459f89d23a5bf",
+								"createdAt": "2022-10-13T14:39:45.464Z",
+								"updatedAt": "2022-10-13T14:39:45.464Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Track"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			},
+			"patch": {
+				"tags": ["Playlists"],
+				"summary": "Add track to playlist",
+				"description": "Add track to playlist (not allow to modify title, description or image)",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The playlist ID"
+					},
+					{
+						"schema": {
+							"$ref": "#/definitions/AddTrackToPlaylist"
+						},
+						"in": "body",
+						"name": "tracks",
+						"required": true,
+						"description": "Track Id to add to the playlist. The track must be only its ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "63482476c55ae2e4b222de1e",
+								"title": "Julio's best songs",
+								"description": "Julio le gusta el reggeaton",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"isPublic": false,
+								"tracks": [
+									{
+										"_id": "1zagrZv5nnVunABwivZCte",
+										"title": "Ke Sientes",
+										"duration": 207058,
+										"trackNumber": 5,
+										"trackAudio": "https://p.scdn.co/mp3-preview/56af57efeacf9064230f53b918c42fae65840e4d?cid=21c1df3f3aa5483ea900f064ffa2d922",
+										"album": "7GTks3uBI8W9D2EeFYp9V1",
+										"createdAt": "2022-10-13T15:48:56.827Z",
+										"updatedAt": "2022-10-13T15:48:56.827Z",
+										"__v": 0
+									}
+								],
+								"userId": "6346c08ef62459f89d23a5bf",
+								"createdAt": "2022-10-13T14:45:10.509Z",
+								"updatedAt": "2022-10-13T16:51:59.914Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Playlist"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Playlists"],
+				"summary": "Delete playlist with given ID",
+				"description": "Delete the request playlist by Id from the DB",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The playlist ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "63482331d3edb640e9eb8556",
+								"title": "Alicia's best songs",
+								"description": "Music fr depression",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"isPublic": false,
+								"tracks": [],
+								"userId": "6346c08ef62459f89d23a5bf",
+								"createdAt": "2022-10-13T14:39:45.464Z",
+								"updatedAt": "2022-10-13T14:39:45.464Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Track"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"id": {
+			"properties": {
+				"id": {
+					"type": "string",
+					"example": "1atjqOZTCdrjxjMyCPZc2g"
+				}
+			}
+		},
+		"idBody": {
+			"properties": {
+				"_id": {
+					"type": "string",
+					"example": "1atjqOZTCdrjxjMyCPZc2g"
+				}
+			}
+		},
+		"Album": {
+			"title": "Album",
+			"required": ["image", "title", "releaseDate", "totalTracks"],
+			"properties": {
+				"_id": {
+					"type": "string"
+				},
+				"image": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"releaseDate": {
+					"type": "string",
+					"format": "date- time"
+				},
+				"totalTracks": {
+					"type": "number"
+				},
+				"tracks": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"artist": {
+					"type": "string"
+				},
+				"createdAt": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"updatedAt": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
+		},
+		"Artist": {
+			"title": "Artist",
+			"required": ["image", "followers", "name", "popularity"],
+			"properties": {
+				"_id": {
+					"type": "string"
+				},
+				"image": {
+					"type": "string"
+				},
+				"followers": {
+					"type": "number"
+				},
+				"name": {
+					"type": "string"
+				},
+				"popularity": {
+					"type": "number"
+				},
+				"genres": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"tracks": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"albums": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"createdAt": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"updatedAt": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
+		},
+		"Playlist": {
+			"title": "Playlist",
+			"required": ["title", "userId"],
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"image": {
+					"type": "string"
+				},
+				"isPublic": {
+					"type": "boolean"
+				},
+				"tracks": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"userId": {
+					"type": "string"
+				},
+				"_id": {
+					"type": "string"
+				},
+				"createdAt": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"updatedAt": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
+		},
+		"Track": {
+			"title": "Track",
+			"required": ["title", "duration", "trackNumber"],
+			"properties": {
+				"_id": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"duration": {
+					"type": "number"
+				},
+				"trackNumber": {
+					"type": "number"
+				},
+				"trackAudio": {
+					"type": "string"
+				},
+				"album": {
+					"type": "string"
+				},
+				"createdAt": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"updatedAt": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
+		},
+		"PlaylistBody": {
+			"title": "PlaylistBody",
+			"properties": {
+				"title": { "type": "string", "example": "Julio's best songs" },
+				"description": { "type": "string", "example": "Julio le gusta el reggeaton" },
+				"image": {
+					"type": "string",
+					"example": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49"
+				}
+			}
+		},
+		"AddTrackToPlaylist": {
+			"title": "AddTrackToPlaylist",
+			"properties": {
+				"tracks": {
+					"type": "string",
+					"example": "1zagrZv5nnVunABwivZCte"
+				}
+			}
+		},
+		"Error": {
+			"title": "Error",
+			"properties": {
+				"error": {
+					"type": "string",
+					"example": "Data not found"
+				}
+			}
+		}
+	}
+}
