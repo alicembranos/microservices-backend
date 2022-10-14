@@ -160,7 +160,7 @@
 						"type": "string",
 						"in": "query",
 						"name": "genres",
-						"description": "Favorites genres"
+						"description": "Favorites genres: Example ?genres=rock&genres=pop"
 					}
 				],
 				"responses": {
