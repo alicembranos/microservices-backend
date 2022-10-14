@@ -5,7 +5,8 @@ import IPayload from "../interfaces/payload.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
 import UserService from "../services/user-service";
-import { Request } from "express";
+import swaggerUi from "swagger-ui-express";
+import * as swaggerDocument from "../documentation/swagger/swagger.json";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -54,14 +55,9 @@ const generateSignature = async (payload: IPayload) => {
 	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "5d" });
 };
 
-const validateSignature = async (req: Request) => {
-	const authorization = req.headers["authorization"];
-	if (authorization) {
-		const payload = await jwt.verify(authorization.split(" ")[1], config.app.PRIVATE_KEY as Secret);
-		req.user = payload as IPayload;
-		return true;
-	}
-	return false;
+const validateSignature = (auth: string): IPayload => {
+	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
+	return payload;
 };
 
 //Message broker
@@ -101,6 +97,10 @@ const subscribeMessage = async (channel: Channel, service: UserService) => {
 	);
 };
 
+const initSwagger = (app) => {
+	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+};
+
 export {
 	selectFieldsToPopulate,
 	formateData,
@@ -112,4 +112,5 @@ export {
 	createChannel,
 	publishMessage,
 	subscribeMessage,
+	initSwagger
 };

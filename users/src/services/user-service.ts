@@ -107,11 +107,12 @@ class UserService {
 
 	async subscribeEvents(payload: any) {
 		console.log("Triggering... User Events");
-
+		
 		payload = JSON.parse(payload);
-
+		
 		const { event, data } = payload;
 
+		if (!event || !data) return;
 		const { userId, playlist, library, type } = data;
 
 		switch (event) {

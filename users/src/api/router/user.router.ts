@@ -15,9 +15,9 @@ export default (app, channel: Channel) => {
 		try {
 			const { email, password, username, image } = req.body;
 			const data = await service.signUp({ email, password, username, image });
-			return res.status(200).send({ ok: true, data });
+			return res.status(200).json({ ok: true, data });
 		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
+			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
@@ -25,18 +25,18 @@ export default (app, channel: Channel) => {
 		try {
 			const { email, password } = req.body;
 			const data = await service.signIn({ email, password });
-			return res.status(200).send({ ok: true, data });
+			return res.status(200).json({ ok: true, data });
 		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
+			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
 	app.get("/user", auth, async (_req: Request, res: Response, _next: NextFunction) => {
 		try {
 			const data = await service.getAll(database.User);
-			return res.status(200).send({ ok: true, data });
+			return res.status(200).json({ ok: true, data });
 		} catch (error) {
-			res.status(400).send({ ok: false, msg: handleError(error) });
+			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
@@ -46,9 +46,9 @@ export default (app, channel: Channel) => {
 		async ({ params: { id } }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const data = await service.get(database.User, id);
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
@@ -59,9 +59,9 @@ export default (app, channel: Channel) => {
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const data = await service.update(database.User, id, body);
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
@@ -72,9 +72,9 @@ export default (app, channel: Channel) => {
 		async ({ params: { id } }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const data = await service.delete(database.User, id);
-				return res.status(200).send({ ok: true, data });
+				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(400).send({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);

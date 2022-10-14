@@ -1,0 +1,478 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Users API",
+		"description": "API Rest Users endpoints that returns metadata about app users. It allows to create/update and delete users as well as get information from them",
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"securityDefinitions": {
+		"Bearer": {
+			"name": "Authorization",
+			"in": "header",
+			"type": "apiKey"
+		}
+	},
+	"tags": [
+		{
+			"name": "Users",
+			"description": "API for create/get/update/remove users"
+		}
+	],
+	"schemes": ["http", "https"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/user": {
+			"get": {
+				"tags": ["Users"],
+				"summary": "Get all users",
+				"description": "Get all the users registered in the app from the DB",
+				"security": [{ "Bearer": [] }],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/signup": {
+			"post": {
+				"tags": ["Users"],
+				"summary": "Create user",
+				"description": "Create a new user",
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/UserBody"
+						},
+						"in": "body",
+						"name": "UserBody",
+						"required": true,
+						"description": "User body data"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"schema": {
+							"$ref": "#/definitions/TokenResponse"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/signin": {
+			"post": {
+				"tags": ["Users"],
+				"summary": "Login/signin user",
+				"description": "Sign in to the application",
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/SigninBody"
+						},
+						"in": "body",
+						"name": "SigninBody",
+						"required": true,
+						"description": "Email and password"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"schema": {
+							"$ref": "#/definitions/TokenResponse"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/user/{id}": {
+			"get": {
+				"tags": ["Users"],
+				"summary": "Get user with given ID",
+				"description": "Get the request user by Id from the DB",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The user ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "6344820793515b715ea8b424",
+								"username": "alicembru",
+								"email": "alicia@gmail.com",
+								"password": "$2b$10$iIRR1wIO5X6lm4t6svtoWO9N7HZtOunvS2V6NKhJl2soT7SWFYViq",
+								"phone": "",
+								"image": "image_profile",
+								"playlists": [],
+								"artists": [],
+								"albums": [],
+								"likedSongs": [],
+								"createdAt": "2022-10-10T20:35:19.854Z",
+								"updatedAt": "2022-10-10T20:35:19.854Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			},
+			"patch": {
+				"tags": ["Users"],
+				"summary": "Update user's profile",
+				"description": "Update user's profile information",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The user ID"
+					},
+					{
+						"schema": {
+							"$ref": "#/definitions/User"
+						},
+						"in": "body",
+						"name": "User",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "6344820793515b715ea8b424",
+								"username": "alicembru",
+								"email": "alicia@gmail.com",
+								"password": "$2b$10$iIRR1wIO5X6lm4t6svtoWO9N7HZtOunvS2V6NKhJl2soT7SWFYViq",
+								"phone": "",
+								"image": "image_profile",
+								"playlists": [],
+								"artists": [],
+								"albums": [],
+								"likedSongs": [],
+								"createdAt": "2022-10-10T20:35:19.854Z",
+								"updatedAt": "2022-10-10T20:35:19.854Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Users"],
+				"summary": "Delete user with given ID",
+				"description": "Delete the request user by Id from the DB",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The user ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "6344820793515b715ea8b424",
+								"username": "alicembru",
+								"email": "alicia@gmail.com",
+								"phone": "",
+								"image": "image_profile",
+								"playlists": [],
+								"artists": [],
+								"albums": [],
+								"likedSongs": [],
+								"createdAt": "2022-10-10T20:35:19.854Z",
+								"updatedAt": "2022-10-10T20:35:19.854Z"
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"id": {
+			"properties": {
+				"id": {
+					"type": "string",
+					"example": "1atjqOZTCdrjxjMyCPZc2g"
+				}
+			}
+		},
+		"idBody": {
+			"properties": {
+				"_id": {
+					"type": "string",
+					"example": "1atjqOZTCdrjxjMyCPZc2g"
+				}
+			}
+		},
+		"User": {
+			"title": "User",
+			"required": ["username", "email", "password", "image"],
+			"properties": {
+				"username": {
+					"type": "string"
+				},
+				"email": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				},
+				"phone": {
+					"type": "string"
+				},
+				"image": {
+					"type": "string"
+				},
+				"playlists": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string"
+							},
+							"titl e": {
+								"type": "string"
+							},
+							"description": {
+								"type": "string"
+							},
+							"image": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"artists": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string"
+							},
+							"image": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"albums": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string"
+							},
+							"image": {
+								"type": "string"
+							},
+							"title": {
+								"type": "string"
+							},
+							"artist": {
+								"type": "object",
+								"properties": {
+									"_id": {
+										"type": "string"
+									},
+									"name ": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"likedSongs": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string"
+							},
+							"title": {
+								"type": "string"
+							},
+							"description": {
+								"type": "string"
+							},
+							"image": {
+								"type": "string"
+							},
+							"trackAudio": {
+								"type": "string"
+							},
+							" album": {
+								"type": "object",
+								"properties": {
+									"_id": {
+										"type": "string"
+									},
+									"tit le": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"_id": {
+					"type": "string"
+				},
+				" createdAt": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"updatedAt": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
+		},
+		"UserBody": {
+			"title": "UserBody",
+			"properties": {
+				"username": { "type": "string", "example": "superman23" },
+				"email": { "type": "string", "example": "superman@gmail.com" },
+				"password": { "type": "string", "example": "**********" },
+				"image": {
+					"type": "string",
+					"example": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49"
+				}
+			}
+		},
+		"SigninBody": {
+			"title": "SigninBody",
+			"properties": {
+				"email": { "type": "string", "example": "superman@gmail.com" },
+				"password": { "type": "string", "example": "**********" }
+			}
+		},
+		"TokenResponse": {
+			"title": "Token Response",
+			"properties": {
+				"ok": { "type": "boolean", "example": true },
+				"data": {
+					"type": "string",
+					"description": "Token",
+					"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ5MDJiMThjOGU0YzgxNWYxZjYwNTkiLCJ1c2VybmFtZSI6ImFzc2VtYmxlclBpZmUiLCJpYXQiOjE2NjU3MjkyMDEsImV4cCI6MTY2NjE2MTIwMX0.Ows6QJhgRhvPSvzU5ET2M1VKiHmde2y1o_72idtlJgc"
+				}
+			}
+		},
+		"Error": {
+			"title": "Error",
+			"properties": {
+				"error": {
+					"type": "string",
+					"example": "Data not found"
+				}
+			}
+		}
+	}
+}
