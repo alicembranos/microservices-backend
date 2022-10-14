@@ -54,6 +54,7 @@ class SpotifyService {
 		type: string
 	) {
 		const library = await this.repository.getDocumentById(model, libraryId);
+		console.log(library)
 		if (library) {
 			const payload = {
 				event,
