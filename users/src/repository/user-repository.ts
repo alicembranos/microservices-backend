@@ -12,24 +12,22 @@ class User {
 	}
 
 	async getAllDocuments<T>(model: Model<T>) {
-		return await model.find().lean().exec();
+		return await model.find();
 	}
 
 	async getDocumentById<T>(model: Model<T>, id: string) {
-		return await model.findById(id).lean().exec();
+		return await model.findById(id);
 	}
 
 	//TODO: Make field generic (not email)
 	async getDocumentByField<T>(model: Model<T>, field: string) {
-		return await model.findOne({ email: field }).lean().exec();
+		return await model.findOne({ email: field });
 	}
 
 	async updateDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
 		const _id = id;
 		return await model
-			.findOneAndUpdate({ _id }, { ...data }, { new: true })
-			.lean()
-			.exec();
+			.findOneAndUpdate({ _id }, { ...data }, { new: true });
 	}
 
 	async deleteDocument<T>(model: Model<T>, id: string) {
