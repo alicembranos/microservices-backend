@@ -536,6 +536,125 @@
 			},
 			"patch": {
 				"tags": ["Playlists"],
+				"summary": "Update playlist information ",
+				"description": "Update playlist information only (not add track to playlist)",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The playlist ID"
+					},
+					{
+						"schema": {
+							"$ref": "#/definitions/Playlist"
+						},
+						"in": "body",
+						"name": "Playlist",
+						"required": true,
+						"description": "Playlist fields to update"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "63482476c55ae2e4b222de1e",
+								"title": "Julio's best songs",
+								"description": "Julio le gusta el reggeaton",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"isPublic": false,
+								"tracks": [
+									{
+										"_id": "1zagrZv5nnVunABwivZCte",
+										"title": "Ke Sientes",
+										"duration": 207058,
+										"trackNumber": 5,
+										"trackAudio": "https://p.scdn.co/mp3-preview/56af57efeacf9064230f53b918c42fae65840e4d?cid=21c1df3f3aa5483ea900f064ffa2d922",
+										"album": "7GTks3uBI8W9D2EeFYp9V1",
+										"createdAt": "2022-10-13T15:48:56.827Z",
+										"updatedAt": "2022-10-13T15:48:56.827Z",
+										"__v": 0
+									}
+								],
+								"userId": "6346c08ef62459f89d23a5bf",
+								"createdAt": "2022-10-13T14:45:10.509Z",
+								"updatedAt": "2022-10-13T16:51:59.914Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Playlist"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Playlists"],
+				"summary": "Delete playlist with given ID",
+				"description": "Delete the request playlist by Id from the DB",
+				"security": [{ "Bearer": [] }],
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"description": "The playlist ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {
+							"ok": true,
+							"data": {
+								"_id": "63482331d3edb640e9eb8556",
+								"title": "Alicia's best songs",
+								"description": "Music fr depression",
+								"image": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49",
+								"isPublic": false,
+								"tracks": [],
+								"userId": "6346c08ef62459f89d23a5bf",
+								"createdAt": "2022-10-13T14:39:45.464Z",
+								"updatedAt": "2022-10-13T14:39:45.464Z",
+								"__v": 0
+							}
+						},
+						"schema": {
+							"$ref": "#/definitions/Track"
+						}
+					},
+					"400": {
+						"description": "Invalid ID supplied",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
+		},
+		"/playlist/tracks/{id}": {
+			"patch": {
+				"tags": ["Playlists"],
 				"summary": "Add track to playlist",
 				"description": "Add track to playlist (not allow to modify title, description or image)",
 				"security": [{ "Bearer": [] }],
@@ -605,8 +724,8 @@
 			},
 			"delete": {
 				"tags": ["Playlists"],
-				"summary": "Delete playlist with given ID",
-				"description": "Delete the request playlist by Id from the DB",
+				"summary": "Delete tracks from playlist",
+				"description": "Delete the playlist supply in the body from the given Playlist identified by ID",
 				"security": [{ "Bearer": [] }],
 				"parameters": [
 					{
@@ -615,6 +734,15 @@
 						"name": "id",
 						"required": true,
 						"description": "The playlist ID"
+					},
+					{
+						"schema": {
+							"$ref": "#/definitions/AddTrackToPlaylist"
+						},
+						"in": "body",
+						"name": "tracks",
+						"required": true,
+						"description": "Track Id to remove from the playlist. The track must be only its ID"
 					}
 				],
 				"responses": {
