@@ -7,6 +7,8 @@ import amqplib, { Channel } from "amqplib";
 import UserService from "../services/user-service";
 import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../documentation/swagger/swagger.json";
+import redis from "redis";
+import { RedisClientType } from "@redis/client";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -23,12 +25,13 @@ const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	}
 };
 
-const formateData = <T>(data: T): T => {
-	if (data) {
-		return data;
+const formateData = (data: any) => {
+	if (data?.length === 0 || !data) {
+		throw new Error("Data Not found!");
 	}
-	throw new Error("Data Not found!");
+	return data;
 };
+
 
 const handleError = (error: unknown): string => {
 	if (error instanceof Error) {
@@ -51,11 +54,24 @@ const validatePassword = async (enteredPassword: string, hashedPassword: string)
 };
 
 //! Expires token is modified
-const generateSignature = async (payload: IPayload) => {
-	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "5d" });
+const generateSignature = (payload: IPayload) => {
+	return jwt.sign(payload, config.app.PRIVATE_KEY as Secret, {
+		expiresIn: config.app.PRIVATE_EXPIRATION_TIME,
+	});
+};
+
+const generateRefreshSignature = (payload: IPayload) => {
+	return jwt.sign(payload, config.app.PRIVATE_KEY_REFRESH as Secret, {
+		expiresIn: config.app.PRIVATE_EXPIRATION_TIME_REFRESH,
+	});
 };
 
 const validateSignature = (auth: string): IPayload => {
+	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
+	return payload;
+};
+
+const validateRefreshSignature = (auth: string): IPayload => {
 	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
 	return payload;
 };
@@ -101,16 +117,39 @@ const initSwagger = (app) => {
 	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 };
 
+const initRedis = async ()  => {
+	const redisClient = redis.createClient();
+
+	redisClient.on("error", (error) => {
+		config.logger.error(error);
+	});
+	redisClient.on("connection", () => {
+		config.logger.info("Redis connected!");
+	});
+	redisClient.on("ready", () => {
+		config.logger.info("Redis ready!");
+	});
+
+	await redisClient.connect();
+
+	return redisClient;
+};
+
+
+
 export {
 	selectFieldsToPopulate,
 	formateData,
 	validatePassword,
 	generateSignature,
 	validateSignature,
+	generateRefreshSignature,
+	validateRefreshSignature,
 	generatePassword,
 	handleError,
 	createChannel,
 	publishMessage,
 	subscribeMessage,
-	initSwagger
+	initSwagger,
+	initRedis,
 };

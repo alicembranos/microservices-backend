@@ -1,5 +1,11 @@
 import User from "../repository/user-repository";
-import { formateData, generatePassword, generateSignature, validatePassword } from "../utils/index";
+import {
+	formateData,
+	generatePassword,
+	generateSignature,
+	generateRefreshSignature,
+	validatePassword,
+} from "../utils/index";
 import { Ilogin, ISignUp } from "../interfaces/auth.interface";
 import database from "../models/index";
 import IAlbum from "../interfaces/album.interface";
@@ -31,8 +37,11 @@ class UserService {
 			return formateData(null);
 		}
 
-		const token = await generateSignature({ sub: user._id, username: user.username });
-		return formateData(token);
+		const token = generateSignature({ sub: user._id, username: user.username });
+		const refreshToken = generateRefreshSignature({ sub: user._id, username: user.username });
+
+		// return formateData(token);
+		return { token, refreshToken };
 	}
 
 	async signUp(data: ISignUp) {
@@ -55,11 +64,19 @@ class UserService {
 			image,
 		});
 
-		const token = await generateSignature({ sub: newUser._id, username });
+		const token = generateSignature({ sub: newUser._id, username });
+		const refreshToken = generateRefreshSignature({ sub: newUser._id, username });
 
-		return formateData(token);
+		// return formateData(token);
+		return { token, refreshToken };
 	}
 
+	async refreshToken(token: string) {
+	if (!token) {
+		
+	}
+	}
+	
 	async getAll<T>(model: Model<T>) {
 		const documentResult = await this.repository.getAllDocuments(model);
 		return formateData(documentResult);
@@ -107,9 +124,9 @@ class UserService {
 
 	async subscribeEvents(payload: any) {
 		console.log("Triggering... User Events");
-		
+
 		payload = JSON.parse(payload);
-		
+
 		const { event, data } = payload;
 
 		if (!event || !data) return;

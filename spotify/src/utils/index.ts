@@ -6,6 +6,8 @@ import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
 import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../documentation/swagger/swagger.json";
+import redis from "redis";
+import { RedisClientType } from "@redis/client";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -79,6 +81,17 @@ const initSwagger = (app) => {
 	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 };
 
+const initRedis = async (redisClient: RedisClientType) : Promise<void>=> {
+	redisClient = redis.createClient();
+	redisClient.on("error", (error) => {
+		config.logger.error(error);
+	})
+	redisClient.on("connection", () => {
+		config.logger.info("Redis connected!");
+	})
+	await redisClient.connect()
+};
+
 export {
 	selectFieldsToPopulate,
 	formateData,
@@ -89,4 +102,5 @@ export {
 	publishMessage,
 	handleError,
 	initSwagger,
+	initRedis
 };

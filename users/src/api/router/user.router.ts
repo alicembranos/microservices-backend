@@ -31,6 +31,16 @@ export default (app, channel: Channel) => {
 		}
 	});
 
+	app.post("/refreshToken", async (req: Request, res: Response, _next: NextFunction) => {
+		try {
+			const { refreshToken } = req.body;
+			
+			// return res.status(200).json({ ok: true, data });
+		} catch (error) {
+			res.status(400).json({ ok: false, msg: handleError(error) });
+		}
+	});
+
 	app.get("/user", auth, async (_req: Request, res: Response, _next: NextFunction) => {
 		try {
 			const data = await service.getAll(database.User);

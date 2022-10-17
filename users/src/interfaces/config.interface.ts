@@ -2,6 +2,9 @@ type ConfigOptions = {
 	app: {
 		PORT: string | number;
 		PRIVATE_KEY: string | undefined;
+		PRIVATE_EXPIRATION_TIME: string | undefined;
+		PRIVATE_KEY_REFRESH: string | undefined;
+		PRIVATE_EXPIRATION_TIME_REFRESH: string | undefined;
 		MSG_QUEUE_URL: string | undefined;
 		EXCHANGE_NAME: string;
 		USER_SERVICE: string;
