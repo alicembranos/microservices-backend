@@ -4,6 +4,7 @@ import IArtist from "../interfaces/artist.interface";
 import IPlaylist from "../interfaces/playlist.interface";
 import ITrack from "../interfaces/track.interface";
 import database from "../models/index";
+import { RecursivePartial } from "../types/mongoose/mongoose";
 
 //Dealing with data base operations
 class User {
@@ -20,14 +21,13 @@ class User {
 	}
 
 	//TODO: Make field generic (not email)
-	async getDocumentByField<T>(model: Model<T>, field: string) {
-		return await model.findOne({ email: field });
+	async getDocumentByField<T>(model: Model<T>, field: Partial<T>) {
+		return await model.findOne({ ...field });
 	}
 
 	async updateDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
 		const _id = id;
-		return await model
-			.findOneAndUpdate({ _id }, { ...data }, { new: true });
+		return await model.findOneAndUpdate({ _id }, { ...data }, { new: true });
 	}
 
 	async deleteDocument<T>(model: Model<T>, id: string) {

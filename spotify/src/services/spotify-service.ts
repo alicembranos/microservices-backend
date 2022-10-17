@@ -35,13 +35,18 @@ class SpotifyService {
 		return formateData(documentResult);
 	}
 
-	async updateArray<T>(model: Model<T>, id: string, data: Partial<T>) {
+	async updateFromArray<T>(model: Model<T>, id: string, data: Partial<T>) {
 		const documentResult = await this.repository.updateArrayInDocument(model, id, data);
 		return formateData(documentResult);
 	}
 
 	async delete<T>(model: Model<T>, id: string) {
 		const documentResult = await this.repository.deleteDocument(model, id);
+		return formateData(documentResult);
+	}
+
+	async deleteFromArray<T>(model: Model<T>, id: string, data: Partial<T>) {
+		const documentResult = await this.repository.deleteFromArrayInDocument(model, id, data);
 		return formateData(documentResult);
 	}
 
@@ -53,7 +58,7 @@ class SpotifyService {
 		type: string
 	) {
 		const library = await this.repository.getDocumentById(model, libraryId);
-		console.log(library)
+		console.log(library);
 		if (library) {
 			const payload = {
 				event,

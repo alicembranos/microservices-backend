@@ -38,19 +38,21 @@ const handleError = (error: unknown): string => {
 };
 
 const generateSalt = async (): Promise<string> => {
-	return await bcrypt.genSalt();
+	return await bcrypt.genSalt(10);
 };
 
-const generatePassword = async (password: string, salt: string): Promise<string> => {
+const generatePassword = async (password: string): Promise<string> => {
+	const salt = await generateSalt();
 	return await bcrypt.hash(password, salt);
 };
 
-const validatePassword = async (enteredPassword: string, hashedPassword: string, salt: string) => {
-	return (await generatePassword(enteredPassword, salt)) === hashedPassword;
+const validatePassword = async (enteredPassword: string, hashedPassword: string) => {
+	return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
-const generateSignature = async (payload: IPayload) => {
-	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "1d" });
+//! Expires token is modified
+const generateSignature = (payload: IPayload) => {
+	return jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "5d" });
 };
 
 const validateSignature = (auth: string): IPayload => {
@@ -83,6 +85,7 @@ export {
 	selectFieldsToPopulate,
 	formateData,
 	validatePassword,
+	generatePassword,
 	generateSignature,
 	validateSignature,
 	createChannel,

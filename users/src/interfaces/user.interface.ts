@@ -8,6 +8,7 @@ export default interface IUser {
 	email: string;
 	password: string;
 	image: string;
+	genres: string[];
 	phone: string;
 	playlists: Partial<IPlaylist>[];
 	albums: Partial<IAlbum>[];

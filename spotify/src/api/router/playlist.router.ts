@@ -55,13 +55,38 @@ export default (app, channel: Channel) => {
 		}
 	);
 
-	//! not allow to modify title, image or description from the front
+	app.patch(
+		"/playlist/tracks/:id",
+		auth,
+		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
+			try {
+				const data = await service.updateFromArray(database.Playlist, id, body);
+				return res.status(200).json({ ok: true, data });
+			} catch (error) {
+				res.status(400).json({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
+
+	app.delete(
+		"/playlist/tracks/:id",
+		auth,
+		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
+			try {
+				const data = await service.deleteFromArray(database.Playlist, id, body);
+				return res.status(200).json({ ok: true, data });
+			} catch (error) {
+				res.status(400).json({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
+
 	app.patch(
 		"/playlist/:id",
 		auth,
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
-				const data = await service.updateArray(database.Playlist, id, body);
+				const data = await service.update(database.Playlist, id, body);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });

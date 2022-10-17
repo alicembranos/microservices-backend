@@ -32,9 +32,7 @@ class Spotify {
 		const populateField = selectFieldsToPopulate(model);
 		return await model
 			.findOneAndUpdate({ _id }, { ...data }, { new: true })
-			.populate(populateField)
-			.lean()
-			.exec();
+			.populate(populateField);
 	}
 
 	async updateArrayInDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
@@ -48,6 +46,15 @@ class Spotify {
 
 	async deleteDocument<T>(model: Model<T>, id: string) {
 		return await model.findByIdAndDelete(id);
+	}
+
+	async deleteFromArrayInDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
+		const populateField = selectFieldsToPopulate(model);
+		return await model
+			.findByIdAndUpdate(id, { $pull: { ...data } }, { new: true })
+			.populate(populateField)
+			.lean()
+			.exec();
 	}
 }
 
