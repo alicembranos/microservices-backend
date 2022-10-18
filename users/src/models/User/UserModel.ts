@@ -22,8 +22,13 @@ const UserSchema = new Schema<IUser>(
 		},
 		image: {
 			type: String,
-			required: true,
 		},
+		genres: [
+			{
+				type: String,
+				default: [],
+			},
+		],
 		playlists: [
 			{
 				_id: { type: SchemaTypes.ObjectId, require: true },

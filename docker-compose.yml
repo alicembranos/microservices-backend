@@ -1,12 +1,18 @@
 version: "3"
 services:
   redis:
-    image: redis:latest
     container_name: redis
+    hostname: redis
+    image: redis
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: ghcr.io/joeferner/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
     ports:
-      - "6380:6379"
-    expose:
-      - "6380"
+    - "8081:8081"
   users:
     build:
       dockerfile: Dockerfile

@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import IPayload from "../interfaces/payload.interface";
@@ -7,8 +7,8 @@ import amqplib, { Channel } from "amqplib";
 import UserService from "../services/user-service";
 import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../documentation/swagger/swagger.json";
-import redis from "redis";
-import { RedisClientType } from "@redis/client";
+import { RedisCommandArgument } from "@redis/client/dist/lib/commands";
+import redisClient from "./initRedis";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -32,7 +32,6 @@ const formateData = (data: any) => {
 	return data;
 };
 
-
 const handleError = (error: unknown): string => {
 	if (error instanceof Error) {
 		return error.message;
@@ -53,27 +52,80 @@ const validatePassword = async (enteredPassword: string, hashedPassword: string)
 	return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
-//! Expires token is modified
-const generateSignature = (payload: IPayload) => {
-	return jwt.sign(payload, config.app.PRIVATE_KEY as Secret, {
-		expiresIn: config.app.PRIVATE_EXPIRATION_TIME,
+const generateSignature = (payload: IPayload): Promise<string | undefined> => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			payload,
+			config.app.PRIVATE_KEY as Secret,
+			{ expiresIn: config.app.PRIVATE_EXPIRATION_TIME },
+			(error, token) => {
+				if (error) return reject(error);
+				resolve(token);
+			}
+		);
 	});
 };
 
-const generateRefreshSignature = (payload: IPayload) => {
-	return jwt.sign(payload, config.app.PRIVATE_KEY_REFRESH as Secret, {
-		expiresIn: config.app.PRIVATE_EXPIRATION_TIME_REFRESH,
+const generateRefreshSignature = async (payload: IPayload): Promise<string | undefined> => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			payload,
+			config.app.PRIVATE_KEY_REFRESH as Secret,
+			{ expiresIn: config.app.PRIVATE_EXPIRATION_TIME_REFRESH },
+			async (error, token) => {
+				if (error) return reject(error);
+				// redisClient.set("token" as RedisCommandArgument, token as RedisCommandArgument);
+				redisClient.set(
+					payload.sub.toString() as RedisCommandArgument,
+					token as RedisCommandArgument,
+					{ EX: 31104000 }
+				);
+				resolve(token);
+			}
+		);
 	});
 };
 
-const validateSignature = (auth: string): IPayload => {
-	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
-	return payload;
+const validateSignature = (auth: string): Promise<IPayload> => {
+	return new Promise((resolve, reject) => {
+		jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret, (error, payload) => {
+			if (error) return reject(error);
+			resolve(payload as IPayload);
+		});
+	});
 };
 
-const validateRefreshSignature = (auth: string): IPayload => {
-	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
-	return payload;
+const validateRefreshSignature = async (auth: string): Promise<IPayload> => {
+	return new Promise((resolve, reject) => {
+		jwt.verify(auth, config.app.PRIVATE_KEY_REFRESH as Secret, async (error, payload) => {
+			if (error) return reject(error);
+			console.log(payload, "payload####################");
+			// const refreshToken = await redisClient.get("token");
+			const refreshToken = await redisClient.get(payload?.sub?.toString() as RedisCommandArgument);
+			console.log(refreshToken, "refreshToken####################");
+			if (!refreshToken) reject("Unauthorized");
+			if (refreshToken === auth) {
+				resolve(payload as IPayload);
+			}
+		});
+	});
+};
+
+const deleteUserCacheToken = async (sub: string | mongoose.Types.ObjectId) => {
+	await redisClient.del(sub.toString());
+};
+
+const addTokenToBlacklist = async (token: string) => {
+	await redisClient.lPush("token-blacklist", token);
+	await redisClient.expire("token-blacklist", 3600, "NX"); //1 hour
+};
+
+const existTokenInBlacklist = async (token: string): Promise<boolean> => {
+	const exist = await redisClient.lPos("token-blacklist", token.split(' ')[1]);
+	console.log(exist)
+	console.log(typeof exist === "object" && exist === null)
+	if (typeof exist === "object" && exist === null) return true;
+	return false;
 };
 
 //Message broker
@@ -117,26 +169,6 @@ const initSwagger = (app) => {
 	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 };
 
-const initRedis = async ()  => {
-	const redisClient = redis.createClient();
-
-	redisClient.on("error", (error) => {
-		config.logger.error(error);
-	});
-	redisClient.on("connection", () => {
-		config.logger.info("Redis connected!");
-	});
-	redisClient.on("ready", () => {
-		config.logger.info("Redis ready!");
-	});
-
-	await redisClient.connect();
-
-	return redisClient;
-};
-
-
-
 export {
 	selectFieldsToPopulate,
 	formateData,
@@ -145,11 +177,13 @@ export {
 	validateSignature,
 	generateRefreshSignature,
 	validateRefreshSignature,
+	deleteUserCacheToken,
+	addTokenToBlacklist,
+	existTokenInBlacklist,
 	generatePassword,
 	handleError,
 	createChannel,
 	publishMessage,
 	subscribeMessage,
 	initSwagger,
-	initRedis,
 };

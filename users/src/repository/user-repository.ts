@@ -19,9 +19,8 @@ class User {
 		return await model.findById(id).lean().exec();
 	}
 
-	//TODO: Make field generic (not email)
-	async getDocumentByField<T>(model: Model<T>, field: string) {
-		return await model.findOne({ email: field }).lean().exec();
+	async getDocumentByField<T>(model: Model<T>, field: Partial<T>) {
+		return await model.findOne({ ...field });
 	}
 
 	async updateDocument<T>(model: Model<T>, id: string, data: Partial<T>) {

@@ -5,6 +5,9 @@ import {
 	generateSignature,
 	generateRefreshSignature,
 	validatePassword,
+	validateRefreshSignature,
+	addTokenToBlacklist,
+	deleteUserCacheToken,
 } from "../utils/index";
 import { Ilogin, ISignUp } from "../interfaces/auth.interface";
 import database from "../models/index";
@@ -25,58 +28,62 @@ class UserService {
 	async signIn(data: Ilogin) {
 		const { email, password } = data;
 
-		const user = await this.repository.getDocumentByField(database.User, email);
+		const user = await this.repository.getDocumentByField(database.User, { email });
 
-		if (!user) {
-			return formateData(null);
-		}
+		if (!user) throw new Error("User does not exist. Please sign up.");
 
 		const validPassword = await validatePassword(password, user.password);
 
-		if (!validPassword) {
-			return formateData(null);
-		}
+		if (!validPassword) throw new Error("Invalid credentials");
 
-		const token = generateSignature({ sub: user._id, username: user.username });
-		const refreshToken = generateRefreshSignature({ sub: user._id, username: user.username });
+		const token = await generateSignature({ sub: user._id, username: user.username });
+		const refreshToken = await generateRefreshSignature({ sub: user._id, username: user.username });
 
-		// return formateData(token);
-		return { token, refreshToken };
+		return formateData({ token, refreshToken });
 	}
 
 	async signUp(data: ISignUp) {
-		//TODO: Add genres music preferences
-		const { email, password, username, image } = data;
+		const { email, password, username } = data;
 
-		if (!email || !password || !username || !image) {
-			return formateData(null);
-		}
-		const user = await this.repository.getDocumentByField(database.User, email);
+		if (!email || !password || !username) throw new Error("Invalid credentials");
 
-		if (user) {
-			return formateData(null);
-		}
+		//Check if user exist by email
+		const user = await this.repository.getDocumentByField(database.User, { email });
+		if (user) throw new Error("User already exists");
+
+		//Check if user exist by username
+		const usernameExist = await this.repository.getDocumentByField(database.User, { username });
+		if (usernameExist) throw new Error("Username is already used. Please select a new one.");
+
 		const hashPassword = await generatePassword(password);
 		const newUser = await this.repository.createDocument(database.User, {
 			email,
 			password: hashPassword,
 			username,
-			image,
 		});
 
-		const token = generateSignature({ sub: newUser._id, username });
-		const refreshToken = generateRefreshSignature({ sub: newUser._id, username });
+		const token = await generateSignature({ sub: newUser._id, username });
+		const refreshToken = await generateRefreshSignature({ sub: newUser._id, username });
 
-		// return formateData(token);
-		return { token, refreshToken };
+		return formateData({ token, refreshToken });
 	}
 
 	async refreshToken(token: string) {
-	if (!token) {
-		
+		if (!token) throw new Error("Unauthorized.");
+		const { sub, username } = await validateRefreshSignature(token);
+		const newToken = await generateSignature({ sub, username });
+
+		return formateData(newToken);
 	}
+
+	async logout(token: string, refreshToken: string) {
+		if (!token) throw new Error("Unauthorized.");
+		const { sub } = await validateRefreshSignature(refreshToken);
+		await deleteUserCacheToken(sub);
+		await addTokenToBlacklist(token);
+		return formateData("Sucesfully logout");
 	}
-	
+
 	async getAll<T>(model: Model<T>) {
 		const documentResult = await this.repository.getAllDocuments(model);
 		return formateData(documentResult);
