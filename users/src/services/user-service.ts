@@ -28,7 +28,7 @@ class UserService {
 		if (!validPassword) throw new Error("Invalid credentials");
 
 		const token = await generateSignature({ sub: user._id, username: user.username });
-		return formateData(token);
+		return formateData({token, username : user.username});
 	}
 
 	async signUp(data: ISignUp) {
@@ -53,7 +53,7 @@ class UserService {
 
 		const token = await generateSignature({ sub: newUser._id, username });
 
-		return formateData(token);
+		return formateData({token, username : newUser.username});
 	}
 
 	async getAll<T>(model: Model<T>) {
