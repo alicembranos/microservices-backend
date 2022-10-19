@@ -90,12 +90,6 @@ class UserService {
 		return formateData(userPlaylists);
 	}
 
-	//? Not needed
-	// async updatePlaylist(id: string, doc: Partial<IPlaylist>) {
-	// 	const userPlaylists = await this.repository.updatePlaylist(id, doc);
-	// 	return formateData(userPlaylists);
-	// }
-
 	async removePlaylist(id: string, doc: Partial<IPlaylist>) {
 		const userPlaylists = await this.repository.removePlaylist(id, doc);
 		return formateData(userPlaylists);

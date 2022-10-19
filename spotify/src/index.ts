@@ -17,7 +17,7 @@ const StartServer = async () => {
 
 			serverApp(app);
 			initSwagger(app);
-			
+
 			app.listen(config.app.PORT, () => {
 				config.logger.info(`Spotify is Listening at port ${config.app.PORT}`);
 			});

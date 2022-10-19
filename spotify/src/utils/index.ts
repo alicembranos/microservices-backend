@@ -2,6 +2,7 @@ import { Model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import IPayload from "../interfaces/payload.interface";
+import ISearch from "../interfaces/search.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
 import swaggerUi from "swagger-ui-express";
@@ -60,6 +61,18 @@ const validateSignature = (auth: string): IPayload => {
 	return payload;
 };
 
+const convertParamToObject = <T>(model: Model<T>, data: string): ISearch => {
+	switch (model.modelName) {
+		case "Artist":
+			return { name: data };
+		case "Album":
+		case "Track":
+			return { title: data };
+		default:
+			return {};
+	}
+};
+
 //Message broker
 const createChannel = async (): Promise<Channel> => {
 	try {
@@ -90,6 +103,7 @@ export {
 	validateSignature,
 	createChannel,
 	publishMessage,
+	convertParamToObject,
 	handleError,
 	initSwagger,
 };

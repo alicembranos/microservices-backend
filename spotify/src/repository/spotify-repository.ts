@@ -1,5 +1,6 @@
+import ISearch from "../interfaces/search.interface";
 import { Model } from "mongoose";
-import { selectFieldsToPopulate } from "../utils/index";
+import { convertParamToObject, selectFieldsToPopulate } from "../utils/index";
 
 //Dealing with data base operations
 class Spotify {
@@ -25,6 +26,25 @@ class Spotify {
 			.populate(populateField)
 			.lean()
 			.exec();
+	}
+
+	async getDocumentBySearch<T>(model: Model<T>, data: string) {
+		const populateField = selectFieldsToPopulate(model);
+		const objectData = convertParamToObject(model, data);
+		if (objectData.title) {
+			return await model
+				.find({
+					$or: [{ title: { $regex: objectData.title, $options: "i" } }],
+				})
+				.populate(populateField);
+		}
+		if (objectData.name) {
+			return await model
+				.find({
+					$or: [{ name: { $regex: objectData.name, $options: "i" } }],
+				})
+				.populate(populateField);
+		}
 	}
 
 	async updateDocument<T>(model: Model<T>, id: string, data: Partial<T>) {

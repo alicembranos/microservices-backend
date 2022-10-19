@@ -1,3 +1,4 @@
+import ISearch from "../interfaces/search.interface";
 import { Model } from "mongoose";
 import Spotify from "../repository/spotify-repository";
 import { formateData } from "../utils/index";
@@ -28,6 +29,11 @@ class SpotifyService {
 	async filter<T>(model: Model<T>, data: Partial<T>) {
 		const documentResult = await this.repository.getDocumentByFilter(model, data);
 		return formateData(documentResult);
+	}
+
+	async search<T>(model: Model<T>, data: string) {
+		const documentResult = await this.repository.getDocumentBySearch(model, data);
+		return documentResult;
 	}
 
 	async update<T>(model: Model<T>, id: string, data: Partial<T>) {

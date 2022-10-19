@@ -32,6 +32,10 @@
 		{
 			"name": "Playlists",
 			"description": "API for create/get/update/remove playlists"
+		},
+		{
+			"name": "Search",
+			"description": "API for search albums/artists/tracks"
 		}
 	],
 	"schemes": ["http", "https"],
@@ -779,6 +783,41 @@
 					}
 				}
 			}
+		},
+		"/search/{param}": {
+			"get": {
+				"tags": ["Search"],
+				"summary": "Search albums/artists/tracks",
+				"description": "Search endpoint for filtering albums, artists and tracks with the given param",
+				"parameters": [
+					{
+						"type": "string",
+						"in": "path",
+						"name": "param",
+						"required": true,
+						"description": "Search key word"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/SearchResponse"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
+			}
 		}
 	},
 	"definitions": {
@@ -963,6 +1002,14 @@
 					"type": "string",
 					"example": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49"
 				}
+			}
+		},
+		"SearchResponse": {
+			"title": "SearchResponse",
+			"properties": {
+				"albums": { "type": "array", "example": [] },
+				"artists": { "type": "array", "example": [] },
+				"tracks": { "type": "array", "example": [] }
 			}
 		},
 		"AddTrackToPlaylist": {
