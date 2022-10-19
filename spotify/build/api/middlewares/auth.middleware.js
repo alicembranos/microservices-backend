@@ -16,9 +16,7 @@ exports.default = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         if (!authorization)
             return res.status(401).json({ ok: false, msg: (0, index_1.handleError)("Not authorized") });
         //check if exist in blacklist
-        const exist = yield (0, index_1.existTokenInBlacklist)(authorization);
-        if (!exist)
-            return res.status(401).json({ ok: false, msg: (0, index_1.handleError)("Not authorized") });
+        //comunicate with users server
         const payload = (0, index_1.validateSignature)(authorization);
         req.user = payload;
         next();

@@ -31,7 +31,7 @@ class UserService {
                 throw new Error("Invalid credentials");
             const token = yield (0, index_1.generateSignature)({ sub: user._id, username: user.username });
             const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: user._id, username: user.username });
-            return (0, index_1.formateData)({ token, refreshToken });
+            return (0, index_1.formateData)({ token, refreshToken, username: user.username });
         });
     }
     signUp(data) {
@@ -55,26 +55,36 @@ class UserService {
             });
             const token = yield (0, index_1.generateSignature)({ sub: newUser._id, username });
             const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: newUser._id, username });
-            return (0, index_1.formateData)({ token, refreshToken });
+            return (0, index_1.formateData)({ token, refreshToken, username: newUser.username });
         });
     }
     refreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!token)
                 throw new Error("Unauthorized.");
-            const { sub, username } = yield (0, index_1.validateRefreshSignature)(token);
-            const newToken = yield (0, index_1.generateSignature)({ sub, username });
-            return (0, index_1.formateData)(newToken);
+            try {
+                const { sub, username } = yield (0, index_1.validateRefreshSignature)(token);
+                const newToken = yield (0, index_1.generateSignature)({ sub, username });
+                return (0, index_1.formateData)(newToken);
+            }
+            catch (error) {
+                (0, index_1.handleError)(error);
+            }
         });
     }
     logout(token, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!token)
                 throw new Error("Unauthorized.");
-            const { sub } = yield (0, index_1.validateRefreshSignature)(refreshToken);
-            yield (0, index_1.deleteUserCacheToken)(sub);
-            yield (0, index_1.addTokenToBlacklist)(token);
-            return (0, index_1.formateData)("Sucesfully logout");
+            try {
+                const { sub } = yield (0, index_1.validateRefreshSignature)(refreshToken);
+                yield (0, index_1.deleteUserCacheToken)(sub);
+                yield (0, index_1.addTokenToBlacklist)(token);
+                return (0, index_1.formateData)("Sucesfully logout");
+            }
+            catch (error) {
+                (0, index_1.handleError)(error);
+            }
         });
     }
     getAll(model) {
@@ -113,11 +123,6 @@ class UserService {
             return (0, index_1.formateData)(userPlaylists);
         });
     }
-    //? Not needed
-    // async updatePlaylist(id: string, doc: Partial<IPlaylist>) {
-    // 	const userPlaylists = await this.repository.updatePlaylist(id, doc);
-    // 	return formateData(userPlaylists);
-    // }
     removePlaylist(id, doc) {
         return __awaiter(this, void 0, void 0, function* () {
             const userPlaylists = yield this.repository.removePlaylist(id, doc);

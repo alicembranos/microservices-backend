@@ -6,7 +6,6 @@ import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
 import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../documentation/swagger/swagger.json";
-import redisClient from "./initRedis";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -59,12 +58,6 @@ const validateSignature = (auth: string): IPayload => {
 	return payload;
 };
 
-const existTokenInBlacklist = async (token: string): Promise<boolean> => {
-	const exist = await redisClient.lPos("token-blacklist", token);
-	if (exist?.toString() === "nil") return false;
-	return true;
-};
-
 //Message broker
 const createChannel = async (): Promise<Channel> => {
 	try {
@@ -92,7 +85,6 @@ export {
 	validatePassword,
 	generateSignature,
 	validateSignature,
-	existTokenInBlacklist,
 	createChannel,
 	publishMessage,
 	handleError,

@@ -35,14 +35,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initSwagger = exports.handleError = exports.publishMessage = exports.createChannel = exports.existTokenInBlacklist = exports.validateSignature = exports.generateSignature = exports.validatePassword = exports.formateData = exports.selectFieldsToPopulate = void 0;
+exports.initSwagger = exports.handleError = exports.publishMessage = exports.createChannel = exports.validateSignature = exports.generateSignature = exports.validatePassword = exports.formateData = exports.selectFieldsToPopulate = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
 const amqplib_1 = __importDefault(require("amqplib"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerDocument = __importStar(require("../documentation/swagger/swagger.json"));
-const initRedis_1 = __importDefault(require("./initRedis"));
 const selectFieldsToPopulate = (model) => {
     switch (model.modelName) {
         case "Artist":
@@ -92,13 +91,6 @@ const validateSignature = (auth) => {
     return payload;
 };
 exports.validateSignature = validateSignature;
-const existTokenInBlacklist = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    const exist = yield initRedis_1.default.lPos("token-blacklist", token);
-    if ((exist === null || exist === void 0 ? void 0 : exist.toString()) === "nil")
-        return false;
-    return true;
-});
-exports.existTokenInBlacklist = existTokenInBlacklist;
 //Message broker
 const createChannel = () => __awaiter(void 0, void 0, void 0, function* () {
     try {

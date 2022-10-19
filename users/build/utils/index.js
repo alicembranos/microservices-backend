@@ -69,7 +69,7 @@ const handleError = (error) => {
     if (error instanceof Error) {
         return error.message;
     }
-    return "Unexpected error";
+    throw new Error(error);
 };
 exports.handleError = handleError;
 const generateSalt = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -99,7 +99,6 @@ const generateRefreshSignature = (payload) => __awaiter(void 0, void 0, void 0, 
         jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY_REFRESH, { expiresIn: config_1.default.app.PRIVATE_EXPIRATION_TIME_REFRESH }, (error, token) => __awaiter(void 0, void 0, void 0, function* () {
             if (error)
                 return reject(error);
-            // redisClient.set("token" as RedisCommandArgument, token as RedisCommandArgument);
             initRedis_1.default.set(payload.sub.toString(), token, { EX: 31104000 });
             resolve(token);
         }));
@@ -122,15 +121,13 @@ const validateRefreshSignature = (auth) => __awaiter(void 0, void 0, void 0, fun
             var _a;
             if (error)
                 return reject(error);
-            console.log(payload, "payload####################");
-            // const refreshToken = await redisClient.get("token");
             const refreshToken = yield initRedis_1.default.get((_a = payload === null || payload === void 0 ? void 0 : payload.sub) === null || _a === void 0 ? void 0 : _a.toString());
-            console.log(refreshToken, "refreshToken####################");
             if (!refreshToken)
                 reject("Unauthorized");
             if (refreshToken === auth) {
                 resolve(payload);
             }
+            reject("Unauthorized");
         }));
     });
 });
@@ -145,12 +142,10 @@ const addTokenToBlacklist = (token) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.addTokenToBlacklist = addTokenToBlacklist;
 const existTokenInBlacklist = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    const exist = yield initRedis_1.default.lPos("token-blacklist", token.split(' ')[1]);
-    console.log(exist);
-    console.log(typeof exist === "object" && exist === null);
+    const exist = yield initRedis_1.default.lPos("token-blacklist", token.split(" ")[1]);
     if (typeof exist === "object" && exist === null)
-        return true;
-    return false;
+        return false;
+    return true;
 });
 exports.existTokenInBlacklist = existTokenInBlacklist;
 //Message broker

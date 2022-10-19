@@ -98,14 +98,13 @@ const validateRefreshSignature = async (auth: string): Promise<IPayload> => {
 	return new Promise((resolve, reject) => {
 		jwt.verify(auth, config.app.PRIVATE_KEY_REFRESH as Secret, async (error, payload) => {
 			if (error) return reject(error);
-			console.log(payload, "payload####################");
-			// const refreshToken = await redisClient.get("token");
+
 			const refreshToken = await redisClient.get(payload?.sub?.toString() as RedisCommandArgument);
-			console.log(refreshToken, "refreshToken####################");
 			if (!refreshToken) reject("Unauthorized");
 			if (refreshToken === auth) {
 				resolve(payload as IPayload);
 			}
+			reject("Unauthorized");
 		});
 	});
 };
@@ -120,9 +119,7 @@ const addTokenToBlacklist = async (token: string) => {
 };
 
 const existTokenInBlacklist = async (token: string): Promise<boolean> => {
-	const exist = await redisClient.lPos("token-blacklist", token.split(' ')[1]);
-	console.log(exist, "exist")
-	console.log(typeof exist === "object" && exist === null)
+	const exist = await redisClient.lPos("token-blacklist", token.split(" ")[1]);
 	if (typeof exist === "object" && exist === null) return false;
 	return true;
 };

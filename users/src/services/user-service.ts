@@ -8,6 +8,7 @@ import {
 	validateRefreshSignature,
 	addTokenToBlacklist,
 	deleteUserCacheToken,
+	handleError,
 } from "../utils/index";
 import { Ilogin, ISignUp } from "../interfaces/auth.interface";
 import database from "../models/index";
@@ -39,7 +40,7 @@ class UserService {
 		const token = await generateSignature({ sub: user._id, username: user.username });
 		const refreshToken = await generateRefreshSignature({ sub: user._id, username: user.username });
 
-		return formateData({ token, refreshToken });
+		return formateData({ token, refreshToken, username: user.username });
 	}
 
 	async signUp(data: ISignUp) {
@@ -65,23 +66,30 @@ class UserService {
 		const token = await generateSignature({ sub: newUser._id, username });
 		const refreshToken = await generateRefreshSignature({ sub: newUser._id, username });
 
-		return formateData({ token, refreshToken });
+		return formateData({ token, refreshToken, username: newUser.username });
 	}
 
 	async refreshToken(token: string) {
 		if (!token) throw new Error("Unauthorized.");
-		const { sub, username } = await validateRefreshSignature(token);
-		const newToken = await generateSignature({ sub, username });
-
-		return formateData(newToken);
+		try {
+			const { sub, username } = await validateRefreshSignature(token);
+			const newToken = await generateSignature({ sub, username });
+			return formateData(newToken);
+		} catch (error) {
+			handleError(error);
+		}
 	}
 
 	async logout(token: string, refreshToken: string) {
 		if (!token) throw new Error("Unauthorized.");
-		const { sub } = await validateRefreshSignature(refreshToken);
-		await deleteUserCacheToken(sub);
-		await addTokenToBlacklist(token);
-		return formateData("Sucesfully logout");
+		try {
+			const { sub } = await validateRefreshSignature(refreshToken);
+			await deleteUserCacheToken(sub);
+			await addTokenToBlacklist(token);
+			return formateData("Sucesfully logout");
+		} catch (error) {
+			handleError(error);
+		}
 	}
 
 	async getAll<T>(model: Model<T>) {
@@ -117,12 +125,6 @@ class UserService {
 		const userPlaylists = await this.repository.addPlaylist(id, doc);
 		return formateData(userPlaylists);
 	}
-
-	//? Not needed
-	// async updatePlaylist(id: string, doc: Partial<IPlaylist>) {
-	// 	const userPlaylists = await this.repository.updatePlaylist(id, doc);
-	// 	return formateData(userPlaylists);
-	// }
 
 	async removePlaylist(id: string, doc: Partial<IPlaylist>) {
 		const userPlaylists = await this.repository.removePlaylist(id, doc);
