@@ -36,7 +36,7 @@ const handleError = (error: unknown): string => {
 	if (error instanceof Error) {
 		return error.message;
 	}
-	return "Unexpected error";
+	throw new Error(error as string);
 };
 
 const generateSalt = async (): Promise<string> => {
@@ -74,7 +74,6 @@ const generateRefreshSignature = async (payload: IPayload): Promise<string | und
 			{ expiresIn: config.app.PRIVATE_EXPIRATION_TIME_REFRESH },
 			async (error, token) => {
 				if (error) return reject(error);
-				// redisClient.set("token" as RedisCommandArgument, token as RedisCommandArgument);
 				redisClient.set(
 					payload.sub.toString() as RedisCommandArgument,
 					token as RedisCommandArgument,
@@ -122,10 +121,10 @@ const addTokenToBlacklist = async (token: string) => {
 
 const existTokenInBlacklist = async (token: string): Promise<boolean> => {
 	const exist = await redisClient.lPos("token-blacklist", token.split(' ')[1]);
-	console.log(exist)
+	console.log(exist, "exist")
 	console.log(typeof exist === "object" && exist === null)
-	if (typeof exist === "object" && exist === null) return true;
-	return false;
+	if (typeof exist === "object" && exist === null) return false;
+	return true;
 };
 
 //Message broker

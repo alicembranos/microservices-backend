@@ -9,8 +9,8 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
 		//check if exist in blacklist
 		const exist = await existTokenInBlacklist(authorization);
-
-		if (exist) return res.status(401).json({ ok: false, msg: handleError("Not authorized") });
+		if (exist) return res.status(401).json({ ok: false, msg: handleError("Please sign in.") });
+		
 		console.log('pasa por aqui')
 		const payload = await validateSignature(authorization);
 		req.user = payload;
