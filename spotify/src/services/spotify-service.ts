@@ -11,6 +11,8 @@ class SpotifyService {
 	}
 
 	async create<T>(model: Model<T>, data: T) {
+		console.log(data);
+		// console.log(model)
 		const documentResult = await this.repository.createDocument(model, data);
 		return formateData(documentResult);
 	}
