@@ -64,7 +64,7 @@ class User {
 			}
 			profile[propDocument] = documentLibrary;
 
-			const profileResult = await profile.update();
+			const profileResult = await profile.save();
 
 			return profileResult[propDocument];
 		}
@@ -75,7 +75,7 @@ class User {
 		if (profile) {
 			const newPlaylists = [...profile.playlists, doc];
 			profile.playlists = newPlaylists;
-			const profileResult = await profile.update();
+			const profileResult = await profile.save();
 
 			return profileResult.playlists;
 		}
@@ -90,7 +90,7 @@ class User {
 				(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
 			);
 			profile.playlists = newPlaylists;
-			const profileResult = await profile.update();
+			const profileResult = await profile.save();
 
 			return profileResult;
 		}
