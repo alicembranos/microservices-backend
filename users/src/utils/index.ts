@@ -5,8 +5,6 @@ import IPayload from "../interfaces/payload.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
 import UserService from "../services/user-service";
-import swaggerUi from "swagger-ui-express";
-import * as swaggerDocument from "../documentation/swagger/swagger.json";
 import { RedisCommandArgument } from "@redis/client/dist/lib/commands";
 import redisClient from "./initRedis";
 
@@ -161,9 +159,6 @@ const subscribeMessage = async (channel: Channel, service: UserService) => {
 	);
 };
 
-const initSwagger = (app) => {
-	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-};
 
 export {
 	selectFieldsToPopulate,
@@ -180,6 +175,5 @@ export {
 	handleError,
 	createChannel,
 	publishMessage,
-	subscribeMessage,
-	initSwagger,
+	subscribeMessage
 };

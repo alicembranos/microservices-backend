@@ -1,4 +1,4 @@
-import { handleError, validateSignature} from "../../utils/index";
+import { handleError, validateSignature, existTokenInBlacklist } from "../../utils/index";
 import { Response, NextFunction, Request } from "express";
 
 export default async (req: Request, res: Response, next: NextFunction) => {
@@ -8,7 +8,8 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 			return res.status(401).json({ ok: false, msg: handleError("Not authorized") });
 
 		//check if exist in blacklist
-		//comunicate with users server
+		const exist = await existTokenInBlacklist(authorization);
+		if (exist) return res.status(401).json({ ok: false, msg: handleError("Please sign in.") });
 
 		const payload = validateSignature(authorization);
 		req.user = payload;

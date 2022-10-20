@@ -73,7 +73,7 @@ class User {
                     documentLibrary.push(doc);
                 }
                 profile[propDocument] = documentLibrary;
-                const profileResult = yield profile.save();
+                const profileResult = yield profile.update();
                 return profileResult[propDocument];
             }
         });
@@ -84,7 +84,7 @@ class User {
             if (profile) {
                 const newPlaylists = [...profile.playlists, doc];
                 profile.playlists = newPlaylists;
-                const profileResult = yield profile.save();
+                const profileResult = yield profile.update();
                 return profileResult.playlists;
             }
         });
@@ -110,7 +110,7 @@ class User {
             if (profile) {
                 const newPlaylists = profile.playlists.filter((item) => { var _a; return ((_a = item._id) === null || _a === void 0 ? void 0 : _a.toString()) !== doc._id; });
                 profile.playlists = newPlaylists;
-                const profileResult = yield profile.save();
+                const profileResult = yield profile.update();
                 return profileResult;
             }
         });

@@ -4,8 +4,7 @@ import jwt, { Secret } from "jsonwebtoken";
 import IPayload from "../interfaces/payload.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
-import swaggerUi from "swagger-ui-express";
-import * as swaggerDocument from "../documentation/swagger/swagger.json";
+import redisClient from "./initRedis";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -22,7 +21,6 @@ const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	}
 };
 
-//TODO: Refactor
 const formateData = (data: any) => {
 	if (data?.length === 0 || !data) {
 		throw new Error("Data Not found!");
@@ -34,7 +32,7 @@ const handleError = (error: unknown): string => {
 	if (error instanceof Error) {
 		return error.message;
 	}
-	return "Unexpected error";
+	throw new Error(error as string);
 };
 
 const generateSalt = async (): Promise<string> => {
@@ -58,6 +56,12 @@ const validateSignature = (auth: string): IPayload => {
 	return payload;
 };
 
+const existTokenInBlacklist = async (token: string): Promise<boolean> => {
+	const exist = await redisClient.lPos("token-blacklist", token.split(" ")[1]);
+	if (typeof exist === "object" && exist === null) return false;
+	return true;
+};
+
 //Message broker
 const createChannel = async (): Promise<Channel> => {
 	try {
@@ -75,9 +79,6 @@ const publishMessage = (channel: Channel, service: string, msg: string) => {
 	console.log("Sent: ", msg);
 };
 
-const initSwagger = (app) => {
-	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-};
 
 export {
 	selectFieldsToPopulate,
@@ -85,8 +86,8 @@ export {
 	validatePassword,
 	generateSignature,
 	validateSignature,
+	existTokenInBlacklist,
 	createChannel,
 	publishMessage,
-	handleError,
-	initSwagger
+	handleError
 };
