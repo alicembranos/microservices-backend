@@ -19,7 +19,7 @@ class UserService {
 	async signIn(data: Ilogin) {
 		const { email, password } = data;
 
-		const user = await this.repository.getDocumentByField(database.User, {email});
+		const user = await this.repository.getDocumentByField(database.User, { email });
 
 		if (!user) throw new Error("User does not exist. Please sign up.");
 
@@ -28,7 +28,7 @@ class UserService {
 		if (!validPassword) throw new Error("Invalid credentials");
 
 		const token = await generateSignature({ sub: user._id, username: user.username });
-		return formateData({token, username : user.username});
+		return formateData({ token, username: user.username, id: user._id });
 	}
 
 	async signUp(data: ISignUp) {
@@ -53,7 +53,7 @@ class UserService {
 
 		const token = await generateSignature({ sub: newUser._id, username });
 
-		return formateData({token, username : newUser.username});
+		return formateData({ token, username: newUser.username, id: newUser._id });
 	}
 
 	async getAll<T>(model: Model<T>) {
