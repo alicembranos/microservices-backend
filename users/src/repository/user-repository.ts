@@ -4,7 +4,6 @@ import IArtist from "../interfaces/artist.interface";
 import IPlaylist from "../interfaces/playlist.interface";
 import ITrack from "../interfaces/track.interface";
 import database from "../models/index";
-import { RecursivePartial } from "../types/mongoose/mongoose";
 
 //Dealing with data base operations
 class User {

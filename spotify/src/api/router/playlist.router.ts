@@ -5,7 +5,6 @@ import { Channel } from "amqplib";
 import auth from "../middlewares/auth.middleware";
 import { publishMessage, handleError } from "../../utils";
 import config from "../../config/config";
-import {getSecureCloudinaryUrl} from "../../services/cloudinary-service";
 import cloudinaryAuth from "../../utils/cloudinary/cloudinary";
 
 export default (app, channel: Channel) => {
@@ -49,7 +48,7 @@ export default (app, channel: Channel) => {
 				}); 
 				
 				bodyWithUserId.image = secure_url;
-				console.log("BODY",bodyWithUserId)
+
 				const data = await service.create(database.Playlist, bodyWithUserId);
 
 				const payload = await service.getPlaylistPayload(
@@ -62,7 +61,6 @@ export default (app, channel: Channel) => {
 				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(payload));
 
 				return res.status(200).json({ ok: true, data });
-				// return res.status(200).json({ ok: true, body });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
