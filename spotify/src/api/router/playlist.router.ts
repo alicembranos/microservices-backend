@@ -5,6 +5,8 @@ import { Channel } from "amqplib";
 import auth from "../middlewares/auth.middleware";
 import { publishMessage, handleError } from "../../utils";
 import config from "../../config/config";
+import {getSecureCloudinaryUrl} from "../../services/cloudinary-service";
+import cloudinaryAuth from "../../utils/cloudinary/cloudinary";
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
@@ -37,6 +39,17 @@ export default (app, channel: Channel) => {
 		async ({ user: { sub: userId }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const bodyWithUserId = { ...body, userId };
+
+				//Call to cloudinary service to get the secure URL
+				//Then we have to update this => body.image = result.secure_url				
+				const {secure_url} = await cloudinaryAuth.uploader.upload(`data:image/png;base64,${body.image}`, {
+					upload_preset: 'photos'
+				},function(_error, result) {
+					return result;
+				}); 
+				
+				bodyWithUserId.image = secure_url;
+				console.log("BODY",bodyWithUserId)
 				const data = await service.create(database.Playlist, bodyWithUserId);
 
 				const payload = await service.getPlaylistPayload(
@@ -49,6 +62,7 @@ export default (app, channel: Channel) => {
 				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(payload));
 
 				return res.status(200).json({ ok: true, data });
+				// return res.status(200).json({ ok: true, body });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
@@ -86,6 +100,13 @@ export default (app, channel: Channel) => {
 		auth,
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
+				const {secure_url} = await cloudinaryAuth.uploader.upload(`data:image/png;base64,${body.image}`, {
+					upload_preset: 'photos'
+				},function(_error, result) {
+					return result;
+				}); 				
+				body.image = secure_url;
+				console.log(body)
 				const data = await service.update(database.Playlist, id, body);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
