@@ -459,9 +459,29 @@
 			"properties": {
 				"ok": { "type": "boolean", "example": true },
 				"data": {
-					"type": "string",
-					"description": "Token",
-					"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ5MDJiMThjOGU0YzgxNWYxZjYwNTkiLCJ1c2VybmFtZSI6ImFzc2VtYmxlclBpZmUiLCJpYXQiOjE2NjU3MjkyMDEsImV4cCI6MTY2NjE2MTIwMX0.Ows6QJhgRhvPSvzU5ET2M1VKiHmde2y1o_72idtlJgc"
+					"type": "object",
+					"properties": {
+						"token": {
+							"type": "string",
+							"description": "Token",
+							"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ5MDJiMThjOGU0YzgxNWYxZjYwNTkiLCJ1c2VybmFtZSI6ImFzc2VtYmxlclBpZmUiLCJpYXQiOjE2NjU3MjkyMDEsImV4cCI6MTY2NjE2MTIwMX0.Ows6QJhgRhvPSvzU5ET2M1VKiHmde2y1o_72idtlJgc"
+						},
+						"refreshToken": {
+							"type": "string",
+							"description": "Refresh Token",
+							"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ5MDJiMThjOGU0YzgxNWYxZjYwNTkiLCJ1c2VybmFtZSI6ImFzc2VtYmxlclBpZmUiLCJpYXQiOjE2NjU3MjkyMDEsImV4cCI6MTY2NjE2MTIwMX0.Ows6QJhgRhvPSvzU5ET2M1VKiHmde2y1o_72idtlJgc"
+						},
+						"username": {
+							"type": "string",
+							"description": "Username",
+							"example": "marc89"
+						},
+						"id": {
+							"type": "string",
+							"description": "Id",
+							"example": "28346241986056hjfdh"
+						}
+					}
 				}
 			}
 		},
