@@ -12,8 +12,6 @@ class SpotifyService {
 	}
 
 	async create<T>(model: Model<T>, data: T) {
-		console.log(data);
-		// console.log(model)
 		const documentResult = await this.repository.createDocument(model, data);
 		return formateData(documentResult);
 	}
@@ -66,7 +64,6 @@ class SpotifyService {
 		type: string
 	) {
 		const library = await this.repository.getDocumentById(model, libraryId);
-		console.log(library);
 		if (library) {
 			const payload = {
 				event,
