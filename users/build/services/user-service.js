@@ -67,7 +67,7 @@ var UserService = /** @class */ (function () {
                         return [4 /*yield*/, (0, index_1.generateSignature)({ sub: user._id, username: user.username })];
                     case 3:
                         token = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)({ token: token, username: user.username })];
+                        return [2 /*return*/, (0, index_1.formateData)({ token: token, username: user.username, id: user._id })];
                 }
             });
         });
@@ -104,7 +104,7 @@ var UserService = /** @class */ (function () {
                         return [4 /*yield*/, (0, index_1.generateSignature)({ sub: newUser._id, username: username })];
                     case 5:
                         token = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)({ token: token, username: newUser.username })];
+                        return [2 /*return*/, (0, index_1.formateData)({ token: token, username: newUser.username, id: newUser._id })];
                 }
             });
         });

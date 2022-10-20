@@ -19,7 +19,6 @@ class User {
 		return await model.findById(id);
 	}
 
-	//TODO: Make field generic (not email)
 	async getDocumentByField<T>(model: Model<T>, field: Partial<T>) {
 		return await model.findOne({ ...field });
 	}
@@ -83,12 +82,26 @@ class User {
 
 	async removePlaylist(userId: string, doc: Partial<IPlaylist>) {
 		const profile = await database.User.findById(userId);
-		console.log(profile);
-		console.log(doc);
 		if (profile) {
 			const newPlaylists = profile.playlists.filter(
 				(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
 			);
+			profile.playlists = newPlaylists;
+			const profileResult = await profile.save();
+
+			return profileResult;
+		}
+	}
+
+	async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
+		const profile = await database.User.findById(userId);
+		if (profile) {
+			const newPlaylists = profile.playlists.map((item: Partial<IPlaylist>) => {
+				if (item._id?.toString() === doc._id) {
+					return doc;
+				}
+				return item;
+			});
 			profile.playlists = newPlaylists;
 			const profileResult = await profile.save();
 

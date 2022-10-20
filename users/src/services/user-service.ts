@@ -95,6 +95,11 @@ class UserService {
 		return formateData(userPlaylists);
 	}
 
+	async updatePlaylist(id: string, doc: Partial<IPlaylist>) {
+		const userPlaylists = await this.repository.updatePlaylist(id, doc);
+		return formateData(userPlaylists);
+	}
+
 	async subscribeEvents(payload: any) {
 		console.log("Triggering... User Events");
 
@@ -113,9 +118,9 @@ class UserService {
 			case "ADD_TO_PLAYLIST":
 				this.addPlaylist(userId, playlist);
 				break;
-			// case "UPDATE_PLAYLIST":
-			// 	this.updatePlaylist(userId, playlist);
-			// 	break;
+			case "UPDATE_PLAYLIST":
+				this.updatePlaylist(userId, playlist);
+				break;
 			case "REMOVE_FROM_PLAYLIST":
 				this.removePlaylist(userId, playlist);
 				break;

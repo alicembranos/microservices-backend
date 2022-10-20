@@ -51,7 +51,9 @@ var SpotifyService = /** @class */ (function () {
             var documentResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.createDocument(model, data)];
+                    case 0:
+                        console.log(data);
+                        return [4 /*yield*/, this.repository.createDocument(model, data)];
                     case 1:
                         documentResult = _a.sent();
                         return [2 /*return*/, (0, index_1.formateData)(documentResult)];

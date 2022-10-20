@@ -77,7 +77,6 @@ class SpotifyService {
 		throw new Error(`${type} does not exist.`);
 	}
 
-	//TODO: update playlist
 	async getPlaylistPayload<T>(userId: string, model: Model<T>, id: string, event: string) {
 		const playlist = await this.repository.getDocumentById(model, id);
 

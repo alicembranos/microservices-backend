@@ -59,7 +59,7 @@ var UserSchema = new mongoose_1.Schema({
             description: { type: String },
             image: { type: String },
             trackAudio: { type: String },
-            //! Do I need take every fields?
+            duration: { type: Number },
             album: { _id: { type: String }, title: { type: String } },
         },
     ],
@@ -68,7 +68,6 @@ var UserSchema = new mongoose_1.Schema({
     toJSON: {
         transform: function (_doc, ret) {
             delete ret.password;
-            delete ret.__v;
         },
     },
 });

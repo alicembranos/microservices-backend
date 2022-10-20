@@ -39,8 +39,6 @@ export default (app, channel: Channel) => {
 			try {
 				const bodyWithUserId = { ...body, userId };
 
-				//Call to cloudinary service to get the secure URL
-				//Then we have to update this => body.image = result.secure_url
 				const { secure_url } = await cloudinaryAuth.uploader.upload(
 					`data:image/png;base64,${body.image}`,
 					{
@@ -100,7 +98,11 @@ export default (app, channel: Channel) => {
 	app.patch(
 		"/playlist/:id",
 		auth,
-		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
+		async (
+			{ params: { id }, user: { sub: userId }, body }: Request,
+			res: Response,
+			_next: NextFunction
+		) => {
 			try {
 				if (!body.image.includes("res.cloudinary.com")) {
 					const { secure_url } = await cloudinaryAuth.uploader.upload(
@@ -117,6 +119,16 @@ export default (app, channel: Channel) => {
 				}
 
 				const data = await service.update(database.Playlist, id, body);
+
+				const payload = await service.getPlaylistPayload(
+					userId,
+					database.Playlist,
+					id,
+					"UPDATE_PLAYLIST"
+				);
+
+				publishMessage(channel, config.app.USER_SERVICE, JSON.stringify(payload));
+
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });

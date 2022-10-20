@@ -185,19 +185,6 @@ var User = /** @class */ (function () {
             });
         });
     };
-    //? Not needed?
-    // async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
-    // 	const profile = await database.User.findById(userId);
-    // 	if (profile) {
-    // 		const newPlaylistArrayUpdated = profile.playlists.map((playlist) => {
-    // 			const playlistUpdate = playlist._id === doc._id ? { ...playlist, ...doc } : playlist;
-    // 			return playlistUpdate;
-    // 		});
-    // 		profile.playlists = newPlaylistArrayUpdated;
-    // 		const profileResult = await profile.save();
-    // 		return profileResult.playlists;
-    // 	}
-    // }
     User.prototype.removePlaylist = function (userId, doc) {
         return __awaiter(this, void 0, void 0, function () {
             var profile, newPlaylists, profileResult;
