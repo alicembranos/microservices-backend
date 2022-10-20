@@ -40,13 +40,17 @@ export default (app, channel: Channel) => {
 				const bodyWithUserId = { ...body, userId };
 
 				//Call to cloudinary service to get the secure URL
-				//Then we have to update this => body.image = result.secure_url				
-				const {secure_url} = await cloudinaryAuth.uploader.upload(`data:image/png;base64,${body.image}`, {
-					upload_preset: 'photos'
-				},function(_error, result) {
-					return result;
-				}); 
-				
+				//Then we have to update this => body.image = result.secure_url
+				const { secure_url } = await cloudinaryAuth.uploader.upload(
+					`data:image/png;base64,${body.image}`,
+					{
+						upload_preset: "photos",
+					},
+					function (_error, result) {
+						return result;
+					}
+				);
+
 				bodyWithUserId.image = secure_url;
 
 				const data = await service.create(database.Playlist, bodyWithUserId);
@@ -98,13 +102,20 @@ export default (app, channel: Channel) => {
 		auth,
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
-				const {secure_url} = await cloudinaryAuth.uploader.upload(`data:image/png;base64,${body.image}`, {
-					upload_preset: 'photos'
-				},function(_error, result) {
-					return result;
-				}); 				
-				body.image = secure_url;
-				console.log(body)
+				if (!body.image.includes("res.cloudinary.com")) {
+					const { secure_url } = await cloudinaryAuth.uploader.upload(
+						`data:image/png;base64,${body.image}`,
+						{
+							upload_preset: "photos",
+						},
+						function (_error, result) {
+							if (_error) throw new Error("Cloudinary Error");
+							return result;
+						}
+					);
+					body.image = secure_url;
+				}
+
 				const data = await service.update(database.Playlist, id, body);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
