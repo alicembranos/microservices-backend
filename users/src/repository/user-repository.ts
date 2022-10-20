@@ -65,7 +65,7 @@ class User {
 			}
 			profile[propDocument] = documentLibrary;
 
-			const profileResult = await profile.save();
+			const profileResult = await profile.update();
 
 			return profileResult[propDocument];
 		}
@@ -76,26 +76,11 @@ class User {
 		if (profile) {
 			const newPlaylists = [...profile.playlists, doc];
 			profile.playlists = newPlaylists;
-			const profileResult = await profile.save();
+			const profileResult = await profile.update();
 
 			return profileResult.playlists;
 		}
 	}
-
-	//? Not needed?
-	// async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
-	// 	const profile = await database.User.findById(userId);
-	// 	if (profile) {
-	// 		const newPlaylistArrayUpdated = profile.playlists.map((playlist) => {
-	// 			const playlistUpdate = playlist._id === doc._id ? { ...playlist, ...doc } : playlist;
-	// 			return playlistUpdate;
-	// 		});
-	// 		profile.playlists = newPlaylistArrayUpdated;
-	// 		const profileResult = await profile.save();
-
-	// 		return profileResult.playlists;
-	// 	}
-	// }
 
 	async removePlaylist(userId: string, doc: Partial<IPlaylist>) {
 		const profile = await database.User.findById(userId);
@@ -106,7 +91,7 @@ class User {
 				(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
 			);
 			profile.playlists = newPlaylists;
-			const profileResult = await profile.save();
+			const profileResult = await profile.update();
 
 			return profileResult;
 		}
