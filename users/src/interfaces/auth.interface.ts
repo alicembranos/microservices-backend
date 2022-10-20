@@ -6,6 +6,7 @@ interface Ilogin {
 interface ISignUp extends Ilogin {
 	username: string;
 	image: string;
+	genres: string[];
 }
 
 export { Ilogin, ISignUp };

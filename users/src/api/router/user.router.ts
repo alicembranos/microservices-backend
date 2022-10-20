@@ -13,8 +13,8 @@ export default (app, channel: Channel) => {
 
 	app.post("/signup", async (req: Request, res: Response, _next: NextFunction) => {
 		try {
-			const { email, password, username, image } = req.body;
-			const data = await service.signUp({ email, password, username, image });
+			const { email, password, username, image, genres } = req.body;
+			const data = await service.signUp({ email, password, username, image, genres });
 			return res.status(200).json({ ok: true, data });
 		} catch (error) {
 			res.status(401).json({ ok: false, msg: handleError(error) });

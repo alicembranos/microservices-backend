@@ -44,7 +44,7 @@ class UserService {
 	}
 
 	async signUp(data: ISignUp) {
-		const { email, password, username } = data;
+		const { email, password, username, genres } = data;
 
 		if (!email || !password || !username) throw new Error("Invalid credentials");
 
@@ -61,6 +61,7 @@ class UserService {
 			email,
 			password: hashPassword,
 			username,
+			genres,
 		});
 
 		const token = await generateSignature({ sub: newUser._id, username });
