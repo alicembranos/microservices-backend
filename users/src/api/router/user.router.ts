@@ -4,6 +4,7 @@ import { handleError, subscribeMessage } from "../../utils/index";
 import { NextFunction, Response, Request } from "express";
 import auth from "../middlewares/auth.middleware";
 import { Channel } from "amqplib";
+import { resetLevel } from "loglevel";
 
 export default (app, channel: Channel) => {
 	const service = new UserService();
@@ -28,6 +29,14 @@ export default (app, channel: Channel) => {
 			return res.status(200).json({ ok: true, data });
 		} catch (error) {
 			res.status(401).json({ ok: false, msg: handleError(error) });
+		}
+	});
+
+	app.get("/auth", auth, async (_req, res: Response) => {
+		try {
+			return res.status(200).json({ok: true, data: ''})
+		} catch(error) {
+			res.status(401).json({ok: false, msg: handleError(error)})
 		}
 	});
 

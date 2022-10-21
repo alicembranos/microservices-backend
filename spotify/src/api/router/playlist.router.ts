@@ -61,6 +61,7 @@ export default (app, channel: Channel) => {
 		auth,
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
+				
 				const data = await service.updateArray(database.Playlist, id, body);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {

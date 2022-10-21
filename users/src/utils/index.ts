@@ -57,7 +57,9 @@ const generateSignature = (payload: IPayload): Promise<string | undefined> => {
 			config.app.PRIVATE_KEY as Secret,
 			{ expiresIn: config.app.PRIVATE_EXPIRATION_TIME },
 			(error, token) => {
-				if (error) return reject(error);
+				if (error) {
+					console.log(error)
+					return reject(error)};
 				resolve(token);
 			}
 		);

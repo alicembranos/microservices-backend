@@ -28,16 +28,20 @@ class UserService {
 
 	async signIn(data: Ilogin) {
 		const { email, password } = data;
-
+		
 		const user = await this.repository.getDocumentByField(database.User, { email });
 
 		if (!user) throw new Error("User does not exist. Please sign up.");
 
+		console.log("ValidatePassword " , password , '-----' , user.password)
 		const validPassword = await validatePassword(password, user.password);
+		console.log(validPassword)
 
 		if (!validPassword) throw new Error("Invalid credentials");
+		console.log("aqui llego")
 
 		const token = await generateSignature({ sub: user._id, username: user.username });
+		
 		const refreshToken = await generateRefreshSignature({ sub: user._id, username: user.username });
 
 		return formateData({ token, refreshToken, username: user.username });
@@ -57,6 +61,7 @@ class UserService {
 		if (usernameExist) throw new Error("Username is already used. Please select a new one.");
 
 		const hashPassword = await generatePassword(password);
+		console.log('Generated Passord ::::::/', hashPassword)
 		const newUser = await this.repository.createDocument(database.User, {
 			email,
 			password: hashPassword,

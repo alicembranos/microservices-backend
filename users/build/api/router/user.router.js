@@ -40,6 +40,14 @@ exports.default = (app, channel) => {
             res.status(401).json({ ok: false, msg: (0, index_2.handleError)(error) });
         }
     }));
+    app.get("/auth", auth_middleware_1.default, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            return res.status(200).json({ ok: true, data: '' });
+        }
+        catch (error) {
+            res.status(401).json({ ok: false, msg: (0, index_2.handleError)(error) });
+        }
+    }));
     app.post("/token", (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { refreshToken } = req.body;

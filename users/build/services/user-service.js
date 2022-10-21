@@ -26,9 +26,12 @@ class UserService {
             const user = yield this.repository.getDocumentByField(index_2.default.User, { email });
             if (!user)
                 throw new Error("User does not exist. Please sign up.");
+            console.log("ValidatePassword ", password, '-----', user.password);
             const validPassword = yield (0, index_1.validatePassword)(password, user.password);
+            console.log(validPassword);
             if (!validPassword)
                 throw new Error("Invalid credentials");
+            console.log("aqui llego");
             const token = yield (0, index_1.generateSignature)({ sub: user._id, username: user.username });
             const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: user._id, username: user.username });
             return (0, index_1.formateData)({ token, refreshToken, username: user.username });
@@ -48,6 +51,7 @@ class UserService {
             if (usernameExist)
                 throw new Error("Username is already used. Please select a new one.");
             const hashPassword = yield (0, index_1.generatePassword)(password);
+            console.log('Generated Passord ::::::/', hashPassword);
             const newUser = yield this.repository.createDocument(index_2.default.User, {
                 email,
                 password: hashPassword,

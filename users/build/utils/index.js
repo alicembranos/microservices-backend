@@ -62,8 +62,11 @@ exports.validatePassword = validatePassword;
 const generateSignature = (payload) => {
     return new Promise((resolve, reject) => {
         jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY, { expiresIn: config_1.default.app.PRIVATE_EXPIRATION_TIME }, (error, token) => {
-            if (error)
+            if (error) {
+                console.log(error);
                 return reject(error);
+            }
+            ;
             resolve(token);
         });
     });
