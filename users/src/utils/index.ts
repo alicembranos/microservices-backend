@@ -23,11 +23,12 @@ const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	}
 };
 
-const formateData = <T>(data: T): T => {
+const formateData = <T>(data: T): T | void => {
 	if (data) {
 		return data;
 	}
-	throw new Error("Data Not found!");
+	// throw new Error("Data Not found!");
+	console.log("Error: Data not found!");
 };
 
 const handleError = (error: unknown): string => {
@@ -112,5 +113,5 @@ export {
 	createChannel,
 	publishMessage,
 	subscribeMessage,
-	initSwagger
+	initSwagger,
 };

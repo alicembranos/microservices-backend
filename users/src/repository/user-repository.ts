@@ -38,35 +38,61 @@ class User {
 		doc: Partial<IAlbum> | Partial<IArtist> | Partial<ITrack>,
 		propDocument: string
 	) {
-		//TODO: fix type propDocumets(quick shortcut, typed as string)
-		const profile = (await database.User.findById(userId)) as Document;
 
-		if (profile) {
-			let documentLibrary = profile[propDocument];
-			type ArrayObject = typeof documentLibrary;
-			type Unpacked<T> = T extends (infer U)[] ? U : T;
-			if (documentLibrary.length > 0) {
-				let exist = false;
-				documentLibrary.map((item: Unpacked<ArrayObject>) => {
-					if (item._id === doc._id) {
-						const index = documentLibrary.indexOf(item);
-						documentLibrary.splice(index, 1);
-						exist = true;
-					}
-				});
+		const inLibrary = await database.User.findById(userId, {
+			[propDocument]: { $elemMatch: { _id: doc._id } },
+		});
+		console.log(inLibrary, "profileeeeeeeeeeeeeeeeeeeeee");
 
-				if (!exist) {
-					documentLibrary.push(doc);
-				}
-			} else {
-				documentLibrary.push(doc);
-			}
-			profile[propDocument] = documentLibrary;
-
-			const profileResult = await profile.save();
-
-			return profileResult[propDocument];
+		if (!inLibrary) {
+			return undefined;
 		}
+
+		if (inLibrary) {
+			if (inLibrary[propDocument].length > 0) {
+				return await database.User.findByIdAndUpdate(
+					userId,
+					{ $pull: { [propDocument]: { _id: doc._id } } },
+					{ new: true, multi: false }
+				);
+			}
+			if (inLibrary[propDocument].length === 0) {
+				return await database.User.findByIdAndUpdate(
+					userId,
+					{ $push: { [propDocument]: doc } },
+					{ new: true }
+				);
+			}
+		}
+		// //TODO: fix type propDocumets(quick shortcut, typed as string)
+		// const profile = (await database.User.findById(userId)) as Document;
+
+		// if (profile) {
+		// 	let documentLibrary = profile[propDocument];
+		// 	type ArrayObject = typeof documentLibrary;
+		// 	type Unpacked<T> = T extends (infer U)[] ? U : T;
+		// 	if (documentLibrary.length > 0) {
+		// 		let exist = false;
+		// 		documentLibrary.map((item: Unpacked<ArrayObject>) => {
+		// 			if (item._id === doc._id) {
+		// 				const index = documentLibrary.indexOf(item);
+		// 				documentLibrary.splice(index, 1);
+		// 				exist = true;
+		// 			}
+		// 		});
+
+		// 		if (!exist) {
+		// 			documentLibrary.push(doc);
+		// 		}
+		// 	} else {
+		// 		documentLibrary.push(doc);
+		// 	}
+		// 	profile[propDocument] = documentLibrary;
+
+		// 	const profileResult = await profile.save();
+
+		// 	return profileResult[propDocument];
+		// }
 	}
 
 	async addPlaylist(userId: string, doc: Partial<IPlaylist>) {
@@ -75,9 +101,8 @@ class User {
 			{ $push: { playlists: doc } },
 			{ new: true }
 		);
-		if (profile) {
-			return profile.playlists;
-		}
+		if (profile) return profile.playlists;
+
 		// const profile = await database.User.findById(userId);
 		// if (profile) {
 		// 	const newPlaylists = [...profile.playlists, doc];
@@ -95,9 +120,8 @@ class User {
 			{ $pull: { playlists: { _id: objectId } } },
 			{ new: true, multi: false }
 		);
-		if (profile) {
-			return profile.playlists;
-		}
+		if (profile) return profile.playlists;
+
 		// const profile = await database.User.findById(userId);
 		// if (profile) {
 		// 	const newPlaylists = profile.playlists.filter(
@@ -116,9 +140,7 @@ class User {
 			{ $set: { [`playlists.$[item]`]: doc } },
 			{ arrayFilters: [{ "item._id": objectId }] }
 		);
-		if (profile) {
-			return profile.playlists;
-		}
+		if (profile) return profile.playlists;
 		// const profile = await database.User.findById(userId);
 		// if (profile) {
 		// 	const newPlaylists = profile.playlists.map((item: Partial<IPlaylist>) => {
