@@ -70,43 +70,68 @@ class User {
 	}
 
 	async addPlaylist(userId: string, doc: Partial<IPlaylist>) {
-		const profile = await database.User.findById(userId);
+		const profile = await database.User.findByIdAndUpdate(
+			userId,
+			{ $push: { playlists: doc } },
+			{ new: true }
+		);
 		if (profile) {
-			const newPlaylists = [...profile.playlists, doc];
-			profile.playlists = newPlaylists;
-			const profileResult = await profile.save();
-
-			return profileResult.playlists;
+			return profile.playlists;
 		}
+		// const profile = await database.User.findById(userId);
+		// if (profile) {
+		// 	const newPlaylists = [...profile.playlists, doc];
+		// 	profile.playlists = newPlaylists;
+		// 	const profileResult = await profile.save();
+
+		// 	return profileResult.playlists;
+		// }
 	}
 
 	async removePlaylist(userId: string, doc: Partial<IPlaylist>) {
-		const profile = await database.User.findById(userId);
+		const objectId = new Types.ObjectId(doc._id);
+		const profile = await database.User.findByIdAndUpdate(
+			userId,
+			{ $pull: { playlists: { _id: objectId } } },
+			{ new: true, multi: false }
+		);
 		if (profile) {
-			const newPlaylists = profile.playlists.filter(
-				(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
-			);
-			profile.playlists = newPlaylists;
-			const profileResult = await profile.save();
-
-			return profileResult;
+			return profile.playlists;
 		}
+		// const profile = await database.User.findById(userId);
+		// if (profile) {
+		// 	const newPlaylists = profile.playlists.filter(
+		// 		(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
+		// 	);
+		// 	profile.playlists = newPlaylists;
+		// 	const profileResult = await profile.save();
+		// 	return profileResult;
+		// }
 	}
 
 	async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
-		const profile = await database.User.findById(userId);
+		const objectId = new Types.ObjectId(doc._id);
+		const profile = await database.User.findByIdAndUpdate(
+			userId,
+			{ $set: { [`playlists.$[item]`]: doc } },
+			{ arrayFilters: [{ "item._id": objectId }] }
+		);
 		if (profile) {
-			const newPlaylists = profile.playlists.map((item: Partial<IPlaylist>) => {
-				if (item._id?.toString() === doc._id) {
-					return doc;
-				}
-				return item;
-			});
-			profile.playlists = newPlaylists;
-			const profileResult = await profile.save();
-
-			return profileResult;
+			return profile.playlists;
 		}
+		// const profile = await database.User.findById(userId);
+		// if (profile) {
+		// 	const newPlaylists = profile.playlists.map((item: Partial<IPlaylist>) => {
+		// 		if (item._id?.toString() === doc._id) {
+		// 			return doc;
+		// 		}
+		// 		return item;
+		// 	});
+		// 	profile.playlists = newPlaylists;
+		// 	const profileResult = await profile.save();
+
+		// 	return profileResult;
+		// }
 	}
 }
 
