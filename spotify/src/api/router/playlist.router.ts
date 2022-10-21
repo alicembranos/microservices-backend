@@ -41,16 +41,6 @@ export default (app, channel: Channel) => {
 
 				if (!body.image.includes("res.cloudinary.com")) {
 					const secureUrlCloudinary = await uploadToCloudinary(body.image);
-					// const { secure_url } = await cloudinaryAuth.uploader.upload(
-					// 	`data:image/png;base64,${body.image}`,
-					// 	{
-					// 		upload_preset: "photos",
-					// 	},
-					// 	function (_error, result) {
-					// 		if (_error) throw new Error("Cloudinary Error");
-					// 		return result;
-					// 	}
-					// );
 					body.image = secureUrlCloudinary;
 				}
 
@@ -109,16 +99,6 @@ export default (app, channel: Channel) => {
 			try {
 				if (!body.image.includes("res.cloudinary.com")) {
 					const secureUrlCloudinary = await uploadToCloudinary(body.image);
-					// const { secure_url } = await cloudinaryAuth.uploader.upload(
-					// 	`data:image/png;base64,${body.image}`,
-					// 	{
-					// 		upload_preset: "photos",
-					// 	},
-					// 	function (_error, result) {
-					// 		if (_error) throw new Error("Cloudinary Error");
-					// 		return result;
-					// 	}
-					// );
 					body.image = secureUrlCloudinary;
 				}
 
