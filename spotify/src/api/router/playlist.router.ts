@@ -35,12 +35,12 @@ export default (app, channel: Channel) => {
 	app.post(
 		"/playlist",
 		auth,
-		async ({ user: { sub: userId }, body }: Request, res: Response, next: NextFunction) => {
+		async ({ user: { sub: userId }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
 				const bodyWithUserId = { ...body, userId };
 
 				if (!body.image.includes("res.cloudinary.com")) {
-					const secureUrlCloudinary = await uploadToCloudinary(body.image, next);
+					const secureUrlCloudinary = await uploadToCloudinary(body.image);
 					// const { secure_url } = await cloudinaryAuth.uploader.upload(
 					// 	`data:image/png;base64,${body.image}`,
 					// 	{
@@ -104,11 +104,11 @@ export default (app, channel: Channel) => {
 		async (
 			{ params: { id }, user: { sub: userId }, body }: Request,
 			res: Response,
-			next: NextFunction
+			_next: NextFunction
 		) => {
 			try {
 				if (!body.image.includes("res.cloudinary.com")) {
-					const secureUrlCloudinary = await uploadToCloudinary(body.image, next);
+					const secureUrlCloudinary = await uploadToCloudinary(body.image);
 					// const { secure_url } = await cloudinaryAuth.uploader.upload(
 					// 	`data:image/png;base64,${body.image}`,
 					// 	{

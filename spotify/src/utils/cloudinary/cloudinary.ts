@@ -8,7 +8,7 @@ cloudinaryAuth.config({
 	api_secret: "zJh5VEmeEJEtdsLeuaL5_BrMvj4",
 });
 
-const uploadToCloudinary = async (image: string, next: NextFunction): Promise<string> => {
+const uploadToCloudinary = async (image: string): Promise<string> => {
 	const { secure_url } = await cloudinaryAuth.uploader.upload(
 		`data:image/png;base64,${image}`,
 		{
