@@ -5,7 +5,7 @@ import { Channel } from "amqplib";
 import auth from "../middlewares/auth.middleware";
 import { publishMessage, handleError } from "../../utils";
 import config from "../../config/config";
-import cloudinaryAuth from "../../utils/cloudinary/cloudinary";
+import uploadToCloudinary from "../../utils/cloudinary/cloudinary";
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
@@ -35,22 +35,23 @@ export default (app, channel: Channel) => {
 	app.post(
 		"/playlist",
 		auth,
-		async ({ user: { sub: userId }, body }: Request, res: Response, _next: NextFunction) => {
+		async ({ user: { sub: userId }, body }: Request, res: Response, next: NextFunction) => {
 			try {
 				const bodyWithUserId = { ...body, userId };
 
 				if (!body.image.includes("res.cloudinary.com")) {
-					const { secure_url } = await cloudinaryAuth.uploader.upload(
-						`data:image/png;base64,${body.image}`,
-						{
-							upload_preset: "photos",
-						},
-						function (_error, result) {
-							if (_error) throw new Error("Cloudinary Error");
-							return result;
-						}
-					);
-					body.image = secure_url;
+					const secureUrlCloudinary = uploadToCloudinary(body.image, next);
+					// const { secure_url } = await cloudinaryAuth.uploader.upload(
+					// 	`data:image/png;base64,${body.image}`,
+					// 	{
+					// 		upload_preset: "photos",
+					// 	},
+					// 	function (_error, result) {
+					// 		if (_error) throw new Error("Cloudinary Error");
+					// 		return result;
+					// 	}
+					// );
+					body.image = secureUrlCloudinary;
 				}
 
 				const data = await service.create(database.Playlist, bodyWithUserId);
@@ -103,21 +104,22 @@ export default (app, channel: Channel) => {
 		async (
 			{ params: { id }, user: { sub: userId }, body }: Request,
 			res: Response,
-			_next: NextFunction
+			next: NextFunction
 		) => {
 			try {
 				if (!body.image.includes("res.cloudinary.com")) {
-					const { secure_url } = await cloudinaryAuth.uploader.upload(
-						`data:image/png;base64,${body.image}`,
-						{
-							upload_preset: "photos",
-						},
-						function (_error, result) {
-							if (_error) throw new Error("Cloudinary Error");
-							return result;
-						}
-					);
-					body.image = secure_url;
+					const secureUrlCloudinary = uploadToCloudinary(body.image, next);
+					// const { secure_url } = await cloudinaryAuth.uploader.upload(
+					// 	`data:image/png;base64,${body.image}`,
+					// 	{
+					// 		upload_preset: "photos",
+					// 	},
+					// 	function (_error, result) {
+					// 		if (_error) throw new Error("Cloudinary Error");
+					// 		return result;
+					// 	}
+					// );
+					body.image = secureUrlCloudinary;
 				}
 
 				const data = await service.update(database.Playlist, id, body);
