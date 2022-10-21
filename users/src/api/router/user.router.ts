@@ -31,6 +31,14 @@ export default (app, channel: Channel) => {
 		}
 	});
 
+	app.get("/auth", auth, async (_req, res: Response) => {
+		try {
+			return res.status(200).json({ok: true, data: ''})
+		} catch(error) {
+			res.status(401).json({ok: false, msg: handleError(error)})
+		}
+	});
+
 	app.get("/user", auth, async (_req: Request, res: Response, _next: NextFunction) => {
 		try {
 			const data = await service.getAll(database.User);
