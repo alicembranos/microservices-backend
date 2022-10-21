@@ -40,7 +40,7 @@ export default (app, channel: Channel) => {
 				const bodyWithUserId = { ...body, userId };
 
 				if (!body.image.includes("res.cloudinary.com")) {
-					const secureUrlCloudinary = uploadToCloudinary(body.image, next);
+					const secureUrlCloudinary = await uploadToCloudinary(body.image, next);
 					// const { secure_url } = await cloudinaryAuth.uploader.upload(
 					// 	`data:image/png;base64,${body.image}`,
 					// 	{
@@ -108,7 +108,7 @@ export default (app, channel: Channel) => {
 		) => {
 			try {
 				if (!body.image.includes("res.cloudinary.com")) {
-					const secureUrlCloudinary = uploadToCloudinary(body.image, next);
+					const secureUrlCloudinary = await uploadToCloudinary(body.image, next);
 					// const { secure_url } = await cloudinaryAuth.uploader.upload(
 					// 	`data:image/png;base64,${body.image}`,
 					// 	{
