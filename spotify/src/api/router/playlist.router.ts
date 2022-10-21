@@ -41,7 +41,7 @@ export default (app, channel: Channel) => {
 
 				if (!body.image.includes("res.cloudinary.com")) {
 					const secureUrlCloudinary = await uploadToCloudinary(body.image);
-					body.image = secureUrlCloudinary;
+					bodyWithUserId.image = secureUrlCloudinary;
 				}
 
 				const data = await service.create(database.Playlist, bodyWithUserId);
