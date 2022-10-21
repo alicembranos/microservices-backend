@@ -39,17 +39,19 @@ export default (app, channel: Channel) => {
 			try {
 				const bodyWithUserId = { ...body, userId };
 
-				const { secure_url } = await cloudinaryAuth.uploader.upload(
-					`data:image/png;base64,${body.image}`,
-					{
-						upload_preset: "photos",
-					},
-					function (_error, result) {
-						return result;
-					}
-				);
-
-				bodyWithUserId.image = secure_url;
+				if (!body.image.includes("res.cloudinary.com")) {
+					const { secure_url } = await cloudinaryAuth.uploader.upload(
+						`data:image/png;base64,${body.image}`,
+						{
+							upload_preset: "photos",
+						},
+						function (_error, result) {
+							if (_error) throw new Error("Cloudinary Error");
+							return result;
+						}
+					);
+					body.image = secure_url;
+				}
 
 				const data = await service.create(database.Playlist, bodyWithUserId);
 
