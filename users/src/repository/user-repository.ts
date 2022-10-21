@@ -32,17 +32,15 @@ class User {
 		return await model.findByIdAndDelete(id);
 	}
 
-	//TODO: refactor typescript arguments function
 	async addDocumentToFavorites(
 		userId: string,
 		doc: Partial<IAlbum> | Partial<IArtist> | Partial<ITrack>,
 		propDocument: string
 	) {
-
 		const inLibrary = await database.User.findById(userId, {
 			[propDocument]: { $elemMatch: { _id: doc._id } },
 		});
-		console.log(inLibrary, "profileeeeeeeeeeeeeeeeeeeeee");
+		console.log(inLibrary, "******************");
 
 		if (!inLibrary) {
 			return undefined;
@@ -64,35 +62,6 @@ class User {
 				);
 			}
 		}
-		// //TODO: fix type propDocumets(quick shortcut, typed as string)
-		// const profile = (await database.User.findById(userId)) as Document;
-
-		// if (profile) {
-		// 	let documentLibrary = profile[propDocument];
-		// 	type ArrayObject = typeof documentLibrary;
-		// 	type Unpacked<T> = T extends (infer U)[] ? U : T;
-		// 	if (documentLibrary.length > 0) {
-		// 		let exist = false;
-		// 		documentLibrary.map((item: Unpacked<ArrayObject>) => {
-		// 			if (item._id === doc._id) {
-		// 				const index = documentLibrary.indexOf(item);
-		// 				documentLibrary.splice(index, 1);
-		// 				exist = true;
-		// 			}
-		// 		});
-
-		// 		if (!exist) {
-		// 			documentLibrary.push(doc);
-		// 		}
-		// 	} else {
-		// 		documentLibrary.push(doc);
-		// 	}
-		// 	profile[propDocument] = documentLibrary;
-
-		// 	const profileResult = await profile.save();
-
-		// 	return profileResult[propDocument];
-		// }
 	}
 
 	async addPlaylist(userId: string, doc: Partial<IPlaylist>) {
@@ -102,15 +71,6 @@ class User {
 			{ new: true }
 		);
 		if (profile) return profile.playlists;
-
-		// const profile = await database.User.findById(userId);
-		// if (profile) {
-		// 	const newPlaylists = [...profile.playlists, doc];
-		// 	profile.playlists = newPlaylists;
-		// 	const profileResult = await profile.save();
-
-		// 	return profileResult.playlists;
-		// }
 	}
 
 	async removePlaylist(userId: string, doc: Partial<IPlaylist>) {
@@ -121,16 +81,6 @@ class User {
 			{ new: true, multi: false }
 		);
 		if (profile) return profile.playlists;
-
-		// const profile = await database.User.findById(userId);
-		// if (profile) {
-		// 	const newPlaylists = profile.playlists.filter(
-		// 		(item: Partial<IPlaylist>) => item._id?.toString() !== doc._id
-		// 	);
-		// 	profile.playlists = newPlaylists;
-		// 	const profileResult = await profile.save();
-		// 	return profileResult;
-		// }
 	}
 
 	async updatePlaylist(userId: string, doc: Partial<IPlaylist>) {
@@ -141,19 +91,6 @@ class User {
 			{ arrayFilters: [{ "item._id": objectId }] }
 		);
 		if (profile) return profile.playlists;
-		// const profile = await database.User.findById(userId);
-		// if (profile) {
-		// 	const newPlaylists = profile.playlists.map((item: Partial<IPlaylist>) => {
-		// 		if (item._id?.toString() === doc._id) {
-		// 			return doc;
-		// 		}
-		// 		return item;
-		// 	});
-		// 	profile.playlists = newPlaylists;
-		// 	const profileResult = await profile.save();
-
-		// 	return profileResult;
-		// }
 	}
 }
 
