@@ -15,7 +15,7 @@ const uploadToCloudinary = async (image: string, next: NextFunction): Promise<st
 			upload_preset: "photos",
 		},
 		function (error, result) {
-			if (error) next(error);
+			if (error) return "https://res.cloudinary.com/juancarlos/image/upload/v1666288177/x7uevsp4fltimqeyeanv.png";
 			return result;
 		}
 	);
