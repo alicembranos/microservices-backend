@@ -22,8 +22,8 @@ exports.default = (app, channel) => {
     (0, index_2.subscribeMessage)(channel, service);
     app.post("/signup", (req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { email, password, username, image } = req.body;
-            const data = yield service.signUp({ email, password, username, image });
+            const { email, password, username, image, genres } = req.body;
+            const data = yield service.signUp({ email, password, username, image, genres });
             return res.status(200).json({ ok: true, data });
         }
         catch (error) {

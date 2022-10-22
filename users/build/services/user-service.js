@@ -39,7 +39,7 @@ class UserService {
     }
     signUp(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, password, username } = data;
+            const { email, password, username, genres } = data;
             if (!email || !password || !username)
                 throw new Error("Invalid credentials");
             //Check if user exist by email
@@ -56,6 +56,7 @@ class UserService {
                 email,
                 password: hashPassword,
                 username,
+                genres,
             });
             const token = yield (0, index_1.generateSignature)({ sub: newUser._id, username });
             const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: newUser._id, username });
