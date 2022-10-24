@@ -24,7 +24,11 @@ var TrackSchema = new mongoose_1.Schema({
     album: {
         type: mongoose_1.Schema.Types.String,
         ref: "Album",
-        default: undefined
+        default: undefined,
+    },
+    image: {
+        type: mongoose_1.Schema.Types.String,
+        default: "https://flyclipart.com/thumb2/audio-dj-music-player-record-sound-vinyl-icon-224584.png"
     },
 }, { timestamps: true });
 var TrackModel = (0, mongoose_1.model)("Track", TrackSchema);
