@@ -48,13 +48,13 @@ exports.default = (function (app, channel) {
     // To listen
     (0, index_2.subscribeMessage)(channel, service);
     app.post("/signup", function (req, res, _next) { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, email, password, username, image, data, error_1;
+        var _a, email, password, username, image, genres, data, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 2, , 3]);
-                    _a = req.body, email = _a.email, password = _a.password, username = _a.username, image = _a.image;
-                    return [4 /*yield*/, service.signUp({ email: email, password: password, username: username, image: image })];
+                    _a = req.body, email = _a.email, password = _a.password, username = _a.username, image = _a.image, genres = _a.genres;
+                    return [4 /*yield*/, service.signUp({ email: email, password: password, username: username, image: image, genres: genres })];
                 case 1:
                     data = _b.sent();
                     return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
@@ -83,6 +83,17 @@ exports.default = (function (app, channel) {
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
+        });
+    }); });
+    app.get("/auth", auth_middleware_1.default, function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            try {
+                return [2 /*return*/, res.status(200).json({ ok: true, data: '' })];
+            }
+            catch (error) {
+                res.status(401).json({ ok: false, msg: (0, index_2.handleError)(error) });
+            }
+            return [2 /*return*/];
         });
     }); });
     app.get("/user", auth_middleware_1.default, function (_req, res, _next) { return __awaiter(void 0, void 0, void 0, function () {

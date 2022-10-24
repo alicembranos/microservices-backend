@@ -88,7 +88,8 @@ var formateData = function (data) {
     if (data) {
         return data;
     }
-    throw new Error("Data Not found!");
+    // throw new Error("Data Not found!");
+    console.log("Error: Data not found!");
 };
 exports.formateData = formateData;
 var handleError = function (error) {

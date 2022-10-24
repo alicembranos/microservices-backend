@@ -74,11 +74,11 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.signUp = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var email, password, username, user, usernameExist, hashPassword, newUser, token;
+            var email, password, username, genres, user, usernameExist, hashPassword, newUser, token;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        email = data.email, password = data.password, username = data.username;
+                        email = data.email, password = data.password, username = data.username, genres = data.genres;
                         if (!email || !password || !username)
                             throw new Error("Invalid credentials");
                         return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { email: email })];
@@ -98,6 +98,7 @@ var UserService = /** @class */ (function () {
                                 email: email,
                                 password: hashPassword,
                                 username: username,
+                                genres: genres,
                             })];
                     case 4:
                         newUser = _a.sent();
@@ -200,34 +201,59 @@ var UserService = /** @class */ (function () {
             });
         });
     };
+    UserService.prototype.updatePlaylist = function (id, doc) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userPlaylists;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.repository.updatePlaylist(id, doc)];
+                    case 1:
+                        userPlaylists = _a.sent();
+                        return [2 /*return*/, (0, index_1.formateData)(userPlaylists)];
+                }
+            });
+        });
+    };
     UserService.prototype.subscribeEvents = function (payload) {
         return __awaiter(this, void 0, void 0, function () {
-            var event, data, userId, playlist, library, type;
-            return __generator(this, function (_a) {
-                console.log("Triggering... User Events");
-                payload = JSON.parse(payload);
-                event = payload.event, data = payload.data;
-                if (!event || !data)
-                    return [2 /*return*/];
-                userId = data.userId, playlist = data.playlist, library = data.library, type = data.type;
-                switch (event) {
-                    case "ADD_TO_LIBRARY":
-                    case "REMOVE_FROM_LIBRARY":
-                        this.addToLibrary(userId, library, type);
-                        break;
-                    case "ADD_TO_PLAYLIST":
-                        this.addPlaylist(userId, playlist);
-                        break;
-                    // case "UPDATE_PLAYLIST":
-                    // 	this.updatePlaylist(userId, playlist);
-                    // 	break;
-                    case "REMOVE_FROM_PLAYLIST":
-                        this.removePlaylist(userId, playlist);
-                        break;
-                    default:
-                        break;
+            var event, data, userId, playlist, library, type, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        console.log("Triggering... User Events");
+                        payload = JSON.parse(payload);
+                        event = payload.event, data = payload.data;
+                        if (!event || !data)
+                            return [2 /*return*/];
+                        userId = data.userId, playlist = data.playlist, library = data.library, type = data.type;
+                        _a = event;
+                        switch (_a) {
+                            case "ADD_TO_LIBRARY": return [3 /*break*/, 1];
+                            case "REMOVE_FROM_LIBRARY": return [3 /*break*/, 1];
+                            case "ADD_TO_PLAYLIST": return [3 /*break*/, 3];
+                            case "UPDATE_PLAYLIST": return [3 /*break*/, 5];
+                            case "REMOVE_FROM_PLAYLIST": return [3 /*break*/, 7];
+                        }
+                        return [3 /*break*/, 9];
+                    case 1: return [4 /*yield*/, this.addToLibrary(userId, library, type)];
+                    case 2:
+                        _b.sent();
+                        return [3 /*break*/, 10];
+                    case 3: return [4 /*yield*/, this.addPlaylist(userId, playlist)];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 10];
+                    case 5: return [4 /*yield*/, this.updatePlaylist(userId, playlist)];
+                    case 6:
+                        _b.sent();
+                        return [3 /*break*/, 10];
+                    case 7: return [4 /*yield*/, this.removePlaylist(userId, playlist)];
+                    case 8:
+                        _b.sent();
+                        return [3 /*break*/, 10];
+                    case 9: return [3 /*break*/, 10];
+                    case 10: return [2 /*return*/];
                 }
-                return [2 /*return*/];
             });
         });
     };

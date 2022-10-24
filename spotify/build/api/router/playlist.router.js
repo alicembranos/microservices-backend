@@ -100,33 +100,31 @@ exports.default = (function (app, channel) {
     app.post("/playlist", auth_middleware_1.default, function (_a, res, _next) {
         var userId = _a.user.sub, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
-            var bodyWithUserId, secure_url, data, payload, error_3;
+            var bodyWithUserId, secureUrlCloudinary, data, payload, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 4, , 5]);
+                        _b.trys.push([0, 5, , 6]);
                         bodyWithUserId = __assign(__assign({}, body), { userId: userId });
-                        return [4 /*yield*/, cloudinary_1.default.uploader.upload("data:image/png;base64,".concat(body.image), {
-                                upload_preset: "photos",
-                            }, function (_error, result) {
-                                return result;
-                            })];
+                        if (!!body.image.includes("res.cloudinary.com")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, (0, cloudinary_1.default)(body.image)];
                     case 1:
-                        secure_url = (_b.sent()).secure_url;
-                        bodyWithUserId.image = secure_url;
-                        return [4 /*yield*/, service.create(index_1.default.Playlist, bodyWithUserId)];
-                    case 2:
+                        secureUrlCloudinary = _b.sent();
+                        bodyWithUserId.image = secureUrlCloudinary;
+                        _b.label = 2;
+                    case 2: return [4 /*yield*/, service.create(index_1.default.Playlist, bodyWithUserId)];
+                    case 3:
                         data = _b.sent();
                         return [4 /*yield*/, service.getPlaylistPayload(userId, index_1.default.Playlist, data._id, "ADD_TO_PLAYLIST")];
-                    case 3:
+                    case 4:
                         payload = _b.sent();
                         (0, utils_1.publishMessage)(channel, config_1.default.app.USER_SERVICE, JSON.stringify(payload));
                         return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
-                    case 4:
+                    case 5:
                         error_3 = _b.sent();
                         res.status(400).json({ ok: false, msg: (0, utils_1.handleError)(error_3) });
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -174,34 +172,32 @@ exports.default = (function (app, channel) {
         });
     });
     app.patch("/playlist/:id", auth_middleware_1.default, function (_a, res, _next) {
-        var id = _a.params.id, body = _a.body;
+        var id = _a.params.id, userId = _a.user.sub, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
-            var secure_url, data, error_6;
+            var secureUrlCloudinary, data, payload, error_6;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 4, , 5]);
+                        _b.trys.push([0, 5, , 6]);
                         if (!!body.image.includes("res.cloudinary.com")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, cloudinary_1.default.uploader.upload("data:image/png;base64,".concat(body.image), {
-                                upload_preset: "photos",
-                            }, function (_error, result) {
-                                if (_error)
-                                    throw new Error("Cloudinary Error");
-                                return result;
-                            })];
+                        return [4 /*yield*/, (0, cloudinary_1.default)(body.image)];
                     case 1:
-                        secure_url = (_b.sent()).secure_url;
-                        body.image = secure_url;
+                        secureUrlCloudinary = _b.sent();
+                        body.image = secureUrlCloudinary;
                         _b.label = 2;
                     case 2: return [4 /*yield*/, service.update(index_1.default.Playlist, id, body)];
                     case 3:
                         data = _b.sent();
-                        return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
+                        return [4 /*yield*/, service.getPlaylistPayload(userId, index_1.default.Playlist, id, "UPDATE_PLAYLIST")];
                     case 4:
+                        payload = _b.sent();
+                        (0, utils_1.publishMessage)(channel, config_1.default.app.USER_SERVICE, JSON.stringify(payload));
+                        return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
+                    case 5:
                         error_6 = _b.sent();
                         res.status(400).json({ ok: false, msg: (0, utils_1.handleError)(error_6) });
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

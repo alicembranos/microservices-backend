@@ -46,19 +46,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var mongoose_1 = require("mongoose");
 var index_1 = __importDefault(require("../models/index"));
 //Dealing with data base operations
 var User = /** @class */ (function () {
@@ -94,7 +86,6 @@ var User = /** @class */ (function () {
             });
         });
     };
-    //TODO: Make field generic (not email)
     User.prototype.getDocumentByField = function (model, field) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -128,81 +119,80 @@ var User = /** @class */ (function () {
             });
         });
     };
-    //TODO: refactor typescript arguments function
     User.prototype.addDocumentToFavorites = function (userId, doc, propDocument) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, documentLibrary_1, exist_1, profileResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, index_1.default.User.findById(userId)];
+            var inLibrary;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0: return [4 /*yield*/, index_1.default.User.findById(userId, (_a = {},
+                            _a[propDocument] = { $elemMatch: { _id: doc._id } },
+                            _a))];
                     case 1:
-                        profile = (_a.sent());
-                        if (!profile) return [3 /*break*/, 3];
-                        documentLibrary_1 = profile[propDocument];
-                        if (documentLibrary_1.length > 0) {
-                            exist_1 = false;
-                            documentLibrary_1.map(function (item) {
-                                if (item._id === doc._id) {
-                                    var index = documentLibrary_1.indexOf(item);
-                                    documentLibrary_1.splice(index, 1);
-                                    exist_1 = true;
-                                }
-                            });
-                            if (!exist_1) {
-                                documentLibrary_1.push(doc);
-                            }
+                        inLibrary = _d.sent();
+                        console.log(inLibrary, "******************");
+                        if (!inLibrary) {
+                            return [2 /*return*/, undefined];
                         }
-                        else {
-                            documentLibrary_1.push(doc);
-                        }
-                        profile[propDocument] = documentLibrary_1;
-                        return [4 /*yield*/, profile.save()];
-                    case 2:
-                        profileResult = _a.sent();
-                        return [2 /*return*/, profileResult[propDocument]];
-                    case 3: return [2 /*return*/];
+                        if (!inLibrary) return [3 /*break*/, 5];
+                        if (!(inLibrary[propDocument].length > 0)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $pull: (_b = {}, _b[propDocument] = { _id: doc._id }, _b) }, { new: true, multi: false })];
+                    case 2: return [2 /*return*/, _d.sent()];
+                    case 3:
+                        if (!(inLibrary[propDocument].length === 0)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $push: (_c = {}, _c[propDocument] = doc, _c) }, { new: true })];
+                    case 4: return [2 /*return*/, _d.sent()];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
     };
     User.prototype.addPlaylist = function (userId, doc) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, newPlaylists, profileResult;
+            var profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, index_1.default.User.findById(userId)];
+                    case 0: return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $push: { playlists: doc } }, { new: true })];
                     case 1:
                         profile = _a.sent();
-                        if (!profile) return [3 /*break*/, 3];
-                        newPlaylists = __spreadArray(__spreadArray([], profile.playlists, true), [doc], false);
-                        profile.playlists = newPlaylists;
-                        return [4 /*yield*/, profile.save()];
-                    case 2:
-                        profileResult = _a.sent();
-                        return [2 /*return*/, profileResult.playlists];
-                    case 3: return [2 /*return*/];
+                        if (profile)
+                            return [2 /*return*/, profile.playlists];
+                        return [2 /*return*/];
                 }
             });
         });
     };
     User.prototype.removePlaylist = function (userId, doc) {
         return __awaiter(this, void 0, void 0, function () {
-            var profile, newPlaylists, profileResult;
+            var objectId, profile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, index_1.default.User.findById(userId)];
+                    case 0:
+                        objectId = new mongoose_1.Types.ObjectId(doc._id);
+                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $pull: { playlists: { _id: objectId } } }, { new: true, multi: false })];
                     case 1:
                         profile = _a.sent();
-                        console.log(profile);
-                        console.log(doc);
-                        if (!profile) return [3 /*break*/, 3];
-                        newPlaylists = profile.playlists.filter(function (item) { var _a; return ((_a = item._id) === null || _a === void 0 ? void 0 : _a.toString()) !== doc._id; });
-                        profile.playlists = newPlaylists;
-                        return [4 /*yield*/, profile.save()];
-                    case 2:
-                        profileResult = _a.sent();
-                        return [2 /*return*/, profileResult];
-                    case 3: return [2 /*return*/];
+                        if (profile)
+                            return [2 /*return*/, profile.playlists];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    User.prototype.updatePlaylist = function (userId, doc) {
+        return __awaiter(this, void 0, void 0, function () {
+            var objectId, profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        objectId = new mongoose_1.Types.ObjectId(doc._id);
+                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $set: (_a = {}, _a["playlists.$[item]"] = doc, _a) }, { arrayFilters: [{ "item._id": objectId }] })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile.playlists];
+                        return [2 /*return*/];
                 }
             });
         });

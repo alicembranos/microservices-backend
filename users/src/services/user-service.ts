@@ -67,7 +67,13 @@ class UserService {
 		return formateData(documentResult);
 	}
 
-	async update<T>(model: Model<T>, id: string, data: Partial<T>) {
+	async update<T extends { username?: string }>(model: Model<T>, id: string, data: Partial<T>) {
+		
+		const { username } = data;
+		//Check if user exist by username
+		const usernameExist = await this.repository.getDocumentByField(database.User, { username });
+		if (usernameExist) throw new Error("Username is already used. Please select a new one.");
+
 		const documentResult = await this.repository.updateDocument(model, id, data);
 		return formateData(documentResult);
 	}
@@ -82,8 +88,8 @@ class UserService {
 		doc: Partial<IAlbum> | Partial<IArtist> | Partial<ITrack>,
 		propDocument: string
 	) {
-			const libraryResult = await this.repository.addDocumentToFavorites(id, doc, propDocument);
-			return formateData(libraryResult);			
+		const libraryResult = await this.repository.addDocumentToFavorites(id, doc, propDocument);
+		return formateData(libraryResult);
 	}
 
 	async addPlaylist(id: string, doc: Partial<IPlaylist>) {
@@ -110,24 +116,24 @@ class UserService {
 
 		if (!event || !data) return;
 		const { userId, playlist, library, type } = data;
-		
-			switch (event) {
-				case "ADD_TO_LIBRARY":
-				case "REMOVE_FROM_LIBRARY":
-					await this.addToLibrary(userId, library, type);
-					break;
-				case "ADD_TO_PLAYLIST":
-					await this.addPlaylist(userId, playlist);
-					break;
-				case "UPDATE_PLAYLIST":
-					await this.updatePlaylist(userId, playlist);
-					break;
-				case "REMOVE_FROM_PLAYLIST":
-					await this.removePlaylist(userId, playlist);
-					break;
-				default:
-					break;
-			}
+
+		switch (event) {
+			case "ADD_TO_LIBRARY":
+			case "REMOVE_FROM_LIBRARY":
+				await this.addToLibrary(userId, library, type);
+				break;
+			case "ADD_TO_PLAYLIST":
+				await this.addPlaylist(userId, playlist);
+				break;
+			case "UPDATE_PLAYLIST":
+				await this.updatePlaylist(userId, playlist);
+				break;
+			case "REMOVE_FROM_PLAYLIST":
+				await this.removePlaylist(userId, playlist);
+				break;
+			default:
+				break;
+		}
 	}
 }
 
