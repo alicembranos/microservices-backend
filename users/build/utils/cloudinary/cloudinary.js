@@ -39,35 +39,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var dotenv_1 = __importDefault(require("dotenv"));
-var helmet_1 = __importDefault(require("helmet"));
-var morgan_1 = __importDefault(require("morgan"));
-var index_1 = require("./utils/index");
-var index_2 = require("./api/index");
-dotenv_1.default.config();
-exports.default = (function (app) { return __awaiter(void 0, void 0, void 0, function () {
-    var channel;
+exports.uploadToCloudinary = void 0;
+var cloudinary_1 = __importDefault(require("cloudinary"));
+var cloudinaryAuth = cloudinary_1.default.v2;
+cloudinaryAuth.config({
+    cloud_name: "juancarlos",
+    api_key: "741934352396129",
+    api_secret: "zJh5VEmeEJEtdsLeuaL5_BrMvj4",
+});
+var uploadToCloudinary = function (file) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                app.use((0, morgan_1.default)("dev"));
-                app.use((0, helmet_1.default)());
-                // app.use(cors());
-                app.use(express_1.default.json({ limit: "50mb" }));
-                app.use(express_1.default.urlencoded({ extended: true }));
-                return [4 /*yield*/, (0, index_1.createChannel)()];
-            case 1:
-                channel = _a.sent();
-                (0, index_2.artists)(app, channel);
-                (0, index_2.albums)(app, channel);
-                (0, index_2.tracks)(app, channel);
-                (0, index_2.playlists)(app, channel);
-                (0, index_2.search)(app);
-                app.use("/", function (_req, res) {
-                    res.status(200).send("Hello from Spotify Server");
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                cloudinaryAuth.uploader.upload("data:image/png;base64,".concat(file), {
+                    upload_preset: "photos",
+                }, function (error, result) {
+                    if (error) {
+                        console.log("error", error);
+                        return reject(new Error("Failed to upload file"));
+                    }
+                    resolve(result === null || result === void 0 ? void 0 : result.secure_url);
                 });
-                return [2 /*return*/];
-        }
+            })];
     });
-}); });
+}); };
+exports.uploadToCloudinary = uploadToCloudinary;
+exports.default = exports.uploadToCloudinary;

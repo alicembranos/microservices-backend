@@ -55,7 +55,7 @@ var index_1 = __importDefault(require("../../models/index"));
 var auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
 var utils_1 = require("../../utils");
 var config_1 = __importDefault(require("../../config/config"));
-var cloudinary_1 = __importDefault(require("../../utils/cloudinary/cloudinary"));
+var cloudinary_1 = require("../../utils/cloudinary/cloudinary");
 exports.default = (function (app, channel) {
     var service = new spotify_service_1.default();
     app.get("/playlist", auth_middleware_1.default, function (_req, res, _next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -107,7 +107,7 @@ exports.default = (function (app, channel) {
                         _b.trys.push([0, 5, , 6]);
                         bodyWithUserId = __assign(__assign({}, body), { userId: userId });
                         if (!!body.image.includes("res.cloudinary.com")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, (0, cloudinary_1.default)(body.image)];
+                        return [4 /*yield*/, (0, cloudinary_1.uploadImage)(body.image)];
                     case 1:
                         secureUrlCloudinary = _b.sent();
                         bodyWithUserId.image = secureUrlCloudinary;
@@ -180,7 +180,7 @@ exports.default = (function (app, channel) {
                     case 0:
                         _b.trys.push([0, 5, , 6]);
                         if (!!body.image.includes("res.cloudinary.com")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, (0, cloudinary_1.default)(body.image)];
+                        return [4 /*yield*/, (0, cloudinary_1.uploadImage)(body.image)];
                     case 1:
                         secureUrlCloudinary = _b.sent();
                         body.image = secureUrlCloudinary;

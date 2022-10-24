@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadToCloudinary = void 0;
+exports.uploadTrack = exports.uploadImage = void 0;
 var cloudinary_1 = __importDefault(require("cloudinary"));
 var cloudinaryAuth = cloudinary_1.default.v2;
 cloudinaryAuth.config({
@@ -47,7 +47,7 @@ cloudinaryAuth.config({
     api_key: "741934352396129",
     api_secret: "zJh5VEmeEJEtdsLeuaL5_BrMvj4",
 });
-var uploadToCloudinary = function (file) { return __awaiter(void 0, void 0, void 0, function () {
+var uploadImage = function (file) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 cloudinaryAuth.uploader.upload("data:image/png;base64,".concat(file), {
@@ -62,5 +62,18 @@ var uploadToCloudinary = function (file) { return __awaiter(void 0, void 0, void
             })];
     });
 }); };
-exports.uploadToCloudinary = uploadToCloudinary;
-exports.default = exports.uploadToCloudinary;
+exports.uploadImage = uploadImage;
+var uploadTrack = function (file) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                cloudinaryAuth.uploader.upload("data:image/png;base64,".concat(file), { resource_type: "video", folder: "audiofiles/", overwrite: true }, function (error, result) {
+                    if (error) {
+                        console.log("error", error);
+                        return reject(new Error("Failed to upload file"));
+                    }
+                    resolve(result);
+                });
+            })];
+    });
+}); };
+exports.uploadTrack = uploadTrack;

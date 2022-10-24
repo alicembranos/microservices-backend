@@ -192,7 +192,7 @@
                     },
                     {
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/UserBodyPatch"
                         },
                         "in": "body",
                         "name": "User",
@@ -441,6 +441,17 @@
                 "username": { "type": "string", "example": "superman23" },
                 "email": { "type": "string", "example": "superman@gmail.com" },
                 "password": { "type": "string", "example": "**********" },
+                "image": {
+                    "type": "string",
+                    "example": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49"
+                }
+            }
+        },
+        "UserBodyPatch": {
+            "title": "UserBody",
+            "properties": {
+                "username": { "type": "string", "example": "superman23" },
+                "phone": { "type": "string", "example": "0777653452" },
                 "image": {
                     "type": "string",
                     "example": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49"

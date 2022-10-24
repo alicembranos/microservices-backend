@@ -6,6 +6,6 @@ export default interface ITrack {
 	duration: number;
 	trackNumber: number;
 	trackAudio: string;
-	album: IAlbum;
+	album: IAlbum | undefined;
 
 }

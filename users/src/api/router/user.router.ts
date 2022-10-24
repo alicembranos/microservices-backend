@@ -52,8 +52,10 @@ export default (app, channel: Channel) => {
 	app.get(
 		"/user/:id",
 		auth,
-		async ({ params: { id } }: Request, res: Response, _next: NextFunction) => {
+		async (req: Request, res: Response, _next: NextFunction) => {
 			try {
+				const { params: { id } } = req;
+				console.log(req)
 				const data = await service.get(database.User, id);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {

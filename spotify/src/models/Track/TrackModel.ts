@@ -25,6 +25,7 @@ const TrackSchema = new Schema<ITrack>(
 		album: {
 			type: Schema.Types.String,
 			ref: "Album",
+			default: undefined
 		},
 	},
 	{ timestamps: true }

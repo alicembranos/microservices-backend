@@ -43,6 +43,7 @@ var user_service_1 = __importDefault(require("../../services/user-service"));
 var index_1 = __importDefault(require("../../models/index"));
 var index_2 = require("../../utils/index");
 var auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
+var cloudinary_1 = __importDefault(require("../../utils/cloudinary/cloudinary"));
 exports.default = (function (app, channel) {
     var service = new user_service_1.default();
     // To listen
@@ -88,7 +89,7 @@ exports.default = (function (app, channel) {
     app.get("/auth", auth_middleware_1.default, function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
-                return [2 /*return*/, res.status(200).json({ ok: true, data: '' })];
+                return [2 /*return*/, res.status(200).json({ ok: true, data: "" })];
             }
             catch (error) {
                 res.status(401).json({ ok: false, msg: (0, index_2.handleError)(error) });
@@ -114,44 +115,52 @@ exports.default = (function (app, channel) {
             }
         });
     }); });
-    app.get("/user/:id", auth_middleware_1.default, function (_a, res, _next) {
-        var id = _a.params.id;
-        return __awaiter(void 0, void 0, void 0, function () {
-            var data, error_4;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, service.get(index_1.default.User, id)];
-                    case 1:
-                        data = _b.sent();
-                        return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
-                    case 2:
-                        error_4 = _b.sent();
-                        res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_4) });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
+    app.get("/user/:id", auth_middleware_1.default, function (req, res, _next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, data, error_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    id = req.params.id;
+                    console.log(req);
+                    return [4 /*yield*/, service.get(index_1.default.User, id)];
+                case 1:
+                    data = _a.sent();
+                    return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
+                case 2:
+                    error_4 = _a.sent();
+                    res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_4) });
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
         });
-    });
+    }); });
     app.patch("/user/:id", auth_middleware_1.default, function (_a, res, _next) {
-        var id = _a.params.id, body = _a.body;
+        var id = _a.params.id, userId = _a.user.sub, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
-            var data, error_5;
+            var secureUrlCloudinary, data, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, service.update(index_1.default.User, id, body)];
+                        if (id !== userId)
+                            return [2 /*return*/, res.status(401).json({ ok: true, msg: "Not authorized" })];
+                        if (!!body.image.includes("res.cloudinary.com")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, (0, cloudinary_1.default)(body.image)];
                     case 1:
+                        secureUrlCloudinary = _b.sent();
+                        body.image = secureUrlCloudinary;
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 4, , 5]);
+                        return [4 /*yield*/, service.update(index_1.default.User, id, body)];
+                    case 3:
                         data = _b.sent();
                         return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
-                    case 2:
+                    case 4:
                         error_5 = _b.sent();
                         res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_5) });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         });

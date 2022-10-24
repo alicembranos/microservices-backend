@@ -34,7 +34,7 @@ export default (app, channel: Channel) => {
 			const _id = uuid4();
 			const duration = result?.duration;
 			const trackNumber = Math.floor(Math.random() * (16 - 1) + 1);
-			const album = {} as IAlbum; //default
+			const album = undefined; //default
 
 			const data = await service.create(database.Track, {
 				_id,

@@ -44,6 +44,8 @@ var index_1 = __importDefault(require("../../models/index"));
 var auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
 var index_2 = require("../../utils/index");
 var config_1 = __importDefault(require("../../config/config"));
+var cloudinary_1 = require("../../utils/cloudinary/cloudinary");
+var uuid4_1 = __importDefault(require("uuid4"));
 exports.default = (function (app, channel) {
     var service = new spotify_service_1.default();
     app.get("/track", function (_req, res, _next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -64,10 +66,49 @@ exports.default = (function (app, channel) {
             }
         });
     }); });
+    app.post("/track", auth_middleware_1.default, function (_a, res, _next) {
+        var body = _a.body;
+        return __awaiter(void 0, void 0, void 0, function () {
+            var title, trackAudio, result, _id, duration, trackNumber, album, data, error_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 3, , 4]);
+                        title = body.title, trackAudio = body.trackAudio;
+                        if (!title || !trackAudio)
+                            return [2 /*return*/, res.status(400).json({ ok: false, msg: "All fields are required" })];
+                        return [4 /*yield*/, (0, cloudinary_1.uploadTrack)(trackAudio)];
+                    case 1:
+                        result = _b.sent();
+                        trackAudio = result === null || result === void 0 ? void 0 : result.secure_url;
+                        _id = (0, uuid4_1.default)();
+                        duration = result === null || result === void 0 ? void 0 : result.duration;
+                        trackNumber = Math.floor(Math.random() * (16 - 1) + 1);
+                        album = {};
+                        return [4 /*yield*/, service.create(index_1.default.Track, {
+                                _id: _id,
+                                title: title,
+                                trackAudio: trackAudio,
+                                duration: duration,
+                                trackNumber: trackNumber,
+                                album: album,
+                            })];
+                    case 2:
+                        data = _b.sent();
+                        return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
+                    case 3:
+                        error_2 = _b.sent();
+                        res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_2) });
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    });
     app.get("/track/:id", function (_a, res, _next) {
         var id = _a.params.id;
         return __awaiter(void 0, void 0, void 0, function () {
-            var data, error_2;
+            var data, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -77,8 +118,8 @@ exports.default = (function (app, channel) {
                         data = _b.sent();
                         return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
                     case 2:
-                        error_2 = _b.sent();
-                        res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_2) });
+                        error_3 = _b.sent();
+                        res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_3) });
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
@@ -88,7 +129,7 @@ exports.default = (function (app, channel) {
     app.put("/track/library", auth_middleware_1.default, function (_a, res, _next) {
         var sub = _a.user.sub, _id = _a.body._id;
         return __awaiter(void 0, void 0, void 0, function () {
-            var data, error_3;
+            var data, error_4;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -99,8 +140,8 @@ exports.default = (function (app, channel) {
                         (0, index_2.publishMessage)(channel, config_1.default.app.USER_SERVICE, JSON.stringify(data));
                         return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
                     case 2:
-                        error_3 = _b.sent();
-                        res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_3) });
+                        error_4 = _b.sent();
+                        res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_4) });
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

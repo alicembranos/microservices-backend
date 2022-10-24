@@ -138,11 +138,18 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.update = function (model, id, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var documentResult;
+            var username, usernameExist, documentResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.updateDocument(model, id, data)];
+                    case 0:
+                        username = data.username;
+                        return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { username: username })];
                     case 1:
+                        usernameExist = _a.sent();
+                        if (usernameExist)
+                            throw new Error("Username is already used. Please select a new one.");
+                        return [4 /*yield*/, this.repository.updateDocument(model, id, data)];
+                    case 2:
                         documentResult = _a.sent();
                         return [2 /*return*/, (0, index_1.formateData)(documentResult)];
                 }
