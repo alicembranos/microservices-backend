@@ -20,6 +20,7 @@ export const uploadToCloudinary = async (file: string): Promise<string | undefin
 					return reject(new Error("Failed to upload file"));
 				}
 				resolve(result?.secure_url);
+
 			}
 		);
 	});

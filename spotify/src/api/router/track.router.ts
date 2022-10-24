@@ -6,6 +6,8 @@ import auth from "../middlewares/auth.middleware";
 import { publishMessage, handleError } from "../../utils/index";
 import { Channel } from "amqplib";
 import config from "../../config/config";
+import uploadToCloudinary from "../../utils/cloudinary/cloudinary";
+import uuid4 from "uuid4";
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
@@ -14,6 +16,25 @@ export default (app, channel: Channel) => {
 		try {
 			const data = await service.getAll(database.Track);
 			return res.status(200).json({ ok: true, data });
+		} catch (error) {
+			res.status(400).json({ ok: false, msg: handleError(error) });
+		}
+	});
+
+	app.post("/track", async ({ body }: Request, res: Response, _next: NextFunction) => {
+		try {
+			let { title, trackAudio } = body;
+			// if (!title || !trackAudio)
+			// 	return res.status(400).json({ ok: false, msg: "All fields are required" });
+
+			// // const {secureUrlCloudinary, duration} = await uploadToCloudinary(trackAudio);
+			// trackAudio = secureUrlCloudinary;
+
+			// const _id = uuid4();
+			// // const
+
+			// const data = await service.create(database.Track, { _id, title, trackAudio });
+			// return res.status(200).json({ ok: true, data });
 		} catch (error) {
 			res.status(400).json({ ok: false, msg: handleError(error) });
 		}
