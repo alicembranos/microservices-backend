@@ -5,7 +5,7 @@ import { Channel } from "amqplib";
 import auth from "../middlewares/auth.middleware";
 import { publishMessage, handleError } from "../../utils";
 import config from "../../config/config";
-import uploadToCloudinary from "../../utils/cloudinary/cloudinary";
+import { uploadImage } from "../../utils/cloudinary/cloudinary";
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
@@ -40,7 +40,7 @@ export default (app, channel: Channel) => {
 				const bodyWithUserId = { ...body, userId };
 
 				if (!body.image.includes("res.cloudinary.com")) {
-					const secureUrlCloudinary = await uploadToCloudinary(body.image);
+					const secureUrlCloudinary = await uploadImage(body.image);
 					bodyWithUserId.image = secureUrlCloudinary;
 				}
 
@@ -98,7 +98,7 @@ export default (app, channel: Channel) => {
 		) => {
 			try {
 				if (!body.image.includes("res.cloudinary.com")) {
-					const secureUrlCloudinary = await uploadToCloudinary(body.image);
+					const secureUrlCloudinary = await uploadImage(body.image);
 					body.image = secureUrlCloudinary;
 				}
 

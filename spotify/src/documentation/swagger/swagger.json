@@ -325,6 +325,41 @@
 						}
 					}
 				}
+			},
+			"post": {
+				"tags": ["Tracks"],
+				"summary": "Upload a track",
+				"description": "Upload track into track database",
+				"parameters": [
+					{
+						"schema": {
+							"$ref": "#/definitions/TrackBody"
+						},
+						"in": "body",
+						"name": "track",
+						"required": true,
+						"description": "Track information."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful operation",
+						"examples": {},
+						"schema": {
+							"$ref": "#/definitions/Tracks"
+						}
+					},
+					"400": {
+						"description": "Database Error Exception",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						},
+						"examples": {
+							"ok": false,
+							"msg": "Invalid request"
+						}
+					}
+				}
 			}
 		},
 		"/track/{id}": {
@@ -1001,6 +1036,16 @@
 				"image": {
 					"type": "string",
 					"example": "https://i.scdn.co/image/ab6761610000e5eb7f9b2f828db40b35a81cba49"
+				}
+			}
+		},
+		"TrackBody": {
+			"title": "TrackBody",
+			"properties": {
+				"title": { "type": "string", "example": "La Macarena" },
+				"trackAudio": {
+					"type": "string",
+					"example": "ab6761610000e5eb7f9b2f828db40b35a81cba49fsaiybfyeosyfresyeskhfkshkfhesñfyeofsu"
 				}
 			}
 		},

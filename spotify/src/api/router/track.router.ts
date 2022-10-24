@@ -6,8 +6,9 @@ import auth from "../middlewares/auth.middleware";
 import { publishMessage, handleError } from "../../utils/index";
 import { Channel } from "amqplib";
 import config from "../../config/config";
-import uploadToCloudinary from "../../utils/cloudinary/cloudinary";
+import { uploadTrack } from "../../utils/cloudinary/cloudinary";
 import uuid4 from "uuid4";
+import IAlbum from "../../interfaces/album.interface";
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
@@ -24,17 +25,27 @@ export default (app, channel: Channel) => {
 	app.post("/track", async ({ body }: Request, res: Response, _next: NextFunction) => {
 		try {
 			let { title, trackAudio } = body;
-			// if (!title || !trackAudio)
-			// 	return res.status(400).json({ ok: false, msg: "All fields are required" });
+			if (!title || !trackAudio)
+				return res.status(400).json({ ok: false, msg: "All fields are required" });
 
-			// // const {secureUrlCloudinary, duration} = await uploadToCloudinary(trackAudio);
-			// trackAudio = secureUrlCloudinary;
+			const result = await uploadTrack(trackAudio);
+			trackAudio = result?.secure_url;
 
-			// const _id = uuid4();
-			// // const
+			const _id = uuid4();
+			const duration = result?.duration;
+			const trackNumber = Math.floor(Math.random() * (16 - 1) + 1);
+			const album = {} as IAlbum; //default
 
-			// const data = await service.create(database.Track, { _id, title, trackAudio });
-			// return res.status(200).json({ ok: true, data });
+			const data = await service.create(database.Track, {
+				_id,
+				title,
+				trackAudio,
+				duration,
+				trackNumber,
+				album,
+			});
+
+			return res.status(200).json({ ok: true, data });
 		} catch (error) {
 			res.status(400).json({ ok: false, msg: handleError(error) });
 		}

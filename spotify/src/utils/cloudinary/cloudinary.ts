@@ -7,7 +7,7 @@ cloudinaryAuth.config({
 	api_secret: "zJh5VEmeEJEtdsLeuaL5_BrMvj4",
 });
 
-export const uploadToCloudinary = async (file: string): Promise<string | undefined> => {
+const uploadImage = async (file: string): Promise<string | undefined> => {
 	return new Promise((resolve, reject) => {
 		cloudinaryAuth.uploader.upload(
 			`data:image/png;base64,${file}`,
@@ -20,10 +20,25 @@ export const uploadToCloudinary = async (file: string): Promise<string | undefin
 					return reject(new Error("Failed to upload file"));
 				}
 				resolve(result?.secure_url);
-
 			}
 		);
 	});
 };
 
-export default uploadToCloudinary;
+const uploadTrack = async (file: string): Promise<UploadApiResponse | undefined> => {
+	return new Promise((resolve, reject) => {
+		cloudinaryAuth.uploader.upload(
+			`data:image/png;base64,${file}`,
+			{ resource_type: "video", folder: "audiofiles/", overwrite: true },
+			(error, result) => {
+				if (error) {
+					console.log("error", error);
+					return reject(new Error("Failed to upload file"));
+				}
+				resolve(result);
+			}
+		);
+	});
+};
+
+export { uploadImage, uploadTrack };
