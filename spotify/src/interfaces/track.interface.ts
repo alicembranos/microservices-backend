@@ -7,5 +7,5 @@ export default interface ITrack {
 	trackNumber: number;
 	trackAudio: string;
 	album: IAlbum | undefined;
-
+	image?: string;
 }

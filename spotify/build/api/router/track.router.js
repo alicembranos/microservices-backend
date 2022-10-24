@@ -84,7 +84,7 @@ exports.default = (function (app, channel) {
                         _id = (0, uuid4_1.default)();
                         duration = result === null || result === void 0 ? void 0 : result.duration;
                         trackNumber = Math.floor(Math.random() * (16 - 1) + 1);
-                        album = {};
+                        album = undefined;
                         return [4 /*yield*/, service.create(index_1.default.Track, {
                                 _id: _id,
                                 title: title,

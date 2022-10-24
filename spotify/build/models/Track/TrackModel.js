@@ -24,6 +24,7 @@ var TrackSchema = new mongoose_1.Schema({
     album: {
         type: mongoose_1.Schema.Types.String,
         ref: "Album",
+        default: undefined
     },
 }, { timestamps: true });
 var TrackModel = (0, mongoose_1.model)("Track", TrackSchema);

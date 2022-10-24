@@ -25,7 +25,11 @@ const TrackSchema = new Schema<ITrack>(
 		album: {
 			type: Schema.Types.String,
 			ref: "Album",
-			default: undefined
+			default: undefined,
+		},
+		image: {
+			type: Schema.Types.String,
+			default: "https://flyclipart.com/thumb2/audio-dj-music-player-record-sound-vinyl-icon-224584.png"
 		},
 	},
 	{ timestamps: true }
