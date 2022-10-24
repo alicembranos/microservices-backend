@@ -22,7 +22,7 @@ export default (app, channel: Channel) => {
 		}
 	});
 
-	app.post("/track", async ({ body }: Request, res: Response, _next: NextFunction) => {
+	app.post("/track", auth, async ({ body }: Request, res: Response, _next: NextFunction) => {
 		try {
 			let { title, trackAudio } = body;
 			if (!title || !trackAudio)
