@@ -185,7 +185,7 @@ var Spotify = /** @class */ (function () {
                     case 0:
                         populateField = (0, index_1.selectFieldsToPopulate)(model);
                         return [4 /*yield*/, model
-                                .findByIdAndUpdate(id, { $pull: __assign({}, data) }, { new: true })
+                                .findByIdAndUpdate(id, { $pull: __assign({}, data) }, { new: true, limit: 1 }) //only first ocurrence
                                 .populate(populateField)
                                 .lean()
                                 .exec()];

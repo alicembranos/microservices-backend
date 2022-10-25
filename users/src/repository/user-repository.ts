@@ -78,7 +78,7 @@ class User {
 		const profile = await database.User.findByIdAndUpdate(
 			userId,
 			{ $pull: { playlists: { _id: objectId } } },
-			{ new: true, multi: false }
+			{ new: true, multi: false}
 		);
 		if (profile) return profile.playlists;
 	}

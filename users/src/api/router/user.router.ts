@@ -74,7 +74,7 @@ export default (app, channel: Channel) => {
 		) => {
 			if (id !== userId) return res.status(401).json({ ok: true, msg: "Not authorized" });
 
-			if (!body.image.includes("res.cloudinary.com")) {
+			if (!body.image?.includes("res.cloudinary.com")) {
 				const secureUrlCloudinary = await uploadToCloudinary(body.image);
 				body.image = secureUrlCloudinary;
 			}

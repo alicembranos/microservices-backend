@@ -28,7 +28,7 @@ var TrackSchema = new mongoose_1.Schema({
     },
     image: {
         type: mongoose_1.Schema.Types.String,
-        default: "https://flyclipart.com/thumb2/audio-dj-music-player-record-sound-vinyl-icon-224584.png"
+        default: "https://www.rootzwiki.com/attachments/unkownalbum-jpg.19745/"
     },
 }, { timestamps: true });
 var TrackModel = (0, mongoose_1.model)("Track", TrackSchema);

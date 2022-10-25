@@ -139,25 +139,26 @@ exports.default = (function (app, channel) {
         var id = _a.params.id, userId = _a.user.sub, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
             var secureUrlCloudinary, data, error_5;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         if (id !== userId)
                             return [2 /*return*/, res.status(401).json({ ok: true, msg: "Not authorized" })];
-                        if (!!body.image.includes("res.cloudinary.com")) return [3 /*break*/, 2];
+                        if (!!((_b = body.image) === null || _b === void 0 ? void 0 : _b.includes("res.cloudinary.com"))) return [3 /*break*/, 2];
                         return [4 /*yield*/, (0, cloudinary_1.default)(body.image)];
                     case 1:
-                        secureUrlCloudinary = _b.sent();
+                        secureUrlCloudinary = _c.sent();
                         body.image = secureUrlCloudinary;
-                        _b.label = 2;
+                        _c.label = 2;
                     case 2:
-                        _b.trys.push([2, 4, , 5]);
+                        _c.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, service.update(index_1.default.User, id, body)];
                     case 3:
-                        data = _b.sent();
+                        data = _c.sent();
                         return [2 /*return*/, res.status(200).json({ ok: true, data: data })];
                     case 4:
-                        error_5 = _b.sent();
+                        error_5 = _c.sent();
                         res.status(400).json({ ok: false, msg: (0, index_2.handleError)(error_5) });
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
