@@ -2,6 +2,7 @@ import IAlbum from "./album.interface";
 import IArtist from "./artist.interface";
 import IPlaylist from "./playlist.interface";
 import ITrack from "./track.interface";
+import IChat from './chat.interface';
 
 export default interface IUser {
 	username: string;
@@ -14,4 +15,5 @@ export default interface IUser {
 	albums: Partial<IAlbum>[];
 	artists: Partial<IArtist>[];
 	likedSongs: Partial<ITrack>[];
+	chats: IChat[]
 }

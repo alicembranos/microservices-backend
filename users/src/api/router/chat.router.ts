@@ -6,31 +6,9 @@ import auth from "../middlewares/auth.middleware";
 import { Channel } from "amqplib";
 import uploadToCloudinary from "../../utils/cloudinary/cloudinary";
 
-export default (app, channel: Channel) => {
+export default (app) => {
 	const service = new UserService();
 
-	// To listen
-	subscribeMessage(channel, service);
-
-	app.post("/signup", async (req: Request, res: Response, _next: NextFunction) => {
-		try {
-			const { email, password, username, image, genres } = req.body;
-			const data = await service.signUp({ email, password, username, image, genres });
-			return res.status(200).json({ ok: true, data });
-		} catch (error) {
-			res.status(400).json({ ok: false, msg: handleError(error) });
-		}
-	});
-
-	app.post("/signin", async (req: Request, res: Response, _next: NextFunction) => {
-		try {
-			const { email, password } = req.body;
-			const data = await service.signIn({ email, password });
-			return res.status(200).json({ ok: true, data });
-		} catch (error) {
-			res.status(400).json({ ok: false, msg: handleError(error) });
-		}
-	});
 
 	app.get("/auth", auth, async (_req, res: Response) => {
 		try {
@@ -86,16 +64,4 @@ export default (app, channel: Channel) => {
 		}
 	);
 
-	app.delete(
-		"/user/:id",
-		auth,
-		async ({ params: { id } }: Request, res: Response, _next: NextFunction) => {
-			try {
-				const data = await service.delete(database.User, id);
-				return res.status(200).json({ ok: true, data });
-			} catch (error) {
-				res.status(400).json({ ok: false, msg: handleError(error) });
-			}
-		}
-	);
 };

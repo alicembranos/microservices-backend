@@ -64,6 +64,26 @@ const UserSchema = new Schema<IUser>(
 				album: { _id: { type: String }, title: { type: String } },
 			},
 		],
+		chats: [
+			{
+				to: {
+					type: Schema.Types.ObjectId,
+					ref: "User",
+					default: [],
+				},
+				current: { type: Boolean },
+				pendingMessages: {
+					type: Number,
+					default: 0,
+				},
+				messages: [
+					{
+						type: String,
+						default: [],
+					},
+				],
+			},
+		],
 	},
 	{
 		timestamps: true,
