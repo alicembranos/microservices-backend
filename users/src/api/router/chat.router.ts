@@ -1,62 +1,35 @@
-import UserService from "../../services/user-service";
+import ChatService from "../../services/chat-service";
 import database from "../../models/index";
-import { handleError, subscribeMessage } from "../../utils/index";
+import { handleError } from "../../utils/index";
 import { NextFunction, Response, Request } from "express";
 import auth from "../middlewares/auth.middleware";
-import { Channel } from "amqplib";
-import uploadToCloudinary from "../../utils/cloudinary/cloudinary";
 
 export default (app) => {
-	const service = new UserService();
+	const chatService = new ChatService();
 
-
-	app.get("/auth", auth, async (_req, res: Response) => {
-		try {
-			return res.status(200).json({ ok: true, data: "" });
-		} catch (error) {
-			res.status(401).json({ ok: false, msg: handleError(error) });
-		}
-	});
-
-	app.get("/user", auth, async (_req: Request, res: Response, _next: NextFunction) => {
-		try {
-			const data = await service.getAll(database.User);
-			return res.status(200).json({ ok: true, data });
-		} catch (error) {
-			res.status(400).json({ ok: false, msg: handleError(error) });
-		}
-	});
-
-	app.get("/user/:id", auth, async (req: Request, res: Response, _next: NextFunction) => {
-		try {
-			const {
-				params: { id },
-			} = req;
-			console.log(req);
-			const data = await service.get(database.User, id);
-			return res.status(200).json({ ok: true, data });
-		} catch (error) {
-			res.status(400).json({ ok: false, msg: handleError(error) });
-		}
-	});
-
-	app.patch(
-		"/user/:id",
+	app.post(
+		"/chat/messages",
 		auth,
-		async (
-			{ params: { id }, user: { sub: userId }, body }: Request,
-			res: Response,
-			_next: NextFunction
-		) => {
-			if (id !== userId) return res.status(401).json({ ok: true, msg: "Not authorized" });
-
-			if (!body.image?.includes("res.cloudinary.com")) {
-				const secureUrlCloudinary = await uploadToCloudinary(body.image);
-				body.image = secureUrlCloudinary;
-			}
+		async ({ user: { sub: userId }, body }: Request, res: Response) => {
+			const { to, messages, users } = body;
 
 			try {
-				const data = await service.update(database.User, id, body);
+				const data = await chatService.updateMessages(database.User, userId, { to, messages });
+				await chatService.updatePendingMessages(database.User, userId, to, users);
+				return res.status(200).json({ ok: true, data });
+			} catch (error) {
+				res.status(401).json({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
+
+	app.post(
+		"/chat/getMessages",
+		auth,
+		async ({ user: { sub: userId }, body }: Request, res: Response, _next: NextFunction) => {
+			const { toUserId } = body;
+			try {
+				const data = await chatService.getMessages(database.User, userId, toUserId);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });
@@ -64,4 +37,49 @@ export default (app) => {
 		}
 	);
 
+	app.post(
+		"/chat/currentRoom",
+		auth,
+		async ({ user: { sub: userId } }: Request, res: Response, _next: NextFunction) => {
+			try {
+				const data = await chatService.getCurrentRoom(database.User, userId);
+				return res.status(200).json({ ok: true, data });
+			} catch (error) {
+				res.status(400).json({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
+
+	app.post(
+		"/chat/pendingMessages",
+		auth,
+		async ({ user: { sub: userId } }: Request, res: Response, _next: NextFunction) => {
+			try {
+				const data = await chatService.getPendingMessages(database.User, userId);
+				return res.status(200).json({ ok: true, data });
+			} catch (error) {
+				res.status(400).json({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
+	app.post(
+		"/chat/deletePendingMessages",
+		auth,
+		async (
+			{ user: { sub: userId }, body: { id: toUserId } }: Request,
+			res: Response,
+			_next: NextFunction
+		) => {
+			try {
+				const data = await chatService.deletePendingMessages(
+					database.User,
+					userId as string,
+					toUserId
+				);
+				return res.status(200).json({ ok: true, data });
+			} catch (error) {
+				res.status(400).json({ ok: false, msg: handleError(error) });
+			}
+		}
+	);
 };

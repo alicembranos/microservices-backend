@@ -83,6 +83,7 @@ const UserSchema = new Schema<IUser>(
 					},
 				],
 			},
+			{ default: [] },
 		],
 	},
 	{

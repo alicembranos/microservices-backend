@@ -2,9 +2,10 @@ import IAlbum from "./album.interface";
 import IArtist from "./artist.interface";
 import IPlaylist from "./playlist.interface";
 import ITrack from "./track.interface";
-import IChat from './chat.interface';
+import IChat from "./chat.interface";
+import { Document } from "mongoose";
 
-export default interface IUser {
+export default interface IUser{
 	username: string;
 	email: string;
 	password: string;
@@ -15,5 +16,5 @@ export default interface IUser {
 	albums: Partial<IAlbum>[];
 	artists: Partial<IArtist>[];
 	likedSongs: Partial<ITrack>[];
-	chats: IChat[]
+	chats: IChat[];
 }
