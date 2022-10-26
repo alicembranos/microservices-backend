@@ -66,7 +66,7 @@ export default (app) => {
 		"/chat/deletePendingMessages",
 		auth,
 		async (
-			{ user: { sub: userId }, body: { id: toUserId } }: Request,
+			{ user: { sub: userId }, body: {toUserId } }: Request,
 			res: Response,
 			_next: NextFunction
 		) => {
