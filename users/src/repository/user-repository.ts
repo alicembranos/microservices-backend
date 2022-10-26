@@ -102,7 +102,7 @@ class User {
 	async addChat<T>(
 		model: Model<T>,
 		userId: IUser | Types.ObjectId | string,
-		doc: IChat,
+		doc: any,
 		property: keyof IUser
 	) {
 		const profile = await model.findByIdAndUpdate(
@@ -127,7 +127,7 @@ class User {
 		const profile = await model.findByIdAndUpdate(
 			userId,
 			{ $pushAll: { [`chats.${property}`]: doc } },
-			{ arrayFilters: [{ "chats.to": toUserId }], new: true }
+			{ arrayFilters: [{ "chats.toUser": toUserId }], new: true }
 		);
 		if (profile) return profile.chats;
 	}
@@ -147,7 +147,7 @@ class User {
 		const profile = await model.findByIdAndUpdate(
 			userId,
 			{ $set: { [`${propertyA}.$[outer].${propertyB}`]: value } as AnyKeys<T> & AnyObject },
-			{ arrayFilters: [{ "outer.to": { $ne: toUserId } }], new: true }
+			{ arrayFilters: [{ "outer.toUser": { $ne: toUserId } }], new: true }
 		);
 		if (profile) return profile[propertyA];
 	}
@@ -166,7 +166,7 @@ class User {
 		const profile = await model.findByIdAndUpdate(
 			userId,
 			{ $set: { [`${propertyA}.$[outer].${propertyB}`]: { $sum: 1 } } as AnyKeys<T> & AnyObject },
-			{ arrayFilters: [{ "outer.to": { toUserId } }], new: true }
+			{ arrayFilters: [{ "outer.toUser": { toUserId } }], new: true }
 		);
 		if (profile) return profile[propertyA];
 	}

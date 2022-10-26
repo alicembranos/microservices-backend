@@ -51,8 +51,8 @@ class ChatService {
 			chats: IChat[];
 		}
 	>(model: Model<T>, fromUserId: IUser | Types.ObjectId | string, data: Partial<IChat>) {
-		const { to, messages } = data;
-		if (!to || !messages) throw new Error("Request body data missed");
+		const { toUser, messages } = data;
+		if (!toUser || !messages) throw new Error("Request body data missed");
 
 		//Update Sender User
 		const fromUser = await this.repository.getDocumentById(model, fromUserId);
@@ -61,17 +61,17 @@ class ChatService {
 		let updatedChatsSender: IChat[] | undefined;
 		let updatedChatsReceiver: IChat[] | undefined;
 
-		const chatSenderUser = fromUser?.chats.find((chat: IChat) => chat.to === to);
+		const chatSenderUser = fromUser?.chats.find((chat: IChat) => chat.toUser === toUser);
 
-		if (!chatSenderUser) {
-			const chats = { to, messages, current: true, pendingMessages: 0 } as IChat;
+		if (chatSenderUser === undefined) {
+			const chats = { toUser, messages, current: true, pendingMessages: 0 };
 			updatedChatsSender = await this.repository.addChat(model, fromUserId, chats, "chats");
 		} else {
 			updatedChatsSender = await this.repository.addMessageToChat(
 				model,
 				fromUserId,
 				messages,
-				to,
+				toUser,
 				"messages"
 			);
 		}
@@ -80,24 +80,24 @@ class ChatService {
 			model,
 			fromUserId,
 			true,
-			to,
+			toUser,
 			"chats",
 			"current"
 		);
 		//Update Receiver User
-		const toUser = await this.repository.getDocumentById(model, to);
-		if (!toUser) throw new Error("Receiver User does not exist");
+		const toUserReceiver = await this.repository.getDocumentById(model, toUser);
+		if (!toUserReceiver) throw new Error("Receiver User does not exist");
 
 		//!ANY
 		const chatReceiverUser = fromUser?.chats.find((chat: any) => chat.to === fromUserId);
 
 		if (!chatReceiverUser) {
 			const chats = { to: fromUserId, messages, current: false, pendingMessages: 0 };
-			updatedChatsReceiver = await this.repository.addChat(model, to, chats, "chats");
+			updatedChatsReceiver = await this.repository.addChat(model, toUser, chats, "chats");
 		} else {
 			updatedChatsReceiver = await this.repository.addMessageToChat(
 				model,
-				to,
+				toUser,
 				messages,
 				fromUserId,
 				"messages"
@@ -119,7 +119,7 @@ class ChatService {
 		const fromUser = await this.repository.getDocumentById(model, fromUserId);
 		if (!fromUser) throw new Error("User Request does not exist");
 
-		const chatMessages = fromUser.chats.find((chat: IChat) => chat.to === toUserId);
+		const chatMessages = fromUser.chats.find((chat: IChat) => chat.toUser === toUserId);
 		return formateData(chatMessages?.messages);
 	}
 
@@ -135,13 +135,16 @@ class ChatService {
 		if (!room) throw new Error("No current chat");
 
 		//TODO: If populate setted at getDocumentById function, remove this line
-		const toCurrentUser = await this.repository.getDocumentById(model, room.to);
+		const toCurrentUser = await this.repository.getDocumentById(model, room.toUser);
 		if (!toCurrentUser) throw new Error("Contact does not exist in the database");
 
 		return formateData(toCurrentUser);
 	}
 
-	async getPendingMessages<T extends { chats?: IChat[] }>(model: Model<T>, fromUserId: IUser | Types.ObjectId | string) {
+	async getPendingMessages<T extends { chats?: IChat[] }>(
+		model: Model<T>,
+		fromUserId: IUser | Types.ObjectId | string
+	) {
 		const fromUser = await this.repository.getDocumentById(model, fromUserId);
 		if (!fromUser) throw new Error("User Request does not exist");
 
@@ -157,11 +160,11 @@ class ChatService {
 		const fromUser = await this.repository.getDocumentById(model, fromUserId);
 		if (!fromUser) throw new Error("User Request does not exist");
 
-		const chat = fromUser?.chats.find((chat: IChat) => chat.to === toUserId);
+		const chat = fromUser?.chats.find((chat: IChat) => chat.toUser === toUserId);
 
 		if (chat) {
 			fromUser?.chats.map((chat: IChat) => {
-				if (chat.to === toUserId) {
+				if (chat.toUser === toUserId) {
 					chat.pendingMessages = 0;
 				}
 			});

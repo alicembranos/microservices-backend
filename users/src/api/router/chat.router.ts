@@ -11,14 +11,19 @@ export default (app) => {
 		"/chat/messages",
 		auth,
 		async ({ user: { sub: userId }, body }: Request, res: Response) => {
-			const { to, messages, users } = body;
+			const { toUser, messages, users } = body;
 
 			try {
-				const data = await chatService.updateMessages(database.User, userId, { to, messages });
-				await chatService.updatePendingMessages(database.User, userId, to, users);
+				const data = await chatService.updateMessages(database.User, userId, { toUser, messages });
+				const result = await chatService.updatePendingMessages(
+					database.User,
+					userId,
+					toUser,
+					users
+				);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
-				res.status(401).json({ ok: false, msg: handleError(error) });
+				res.status(400).json({ ok: false, msg: handleError(error) });
 			}
 		}
 	);
@@ -66,7 +71,7 @@ export default (app) => {
 		"/chat/deletePendingMessages",
 		auth,
 		async (
-			{ user: { sub: userId }, body: { id: toUserId } }: Request,
+			{ user: { sub: userId }, body: { toUserId } }: Request,
 			res: Response,
 			_next: NextFunction
 		) => {

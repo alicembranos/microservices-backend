@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -11,7 +11,7 @@ dotenv.config();
 export default async (app) => {
 	app.use(morgan("dev"));
 	app.use(helmet());
-	// app.use(cors());
+	app.use(cors());
 	app.use(express.json({ limit: "50mb" }));
 	app.use(express.urlencoded({ extended: true }));
 
