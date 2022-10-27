@@ -74,7 +74,7 @@ class ChatService {
 				toUser,
 				"messages"
 			);
-			await this.repository.updateNestedObjectInArrayBoolean(
+			const devuelvesTrue = await this.repository.updateNestedObjectInArrayBoolean(
 				model,
 				fromUserId,
 				true,
@@ -82,6 +82,7 @@ class ChatService {
 				"chats",
 				"current"
 			);
+			console.log(devuelvesTrue, "*********************")
 		}
 
 		await this.repository.updateNestedObjectInArrayNotEqual(
@@ -99,7 +100,7 @@ class ChatService {
 		//!ANY
 		//Update Receiver User
 		const castFromUserId = new Types.ObjectId(fromUserId as string);
-		const chatReceiverUser = fromUser?.chats.find((chat: any) => chat.toUser == fromUserId);
+		const chatReceiverUser = toUserReceiver?.chats.find((chat: any) => chat.toUser == fromUserId);
 		console.log("chat receiver********", chatReceiverUser);
 		if (chatReceiverUser === undefined) {
 			const chats = { toUser: fromUserId, messages, current: false, pendingMessages: 0 };

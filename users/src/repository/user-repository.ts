@@ -167,7 +167,7 @@ class User {
 		const profile = await model.findByIdAndUpdate(
 			userId,
 			{ $set: { [`${propertyA}.$[outer].${propertyB}`]: value } as AnyKeys<T> & AnyObject },
-			{ arrayFilters: [{ "outer.toUser": { toUserId } }], new: true }
+			{ arrayFilters: [{ "outer.toUser": toUserId }], new: true }
 		);
 		if (profile) return profile[propertyA];
 	}
