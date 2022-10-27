@@ -74,6 +74,14 @@ class ChatService {
 				toUser,
 				"messages"
 			);
+			await this.repository.updateNestedObjectInArrayBoolean(
+				model,
+				fromUserId,
+				true,
+				toUser,
+				"chats",
+				"current"
+			);
 		}
 
 		await this.repository.updateNestedObjectInArrayNotEqual(

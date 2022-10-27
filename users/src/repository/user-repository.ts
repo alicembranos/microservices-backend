@@ -152,6 +152,26 @@ class User {
 		if (profile) return profile[propertyA];
 	}
 
+	async updateNestedObjectInArrayBoolean<
+		T extends {
+			chats: IChat[];
+		}
+	>(
+		model: Model<T>,
+		userId: IUser | Types.ObjectId | string,
+		value: boolean,
+		toUserId: IUser | Types.ObjectId | string,
+		propertyA: keyof IUser,
+		propertyB: keyof IChat
+	) {
+		const profile = await model.findByIdAndUpdate(
+			userId,
+			{ $set: { [`${propertyA}.$[outer].${propertyB}`]: value } as AnyKeys<T> & AnyObject },
+			{ arrayFilters: [{ "outer.toUser": { toUserId } }], new: true }
+		);
+		if (profile) return profile[propertyA];
+	}
+
 	async updateNestedObjectInArray<
 		T extends {
 			chats: IChat[];
