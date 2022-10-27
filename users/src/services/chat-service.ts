@@ -92,15 +92,17 @@ class ChatService {
 			"chats",
 			"current"
 		);
-		//Update Receiver User
+
 		const toUserReceiver = await this.repository.getDocumentById(model, toUser);
 		if (!toUserReceiver) throw new Error("Receiver User does not exist");
 
 		//!ANY
-		const chatReceiverUser = fromUser?.chats.find((chat: any) => chat.to == fromUserId);
-
-		if (!chatReceiverUser) {
-			const chats = { to: fromUserId, messages, current: false, pendingMessages: 0 };
+		//Update Receiver User
+		const castFromUserId = new Types.ObjectId(fromUserId as string);
+		const chatReceiverUser = fromUser?.chats.find((chat: any) => chat.toUser == fromUserId);
+		console.log("chat receiver********", chatReceiverUser);
+		if (chatReceiverUser === undefined) {
+			const chats = { toUser: fromUserId, messages, current: false, pendingMessages: 0 };
 			updatedChatsReceiver = await this.repository.addChat(model, toUser, chats, "chats");
 		} else {
 			updatedChatsReceiver = await this.repository.addMessageToChat(
