@@ -173,7 +173,8 @@ class ChatService {
 
 		const chat = fromUser?.chats.find((chat: IChat) => chat.toUser == toUserId);
 
-		if (chat) {
+		if (chat !== undefined) {
+
 			fromUser?.chats.map((chat: IChat) => {
 				if (chat.toUser == toUserId) {
 					chat.pendingMessages = 0;
@@ -184,7 +185,8 @@ class ChatService {
 			const updatedChats = await this.repository.updateDocumentById(
 				model,
 				fromUserId,
-				fromUser?.chats
+				fromUser?.chats,
+				"chats"
 			);
 			return formateData(updatedChats);
 		}

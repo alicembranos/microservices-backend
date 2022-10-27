@@ -30,8 +30,14 @@ class User {
 		return await model.findOneAndUpdate({ _id }, { ...data }, { new: true });
 	}
 
-	async updateDocumentById<T>(model: Model<T>, id: string, data: Partial<T> | IChat[]) {
-		return await model.findByIdAndUpdate(id, { ...data }, { new: true });
+	async updateDocumentById<T>(model: Model<T>, id: string, data: Partial<T> | IChat[], property: keyof IUser) {
+
+		const profile = await model.findByIdAndUpdate(
+			id,
+			{ $set: { [property]: data } as AnyKeys<T> & AnyObject },
+			{ new: true }
+		);
+		if (profile) return profile[property];
 	}
 
 	async deleteDocument<T>(model: Model<T>, id: string) {
@@ -185,8 +191,8 @@ class User {
 	) {
 		const profile = await model.findByIdAndUpdate(
 			userId,
-			{ $set: { [`${propertyA}.$[outer].${propertyB}`]: { $sum: 1 } } as AnyKeys<T> & AnyObject },
-			{ arrayFilters: [{ "outer.toUser": { toUserId } }], new: true }
+			{ $inc: { [`${propertyA}.$[outer].${propertyB}`]: 1 } as AnyKeys<T> & AnyObject },
+			{ arrayFilters: [{ "outer.toUser": toUserId }], new: true }
 		);
 		if (profile) return profile[propertyA];
 	}
