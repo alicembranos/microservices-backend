@@ -68,10 +68,10 @@ class Spotify {
 		return await model.findByIdAndDelete(id);
 	}
 
-	async deleteFromArrayInDocument<T>(model: Model<T>, id: string, data: Partial<T>) {
+	async deleteFromArrayInDocument<T>(model: Model<T>, _id: string, data: Partial<T>) {
 		const populateField = selectFieldsToPopulate(model);
 		return await model
-			.findByIdAndUpdate(id, { $pull: { ...data } }, { new: true, limit:1 }) //only first ocurrence
+			.findOneAndUpdate({ _id }, { $pull: { ...data } }, { new: true }) //only first ocurrence
 			.populate(populateField)
 			.lean()
 			.exec();
