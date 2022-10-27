@@ -126,8 +126,8 @@ class User {
 	) {
 		const profile = await model.findByIdAndUpdate(
 			userId,
-			{ $pushAll: { [`chats.${property}`]: doc } },
-			{ arrayFilters: [{ "chats.toUser": toUserId }], new: true }
+			{ $push: { [`chats.$[outer].${property}`]: doc } as AnyKeys<T> & AnyObject },
+			{ arrayFilters: [{ "outer.toUser": toUserId }], new: true }
 		);
 		if (profile) return profile.chats;
 	}
