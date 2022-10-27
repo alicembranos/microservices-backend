@@ -13,8 +13,9 @@ export default (app) => {
 				const albums = await service.search(database.Album, param);
 				const artists = await service.search(database.Artist, param);
 				const tracks = await service.search(database.Track, param);
+				const playlists = await service.search(database.Playlist, param);
 
-				return res.status(200).json({ ok: true, data: { albums, artists, tracks } });
+				return res.status(200).json({ ok: true, data: { albums, artists, tracks, playlists } });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });
 			}

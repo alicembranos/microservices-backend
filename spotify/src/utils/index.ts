@@ -67,6 +67,7 @@ const convertParamToObject = <T>(model: Model<T>, data: string): ISearch => {
 			return { name: data };
 		case "Album":
 		case "Track":
+		case "Playlist":
 			return { title: data };
 		default:
 			return {};
