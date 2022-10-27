@@ -29,7 +29,7 @@ class ChatService {
 		users: Users[]
 	) {
 		const isConnected = users.find((user: Users) => user.id == toUserId);
-		if (!isConnected) {
+		if (isConnected === undefined) {
 			//Update Receiver User
 			const toUser = await this.repository.getDocumentById(model, toUserId);
 			if (!toUser) throw new Error("Receiver User does not exist");
@@ -82,7 +82,7 @@ class ChatService {
 				"chats",
 				"current"
 			);
-			console.log(devuelvesTrue, "*********************")
+			console.log(devuelvesTrue, "*********************");
 		}
 
 		await this.repository.updateNestedObjectInArrayNotEqual(
