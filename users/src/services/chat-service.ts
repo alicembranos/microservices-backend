@@ -28,7 +28,7 @@ class ChatService {
 		toUserId: IUser | Types.ObjectId | string,
 		users: Users[]
 	) {
-		const isConnected = users.find((user: Users) => user.id === toUserId);
+		const isConnected = users.find((user: Users) => user.id == toUserId);
 		if (!isConnected) {
 			//Update Receiver User
 			const toUser = await this.repository.getDocumentById(model, toUserId);
@@ -61,7 +61,7 @@ class ChatService {
 		let updatedChatsSender: IChat[] | undefined;
 		let updatedChatsReceiver: IChat[] | undefined;
 
-		const chatSenderUser = fromUser?.chats.find((chat: IChat) => chat.toUser === toUser);
+		const chatSenderUser = fromUser?.chats.find((chat: IChat) => chat.toUser == toUser);
 
 		if (chatSenderUser === undefined) {
 			const chats = { toUser, messages, current: true, pendingMessages: 0 };
@@ -89,7 +89,7 @@ class ChatService {
 		if (!toUserReceiver) throw new Error("Receiver User does not exist");
 
 		//!ANY
-		const chatReceiverUser = fromUser?.chats.find((chat: any) => chat.to === fromUserId);
+		const chatReceiverUser = fromUser?.chats.find((chat: any) => chat.to == fromUserId);
 
 		if (!chatReceiverUser) {
 			const chats = { to: fromUserId, messages, current: false, pendingMessages: 0 };
@@ -119,7 +119,7 @@ class ChatService {
 		const fromUser = await this.repository.getDocumentById(model, fromUserId);
 		if (!fromUser) throw new Error("User Request does not exist");
 
-		const chatMessages = fromUser.chats.find((chat: IChat) => chat.toUser === toUserId);
+		const chatMessages = fromUser.chats.find((chat: any) => chat.toUser == toUserId);
 		return formateData(chatMessages?.messages);
 	}
 
@@ -160,11 +160,11 @@ class ChatService {
 		const fromUser = await this.repository.getDocumentById(model, fromUserId);
 		if (!fromUser) throw new Error("User Request does not exist");
 
-		const chat = fromUser?.chats.find((chat: IChat) => chat.toUser === toUserId);
+		const chat = fromUser?.chats.find((chat: IChat) => chat.toUser == toUserId);
 
 		if (chat) {
 			fromUser?.chats.map((chat: IChat) => {
-				if (chat.toUser === toUserId) {
+				if (chat.toUser == toUserId) {
 					chat.pendingMessages = 0;
 				}
 			});
