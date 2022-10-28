@@ -34,7 +34,7 @@ class UserService {
             console.log("aqui llego");
             const token = yield (0, index_1.generateSignature)({ sub: user._id, username: user.username });
             const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: user._id, username: user.username });
-            return (0, index_1.formateData)({ token, refreshToken, username: user.username });
+            return (0, index_1.formateData)({ token, refreshToken, username: user.username, id: user._id });
         });
     }
     signUp(data) {

@@ -44,7 +44,7 @@ class UserService {
 		
 		const refreshToken = await generateRefreshSignature({ sub: user._id, username: user.username });
 
-		return formateData({ token, refreshToken, username: user.username });
+		return formateData({ token, refreshToken, username: user.username, id : user._id });
 	}
 
 	async signUp(data: ISignUp) {
