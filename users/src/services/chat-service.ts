@@ -88,7 +88,7 @@ class ChatService {
 		await this.repository.updateNestedObjectInArrayNotEqual(
 			model,
 			fromUserId,
-			true,
+			false,
 			toUser,
 			"chats",
 			"current"
@@ -98,8 +98,7 @@ class ChatService {
 		if (!toUserReceiver) throw new Error("Receiver User does not exist");
 
 		//!ANY
-		//Update Receiver User
-		const castFromUserId = new Types.ObjectId(fromUserId as string);
+		//Update Receiver Use
 		const chatReceiverUser = toUserReceiver?.chats.find((chat: any) => chat.toUser == fromUserId);
 		console.log("chat receiver********", chatReceiverUser);
 		if (chatReceiverUser === undefined) {
