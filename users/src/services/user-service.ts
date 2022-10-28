@@ -72,8 +72,10 @@ class UserService {
 		
 		const { username } = data;
 		//Check if user exist by username
-		const usernameExist = await this.repository.getDocumentByField(database.User, { username });
-		if (usernameExist) throw new Error("Username is already used. Please select a new one.");
+		if (username !== undefined) {
+			const usernameExist = await this.repository.getDocumentByField(database.User, { username });
+			if (usernameExist) throw new Error("Username is already used. Please select a new one.");		
+		}
 
 		const documentResult = await this.repository.updateDocument(model, id, data);
 		return formateData(documentResult);
