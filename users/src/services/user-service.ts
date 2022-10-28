@@ -69,7 +69,6 @@ class UserService {
 	}
 
 	async update<T extends { username?: string }>(model: Model<T>, id: string, data: Partial<T>) {
-		
 		const { username } = data;
 		//Check if user exist by username
 		if (username !== undefined) {

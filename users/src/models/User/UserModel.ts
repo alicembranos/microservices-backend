@@ -66,10 +66,9 @@ const UserSchema = new Schema<IUser>(
 		],
 		chats: [
 			{
-				to: {
+				toUser: {
 					type: Schema.Types.ObjectId,
 					ref: "User",
-					default: [],
 				},
 				current: { type: Boolean },
 				pendingMessages: {
@@ -83,6 +82,7 @@ const UserSchema = new Schema<IUser>(
 					},
 				],
 			},
+			{ default: [] },
 		],
 	},
 	{
