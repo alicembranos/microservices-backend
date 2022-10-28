@@ -32,7 +32,7 @@ class UserService {
 	}
 
 	async signUp(data: ISignUp) {
-		const { email, password, username, genres } = data;
+		const { email, password, username, genres, image } = data;
 
 		if (!email || !password || !username) throw new Error("Invalid credentials");
 
@@ -50,6 +50,7 @@ class UserService {
 			password: hashPassword,
 			username,
 			genres,
+			image
 		});
 
 		const token = await generateSignature({ sub: newUser._id, username });
