@@ -1,6 +1,7 @@
 import ISearch from "../interfaces/search.interface";
-import { Model } from "mongoose";
+import { LeanDocument, Model } from "mongoose";
 import { convertParamToObject, selectFieldsToPopulate } from "../utils/index";
+import ITrack from '../interfaces/track.interface';
 
 //Dealing with data base operations
 class Spotify {
@@ -15,7 +16,7 @@ class Spotify {
 
 	async getDocumentById<T>(model: Model<T>, id: string) {
 		const populateField = selectFieldsToPopulate(model);
-		return await model.findById(id).populate(populateField).lean().exec();
+		return await model.findById(id).populate(populateField);
 	}
 
 	async getDocumentByFilter<T>(model: Model<T>, data: Partial<T> | Array<Partial<T>>) {
@@ -68,14 +69,15 @@ class Spotify {
 		return await model.findByIdAndDelete(id);
 	}
 
-	async deleteFromArrayInDocument<T>(model: Model<T>, _id: string, data: Partial<T>) {
+	async deleteFromArrayInDocument<T>(model: Model<T>, id: string, data: LeanDocument<ITrack>[]) {
 		const populateField = selectFieldsToPopulate(model);
 		return await model
-			.findOneAndUpdate({ _id }, { $pull: { ...data } }, { new: true }) //only first ocurrence
+			.findByIdAndUpdate(id, { $set: { [`tracks`]: data }  }, { new: true }) //only first ocurrence
 			.populate(populateField)
 			.lean()
 			.exec();
 	}
+
 }
 
 export default Spotify;

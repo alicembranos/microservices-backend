@@ -1,7 +1,8 @@
-import ISearch from "../interfaces/search.interface";
 import { Model } from "mongoose";
 import Spotify from "../repository/spotify-repository";
 import { formateData } from "../utils/index";
+import IPlaylist from "../interfaces/playlist.interface";
+import ITrack from "interfaces/track.interface";
 
 //Spotify Business logic
 class SpotifyService {
@@ -51,9 +52,24 @@ class SpotifyService {
 		return formateData(documentResult);
 	}
 
-	async deleteFromArray<T>(model: Model<T>, id: string, data: Partial<T>) {
-		const documentResult = await this.repository.deleteFromArrayInDocument(model, id, data);
-		return formateData(documentResult);
+	async deleteFromArray(model: Model<IPlaylist>, id: string, data: string) {
+		const document = await this.repository.getDocumentById(model, id);
+		if (document !== undefined) {
+			const selectedArrayDocument = document?.tracks as ITrack[];
+			for (let index = 0; index < selectedArrayDocument.length; index++) {
+				if (selectedArrayDocument[index]._id.toString() === data) {
+					selectedArrayDocument?.splice(index, 1);
+					break;
+				}
+			}
+			const documentResult = await this.repository.deleteFromArrayInDocument(
+				model,
+				id,
+				selectedArrayDocument
+			);
+			return formateData(documentResult);
+		}
+		throw new Error("Deleted not suceeded");
 	}
 
 	async getLibraryPayload<T>(

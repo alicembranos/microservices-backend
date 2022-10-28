@@ -80,7 +80,8 @@ export default (app, channel: Channel) => {
 		auth,
 		async ({ params: { id }, body }: Request, res: Response, _next: NextFunction) => {
 			try {
-				const data = await service.deleteFromArray(database.Playlist, id, body);
+				const { tracks } = body;
+				const data = await service.deleteFromArray(database.Playlist, id, tracks);
 				return res.status(200).json({ ok: true, data });
 			} catch (error) {
 				res.status(400).json({ ok: false, msg: handleError(error) });
