@@ -45,7 +45,7 @@ var auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"
 var index_2 = require("../../utils/index");
 var config_1 = __importDefault(require("../../config/config"));
 var cloudinary_1 = require("../../utils/cloudinary/cloudinary");
-var uuid4_1 = __importDefault(require("uuid4"));
+var uuid_1 = require("uuid");
 exports.default = (function (app, channel) {
     var service = new spotify_service_1.default();
     app.get("/track", function (_req, res, _next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -81,7 +81,7 @@ exports.default = (function (app, channel) {
                     case 1:
                         result = _b.sent();
                         trackAudio = result === null || result === void 0 ? void 0 : result.secure_url;
-                        _id = (0, uuid4_1.default)();
+                        _id = (0, uuid_1.v4)();
                         duration = result === null || result === void 0 ? void 0 : result.duration;
                         trackNumber = Math.floor(Math.random() * (16 - 1) + 1);
                         album = undefined;

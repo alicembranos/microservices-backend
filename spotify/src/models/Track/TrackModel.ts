@@ -29,7 +29,7 @@ const TrackSchema = new Schema<ITrack>(
 		},
 		image: {
 			type: Schema.Types.String,
-			default: "https://www.rootzwiki.com/attachments/unkownalbum-jpg.19745/"
+			default: "https://res.cloudinary.com/juancarlos/image/upload/v1667322269/descarga_xww0ig.jpg"
 		},
 	},
 	{ timestamps: true }

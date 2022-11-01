@@ -56,7 +56,7 @@ exports.default = (function (app) { return __awaiter(void 0, void 0, void 0, fun
                 app.use((0, helmet_1.default)());
                 app.use((0, cors_1.default)());
                 app.use(express_1.default.json({ limit: "50mb" }));
-                app.use(express_1.default.urlencoded({ extended: true }));
+                app.use(express_1.default.urlencoded({ extended: true, limit: "50mb" }));
                 return [4 /*yield*/, (0, index_1.createChannel)()];
             case 1:
                 channel = _a.sent();
