@@ -8,7 +8,7 @@ import { Channel } from "amqplib";
 import config from "../../config/config";
 import { uploadTrack } from "../../utils/cloudinary/cloudinary";
 import uuid4 from "uuid4";
-import IAlbum from "../../interfaces/album.interface";
+
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
