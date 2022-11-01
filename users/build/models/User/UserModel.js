@@ -63,6 +63,26 @@ var UserSchema = new mongoose_1.Schema({
             album: { _id: { type: String }, title: { type: String } },
         },
     ],
+    chats: [
+        {
+            toUser: {
+                type: mongoose_1.Schema.Types.ObjectId,
+                ref: "User",
+            },
+            current: { type: Boolean },
+            pendingMessages: {
+                type: Number,
+                default: 0,
+            },
+            messages: [
+                {
+                    type: String,
+                    default: [],
+                },
+            ],
+        },
+        { default: [] },
+    ],
 }, {
     timestamps: true,
     toJSON: {

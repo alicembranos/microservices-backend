@@ -152,13 +152,25 @@ var SpotifyService = /** @class */ (function () {
     };
     SpotifyService.prototype.deleteFromArray = function (model, id, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var documentResult;
+            var document, selectedArrayDocument, index, documentResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.deleteFromArrayInDocument(model, id, data)];
+                    case 0: return [4 /*yield*/, this.repository.getDocumentById(model, id)];
                     case 1:
+                        document = _a.sent();
+                        if (!(document !== undefined)) return [3 /*break*/, 3];
+                        selectedArrayDocument = document === null || document === void 0 ? void 0 : document.tracks;
+                        for (index = 0; index < selectedArrayDocument.length; index++) {
+                            if (selectedArrayDocument[index]._id.toString() === data) {
+                                selectedArrayDocument === null || selectedArrayDocument === void 0 ? void 0 : selectedArrayDocument.splice(index, 1);
+                                break;
+                            }
+                        }
+                        return [4 /*yield*/, this.repository.deleteFromArrayInDocument(model, id, selectedArrayDocument)];
+                    case 2:
                         documentResult = _a.sent();
                         return [2 /*return*/, (0, index_1.formateData)(documentResult)];
+                    case 3: throw new Error("Deleted not suceeded");
                 }
             });
         });

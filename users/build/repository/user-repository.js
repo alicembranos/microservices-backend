@@ -109,6 +109,22 @@ var User = /** @class */ (function () {
             });
         });
     };
+    User.prototype.updateDocumentById = function (model, id, data, property) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(id, { $set: (_a = {}, _a[property] = data, _a) }, { new: true })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile[property]];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     User.prototype.deleteDocument = function (model, id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -130,7 +146,6 @@ var User = /** @class */ (function () {
                             _a))];
                     case 1:
                         inLibrary = _d.sent();
-                        console.log(inLibrary, "******************");
                         if (!inLibrary) {
                             return [2 /*return*/, undefined];
                         }
@@ -192,6 +207,87 @@ var User = /** @class */ (function () {
                         profile = _b.sent();
                         if (profile)
                             return [2 /*return*/, profile.playlists];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    //! If works, make it generic with addPlaylist
+    User.prototype.addChat = function (model, userId, doc, property) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $push: (_a = {}, _a[property] = doc, _a) }, { new: true })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile[property]];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    User.prototype.addMessageToChat = function (model, userId, doc, toUserId, property) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $push: (_a = {}, _a["chats.$[outer].".concat(property)] = doc, _a) }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile.chats];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    User.prototype.updateNestedObjectInArrayNotEqual = function (model, userId, value, toUserId, propertyA, propertyB) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $set: (_a = {}, _a["".concat(propertyA, ".$[outer].").concat(propertyB)] = value, _a) }, { arrayFilters: [{ "outer.toUser": { $ne: toUserId } }], new: true })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile[propertyA]];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    User.prototype.updateNestedObjectInArrayBoolean = function (model, userId, value, toUserId, propertyA, propertyB) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $set: (_a = {}, _a["".concat(propertyA, ".$[outer].").concat(propertyB)] = value, _a) }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile[propertyA]];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    User.prototype.updateNestedObjectInArray = function (model, userId, toUserId, propertyA, propertyB) {
+        return __awaiter(this, void 0, void 0, function () {
+            var profile;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $inc: (_a = {}, _a["".concat(propertyA, ".$[outer].").concat(propertyB)] = 1, _a) }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true })];
+                    case 1:
+                        profile = _b.sent();
+                        if (profile)
+                            return [2 /*return*/, profile[propertyA]];
                         return [2 /*return*/];
                 }
             });

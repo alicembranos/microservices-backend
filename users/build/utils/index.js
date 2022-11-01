@@ -96,7 +96,7 @@ var handleError = function (error) {
     if (error instanceof Error) {
         return error.message;
     }
-    return "Unexpected error";
+    return error;
 };
 exports.handleError = handleError;
 var generateSalt = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -163,7 +163,7 @@ var createChannel = function () { return __awaiter(void 0, void 0, void 0, funct
                 return [2 /*return*/, channel];
             case 4:
                 error_1 = _a.sent();
-                throw new Error(handleError(error_1));
+                throw error_1;
             case 5: return [2 /*return*/];
         }
     });

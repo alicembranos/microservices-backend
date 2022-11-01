@@ -153,12 +153,13 @@ exports.default = (function (app, channel) {
     app.delete("/playlist/tracks/:id", auth_middleware_1.default, function (_a, res, _next) {
         var id = _a.params.id, body = _a.body;
         return __awaiter(void 0, void 0, void 0, function () {
-            var data, error_5;
+            var tracks, data, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, service.deleteFromArray(index_1.default.Playlist, id, body)];
+                        tracks = body.tracks;
+                        return [4 /*yield*/, service.deleteFromArray(index_1.default.Playlist, id, tracks)];
                     case 1:
                         data = _b.sent();
                         return [2 /*return*/, res.status(200).json({ ok: true, data: data })];

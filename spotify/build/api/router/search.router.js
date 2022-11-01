@@ -47,11 +47,11 @@ exports.default = (function (app) {
     app.get("/search/:param", function (_a, res, _next) {
         var param = _a.params.param;
         return __awaiter(void 0, void 0, void 0, function () {
-            var albums, artists, tracks, error_1;
+            var albums, artists, tracks, playlists, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 4, , 5]);
+                        _b.trys.push([0, 5, , 6]);
                         return [4 /*yield*/, service.search(index_1.default.Album, param)];
                     case 1:
                         albums = _b.sent();
@@ -61,12 +61,15 @@ exports.default = (function (app) {
                         return [4 /*yield*/, service.search(index_1.default.Track, param)];
                     case 3:
                         tracks = _b.sent();
-                        return [2 /*return*/, res.status(200).json({ ok: true, data: { albums: albums, artists: artists, tracks: tracks } })];
+                        return [4 /*yield*/, service.search(index_1.default.Playlist, param)];
                     case 4:
+                        playlists = _b.sent();
+                        return [2 /*return*/, res.status(200).json({ ok: true, data: { albums: albums, artists: artists, tracks: tracks, playlists: playlists } })];
+                    case 5:
                         error_1 = _b.sent();
                         res.status(400).json({ ok: false, msg: (0, utils_1.handleError)(error_1) });
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

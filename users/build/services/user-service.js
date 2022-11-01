@@ -74,11 +74,11 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.signUp = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var email, password, username, genres, user, usernameExist, hashPassword, newUser, token;
+            var email, password, username, genres, image, user, usernameExist, hashPassword, newUser, token;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        email = data.email, password = data.password, username = data.username, genres = data.genres;
+                        email = data.email, password = data.password, username = data.username, genres = data.genres, image = data.image;
                         if (!email || !password || !username)
                             throw new Error("Invalid credentials");
                         return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { email: email })];
@@ -99,6 +99,7 @@ var UserService = /** @class */ (function () {
                                 password: hashPassword,
                                 username: username,
                                 genres: genres,
+                                image: image
                             })];
                     case 4:
                         newUser = _a.sent();
@@ -143,13 +144,15 @@ var UserService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         username = data.username;
+                        if (!(username !== undefined)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { username: username })];
                     case 1:
                         usernameExist = _a.sent();
                         if (usernameExist)
                             throw new Error("Username is already used. Please select a new one.");
-                        return [4 /*yield*/, this.repository.updateDocument(model, id, data)];
-                    case 2:
+                        _a.label = 2;
+                    case 2: return [4 /*yield*/, this.repository.updateDocument(model, id, data)];
+                    case 3:
                         documentResult = _a.sent();
                         return [2 /*return*/, (0, index_1.formateData)(documentResult)];
                 }

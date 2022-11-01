@@ -7,8 +7,7 @@ import { publishMessage, handleError } from "../../utils/index";
 import { Channel } from "amqplib";
 import config from "../../config/config";
 import { uploadTrack } from "../../utils/cloudinary/cloudinary";
-import uuid4 from "uuid4";
-
+import { v4 as uuidv4 } from 'uuid';
 
 export default (app, channel: Channel) => {
 	const service = new SpotifyService();
@@ -31,7 +30,7 @@ export default (app, channel: Channel) => {
 			const result = await uploadTrack(trackAudio);
 			trackAudio = result?.secure_url;
 
-			const _id = uuid4();
+			const _id = uuidv4();
 			const duration = result?.duration;
 			const trackNumber = Math.floor(Math.random() * (16 - 1) + 1);
 			const album = undefined; //default

@@ -82,7 +82,7 @@ var Spotify = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         populateField = (0, index_1.selectFieldsToPopulate)(model);
-                        return [4 /*yield*/, model.findById(id).populate(populateField).lean().exec()];
+                        return [4 /*yield*/, model.findById(id).populate(populateField)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -180,16 +180,17 @@ var Spotify = /** @class */ (function () {
     Spotify.prototype.deleteFromArrayInDocument = function (model, id, data) {
         return __awaiter(this, void 0, void 0, function () {
             var populateField;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         populateField = (0, index_1.selectFieldsToPopulate)(model);
                         return [4 /*yield*/, model
-                                .findByIdAndUpdate(id, { $pull: __assign({}, data) }, { new: true, limit: 1 }) //only first ocurrence
+                                .findByIdAndUpdate(id, { $set: (_a = {}, _a["tracks"] = data, _a) }, { new: true }) //only first ocurrence
                                 .populate(populateField)
                                 .lean()
                                 .exec()];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });

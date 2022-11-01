@@ -822,8 +822,8 @@
         "/search/{param}": {
             "get": {
                 "tags": ["Search"],
-                "summary": "Search albums/artists/tracks",
-                "description": "Search endpoint for filtering albums, artists and tracks with the given param",
+                "summary": "Search albums/artists/tracks/playlists",
+                "description": "Search endpoint for filtering albums, artists, tracks and playlists with the given param",
                 "parameters": [
                     {
                         "type": "string",
@@ -1054,7 +1054,8 @@
             "properties": {
                 "albums": { "type": "array", "example": [] },
                 "artists": { "type": "array", "example": [] },
-                "tracks": { "type": "array", "example": [] }
+                "tracks": { "type": "array", "example": [] },
+                "playlists": { "type": "array", "example": [] }
             }
         },
         "AddTrackToPlaylist": {

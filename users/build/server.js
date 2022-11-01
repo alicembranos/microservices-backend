@@ -43,6 +43,7 @@ var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var helmet_1 = __importDefault(require("helmet"));
 var morgan_1 = __importDefault(require("morgan"));
+var cors_1 = __importDefault(require("cors"));
 var index_1 = require("./utils/index");
 var index_2 = require("./api/index");
 dotenv_1.default.config();
@@ -53,13 +54,14 @@ exports.default = (function (app) { return __awaiter(void 0, void 0, void 0, fun
             case 0:
                 app.use((0, morgan_1.default)("dev"));
                 app.use((0, helmet_1.default)());
-                // app.use(cors());
+                app.use((0, cors_1.default)());
                 app.use(express_1.default.json({ limit: "50mb" }));
-                app.use(express_1.default.urlencoded({ extended: true }));
+                app.use(express_1.default.urlencoded({ extended: true, limit: "50mb" }));
                 return [4 /*yield*/, (0, index_1.createChannel)()];
             case 1:
                 channel = _a.sent();
                 (0, index_2.user)(app, channel);
+                (0, index_2.chat)(app);
                 app.use("/", function (_req, res) {
                     res.status(200).send("Hello from User Server");
                 });

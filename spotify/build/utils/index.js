@@ -145,6 +145,7 @@ var convertParamToObject = function (model, data) {
             return { name: data };
         case "Album":
         case "Track":
+        case "Playlist":
             return { title: data };
         default:
             return {};

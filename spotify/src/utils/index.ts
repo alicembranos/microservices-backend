@@ -31,11 +31,11 @@ const formateData = (data: any) => {
 	return data;
 };
 
-const handleError = (error: unknown): string => {
+const handleError = (error: unknown): string | unknown => {
 	if (error instanceof Error) {
 		return error.message;
 	}
-	return "Unexpected error";
+	return error;
 };
 
 const generateSalt = async (): Promise<string> => {
@@ -82,7 +82,7 @@ const createChannel = async (): Promise<Channel> => {
 		await channel.assertQueue(config.app.EXCHANGE_NAME as string, { durable: true });
 		return channel;
 	} catch (error) {
-		throw new Error(handleError(error));
+		throw error;
 	}
 };
 
