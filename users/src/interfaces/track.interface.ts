@@ -7,5 +7,4 @@ export default interface ITrack {
 	trackNumber: number;
 	trackAudio: string;
 	album: IAlbum;
-
 }
