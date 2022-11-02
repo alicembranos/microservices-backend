@@ -23,7 +23,6 @@ const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	}
 };
 
-//TODO: Refactor
 const formateData = (data: any) => {
 	if (data?.length === 0 || !data) {
 		throw new Error("Data Not found!");
@@ -51,7 +50,6 @@ const validatePassword = async (enteredPassword: string, hashedPassword: string)
 	return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
-//! Expires token is modified
 const generateSignature = (payload: IPayload) => {
 	return jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "5d" });
 };

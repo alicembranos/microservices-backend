@@ -20,7 +20,6 @@ const TrackSchema = new Schema<ITrack>(
 		},
 		trackAudio: {
 			type: String,
-			// required: true,
 		},
 		album: {
 			type: Schema.Types.String,

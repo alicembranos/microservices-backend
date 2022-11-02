@@ -31,7 +31,6 @@ This application supports a range of demonstration, and learning scenarios, such
 - [Contributing](#contributing)
 - [Contributors](#contributors)
 
-
 ---
 
 # 🗃️ Architecture & Core App Components
@@ -165,6 +164,8 @@ Swagger is generated dynamically by the Node implementation, using **express-swa
 | /playlist/{id}           | DELETE        | DELETE        | Delete playlist                    |
 | /playlist/tracks/{id}    | PATCH         | UPDATE        | Add track to playlist              |
 | /playlist/tracks/{id}    | DELETE        | DELETE        | Delete track to playlist           |
+| SEARCH ----------------- | ------------- | ------------- | ---------------------------------- |
+| /search?key=value        | GET           | READ          | Search artists/albums/tracks       |
 
 #### Swagger / OpenAPI
 
@@ -242,11 +243,11 @@ Playlist {
 
 ![architecture](./assets/images/jwt-redis.png)
 
-Token based authentication system using jwt with access, refresh token mechaninsm and token blacklist once the user has logged out.
+Token based authentication system using jwt with access, refresh token mechanism and token blacklist once the user has logged out.
 
-Everytime the login or register flow is success, it will produce a token with expire time of 15 min and a refresh token with expire time of 30 days. The refresh token will be store in the memory cache using redis with a key - value = userId - refreshToken. Every private endpoint will pass through the authentication middleware to validate the authorization. If success , a req.user object will be create. 
+Everytime the login or register flow is success, it will produce a token with an expire time of 15 min and a refresh token with an expire time of 30 days. The refresh token will be store in the memory cache using redis with a key - value = userId - refreshToken. Every private endpoint will pass through the authentication middleware to validate the authorization. If success , a req.user object will be create. 
 
-If the client make a htttp request with an expired token, it must fetch to /token endpoint to get a new token. This /token endpoint will check if the userId key exists in the memory cache and if it's true, the server will respond with a new token.
+If the client make a htttp request with an expired token, it must fetch to **/token** endpoint to get a new token. This **/token** endpoint will check if the userId key exists in the memory cache and if it's true, the server will respond with a new token.
 
 On the logout process, the refrech token of the logged out user will remove from the memory cache, and the token will be add to the blacklist in the memory cache to avoid using still validated tokens.
 

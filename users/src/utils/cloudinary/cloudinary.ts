@@ -1,4 +1,4 @@
-import cloudinary, { UploadApiResponse } from "cloudinary";
+import cloudinary from "cloudinary";
 
 const cloudinaryAuth = cloudinary.v2;
 cloudinaryAuth.config({

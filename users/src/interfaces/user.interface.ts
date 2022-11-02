@@ -3,7 +3,6 @@ import IArtist from "./artist.interface";
 import IPlaylist from "./playlist.interface";
 import ITrack from "./track.interface";
 import IChat from "./chat.interface";
-import { Document } from "mongoose";
 
 export default interface IUser{
 	username: string;

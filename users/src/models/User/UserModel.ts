@@ -6,7 +6,6 @@ const UserSchema = new Schema<IUser>(
 		username: {
 			type: String,
 			required: true,
-			//TODO: Username must be unique, check it at signup process
 		},
 		email: {
 			type: String,
@@ -49,7 +48,6 @@ const UserSchema = new Schema<IUser>(
 				_id: { type: String, require: true },
 				image: { type: String },
 				title: { type: String },
-				//! Do I need take every fields?
 				artist: { _id: { type: String }, name: { type: String } },
 			},
 		],

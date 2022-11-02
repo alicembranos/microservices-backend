@@ -1,6 +1,5 @@
 
 interface BodyPayload {
-	// [key: string]: string;
 	_id: string;
 }
 

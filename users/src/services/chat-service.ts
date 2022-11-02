@@ -97,7 +97,6 @@ class ChatService {
 		const toUserReceiver = await this.repository.getDocumentById(model, toUser);
 		if (!toUserReceiver) throw new Error("Receiver User does not exist");
 
-		//!ANY
 		//Update Receiver Use
 		const chatReceiverUser = toUserReceiver?.chats.find((chat: any) => chat.toUser == fromUserId);
 		console.log("chat receiver********", chatReceiverUser);
@@ -144,7 +143,6 @@ class ChatService {
 		const room = fromUser.chats.find((chat: IChat) => chat.current === true);
 		if (!room) throw new Error("No current chat");
 
-		//TODO: If populate setted at getDocumentById function, remove this line
 		const toCurrentUser = await this.repository.getDocumentById(model, room.toUser);
 		if (!toCurrentUser) throw new Error("Contact does not exist in the database");
 
