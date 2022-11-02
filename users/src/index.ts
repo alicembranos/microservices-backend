@@ -15,7 +15,6 @@ const StartServer = async () => {
 			// await seedDatabase();
 
 			serverApp(app);
-			// initSwagger(app);
 
 			app.listen(config.app.PORT, () => {
 				config.logger.info(`User is Listening at port ${config.app.PORT}`);
