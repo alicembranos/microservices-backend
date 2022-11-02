@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -31,45 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initSwagger = exports.subscribeMessage = exports.publishMessage = exports.createChannel = exports.handleError = exports.generatePassword = exports.validateSignature = exports.generateSignature = exports.validatePassword = exports.formateData = exports.selectFieldsToPopulate = void 0;
-var bcrypt_1 = __importDefault(require("bcrypt"));
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var config_1 = __importDefault(require("../config/config"));
-var amqplib_1 = __importDefault(require("amqplib"));
-var swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-var swaggerDocument = __importStar(require("../documentation/swagger/swagger.json"));
-var selectFieldsToPopulate = function (model) {
+exports.subscribeMessage = exports.publishMessage = exports.createChannel = exports.handleError = exports.generatePassword = exports.existTokenInBlacklist = exports.addTokenToBlacklist = exports.deleteUserCacheToken = exports.validateRefreshSignature = exports.generateRefreshSignature = exports.validateSignature = exports.generateSignature = exports.validatePassword = exports.formateData = exports.selectFieldsToPopulate = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const config_1 = __importDefault(require("../config/config"));
+const amqplib_1 = __importDefault(require("amqplib"));
+const initRedis_1 = __importDefault(require("./initRedis"));
+const selectFieldsToPopulate = (model) => {
     switch (model.modelName) {
         case "Artist":
             return ["tracks", "albums"];
@@ -84,121 +33,125 @@ var selectFieldsToPopulate = function (model) {
     }
 };
 exports.selectFieldsToPopulate = selectFieldsToPopulate;
-var formateData = function (data) {
+const formateData = (data) => {
     if (data) {
         return data;
     }
-    // throw new Error("Data Not found!");
     console.log("Error: Data not found!");
 };
 exports.formateData = formateData;
-var handleError = function (error) {
+const handleError = (error) => {
     if (error instanceof Error) {
         return error.message;
     }
     return error;
 };
 exports.handleError = handleError;
-var generateSalt = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-var generatePassword = function (password) { return __awaiter(void 0, void 0, void 0, function () {
-    var salt;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, generateSalt()];
-            case 1:
-                salt = _a.sent();
-                return [4 /*yield*/, bcrypt_1.default.hash(password, salt)];
-            case 2: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
+const generateSalt = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield bcrypt_1.default.genSalt(10);
+});
+const generatePassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
+    const salt = yield generateSalt();
+    return yield bcrypt_1.default.hash(password, salt);
+});
 exports.generatePassword = generatePassword;
-var validatePassword = function (enteredPassword, hashedPassword) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, bcrypt_1.default.compare(enteredPassword, hashedPassword)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
+const validatePassword = (enteredPassword, hashedPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield bcrypt_1.default.compare(enteredPassword, hashedPassword);
+});
 exports.validatePassword = validatePassword;
-//! Expires token is modified
-var generateSignature = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY, { expiresIn: "5d" })];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
+const generateSignature = (payload) => {
+    return new Promise((resolve, reject) => {
+        jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY, { expiresIn: config_1.default.app.PRIVATE_EXPIRATION_TIME }, (error, token) => {
+            if (error)
+                return reject(error);
+            resolve(token);
+        });
     });
-}); };
+};
 exports.generateSignature = generateSignature;
-var validateSignature = function (auth) {
-    var payload = jsonwebtoken_1.default.verify(auth.split(" ")[1], config_1.default.app.PRIVATE_KEY);
-    return payload;
+const generateRefreshSignature = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    return new Promise((resolve, reject) => {
+        jsonwebtoken_1.default.sign(payload, config_1.default.app.PRIVATE_KEY_REFRESH, { expiresIn: config_1.default.app.PRIVATE_EXPIRATION_TIME_REFRESH }, (error, token) => __awaiter(void 0, void 0, void 0, function* () {
+            if (error)
+                return reject(error);
+            initRedis_1.default.set(payload.sub.toString(), token, { EX: 31104000 });
+            resolve(token);
+        }));
+    });
+});
+exports.generateRefreshSignature = generateRefreshSignature;
+const validateSignature = (auth) => {
+    return new Promise((resolve, reject) => {
+        jsonwebtoken_1.default.verify(auth.split(" ")[1], config_1.default.app.PRIVATE_KEY, (error, payload) => {
+            if (error)
+                return reject(error);
+            resolve(payload);
+        });
+    });
 };
 exports.validateSignature = validateSignature;
-//Message broker
-var createChannel = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var connection, channel, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 4, , 5]);
-                return [4 /*yield*/, amqplib_1.default.connect(config_1.default.app.MSG_QUEUE_URL)];
-            case 1:
-                connection = _a.sent();
-                return [4 /*yield*/, connection.createChannel()];
-            case 2:
-                channel = _a.sent();
-                return [4 /*yield*/, channel.assertQueue(config_1.default.app.EXCHANGE_NAME, { durable: true })];
-            case 3:
-                _a.sent();
-                return [2 /*return*/, channel];
-            case 4:
-                error_1 = _a.sent();
-                throw error_1;
-            case 5: return [2 /*return*/];
-        }
+const validateRefreshSignature = (auth) => __awaiter(void 0, void 0, void 0, function* () {
+    return new Promise((resolve, reject) => {
+        jsonwebtoken_1.default.verify(auth, config_1.default.app.PRIVATE_KEY_REFRESH, (error, payload) => __awaiter(void 0, void 0, void 0, function* () {
+            var _a;
+            if (error)
+                return reject(error);
+            const refreshToken = yield initRedis_1.default.get((_a = payload === null || payload === void 0 ? void 0 : payload.sub) === null || _a === void 0 ? void 0 : _a.toString());
+            if (!refreshToken)
+                reject("Unauthorized");
+            if (refreshToken === auth) {
+                resolve(payload);
+            }
+            reject("Unauthorized");
+        }));
     });
-}); };
+});
+exports.validateRefreshSignature = validateRefreshSignature;
+const deleteUserCacheToken = (sub) => __awaiter(void 0, void 0, void 0, function* () {
+    yield initRedis_1.default.del(sub.toString());
+});
+exports.deleteUserCacheToken = deleteUserCacheToken;
+const addTokenToBlacklist = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    yield initRedis_1.default.lPush("token-blacklist", token);
+    yield initRedis_1.default.expire("token-blacklist", 3600, "NX"); //1 hour
+});
+exports.addTokenToBlacklist = addTokenToBlacklist;
+const existTokenInBlacklist = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const exist = yield initRedis_1.default.lPos("token-blacklist", token.split(" ")[1]);
+    if (typeof exist === "object" && exist === null)
+        return false;
+    return true;
+});
+exports.existTokenInBlacklist = existTokenInBlacklist;
+//Message broker
+const createChannel = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const connection = yield amqplib_1.default.connect(config_1.default.app.MSG_QUEUE_URL);
+        const channel = yield connection.createChannel();
+        yield channel.assertQueue(config_1.default.app.EXCHANGE_NAME, { durable: true });
+        return channel;
+    }
+    catch (error) {
+        throw error;
+    }
+});
 exports.createChannel = createChannel;
-var publishMessage = function (channel, service, msg) {
+const publishMessage = (channel, service, msg) => {
     channel.publish(config_1.default.app.EXCHANGE_NAME, service, Buffer.from(msg));
     console.log("Sent: ", msg);
 };
 exports.publishMessage = publishMessage;
-var subscribeMessage = function (channel, service) { return __awaiter(void 0, void 0, void 0, function () {
-    var q;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, channel.assertExchange(config_1.default.app.EXCHANGE_NAME, "direct", { durable: true })];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, channel.assertQueue("", { exclusive: true })];
-            case 2:
-                q = _a.sent();
-                console.log("Waiting for messages in queue: ".concat(q.queue));
-                channel.bindQueue(q.queue, config_1.default.app.EXCHANGE_NAME, config_1.default.app.USER_SERVICE);
-                channel.consume(q.queue, function (msg) {
-                    if (msg === null || msg === void 0 ? void 0 : msg.content) {
-                        console.log("The message is :", msg.content.toString());
-                        service.subscribeEvents(msg.content.toString());
-                    }
-                    console.log("[X] received");
-                }, { noAck: true });
-                return [2 /*return*/];
+const subscribeMessage = (channel, service) => __awaiter(void 0, void 0, void 0, function* () {
+    yield channel.assertExchange(config_1.default.app.EXCHANGE_NAME, "direct", { durable: true });
+    const q = yield channel.assertQueue("", { exclusive: true });
+    console.log(`Waiting for messages in queue: ${q.queue}`);
+    channel.bindQueue(q.queue, config_1.default.app.EXCHANGE_NAME, config_1.default.app.USER_SERVICE);
+    channel.consume(q.queue, (msg) => {
+        if (msg === null || msg === void 0 ? void 0 : msg.content) {
+            console.log("The message is :", msg.content.toString());
+            service.subscribeEvents(msg.content.toString());
         }
-    });
-}); };
+        console.log("[X] received");
+    }, { noAck: true });
+});
 exports.subscribeMessage = subscribeMessage;
-var initSwagger = function (app) {
-    app.use("/swagger", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
-};
-exports.initSwagger = initSwagger;

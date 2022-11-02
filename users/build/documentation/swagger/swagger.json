@@ -73,7 +73,7 @@
                     "200": {
                         "description": "Successful operation",
                         "schema": {
-                            "$ref": "#/definitions/TokenResponse"
+                            "$ref": "#/definitions/TokenSignupin"
                         }
                     },
                     "400": {
@@ -109,7 +109,82 @@
                     "200": {
                         "description": "Successful operation",
                         "schema": {
+                            "$ref": "#/definitions/TokenSignupin"
+                        }
+                    },
+                    "400": {
+                        "description": "Database Error Exception",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        },
+                        "examples": {
+                            "ok": false,
+                            "msg": "Invalid request"
+                        }
+                    }
+                }
+            }
+        },
+        "/token": {
+            "post": {
+                "tags": ["Users"],
+                "summary": "Get new token",
+                "description": "Get new token after expired the last one",
+                "security": [{ "Bearer": [] }],
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/definitions/RefresTokenBody"
+                        },
+                        "in": "body",
+                        "name": "RefresTokenBody",
+                        "required": true,
+                        "description": "Refresh token to get new token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
                             "$ref": "#/definitions/TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Database Error Exception",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        },
+                        "examples": {
+                            "ok": false,
+                            "msg": "Invalid request"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "delete": {
+                "tags": ["Users"],
+                "summary": "Logout",
+                "description": "Session Logout",
+                "security": [{ "Bearer": [] }],
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/definitions/RefresTokenBody"
+                        },
+                        "in": "body",
+                        "name": "RefresTokenBody",
+                        "required": true,
+                        "description": "Refresh token to remove from redis"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "examples": {
+                            "ok": true,
+                            "msg": "Successfully logout"
                         }
                     },
                     "400": {
@@ -463,6 +538,15 @@
             "properties": {
                 "email": { "type": "string", "example": "superman@gmail.com" },
                 "password": { "type": "string", "example": "**********" }
+            }
+        },
+        "RefresTokenBody": {
+            "title": "RefresTokenBody",
+            "properties": {
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ5MDJiMThjOGU0YzgxNWYxZjYwNTkiLCJ1c2VybmFtZSI6ImFzc2VtYmxlclBpZmUiLCJpYXQiOjE2NjU3MjkyMDEsImV4cCI6MTY2NjE2MTIwMX0.Ows6QJhgRhvPSvzU5ET2M1VKiHmde2y1o_72idtlJgc"
+                }
             }
         },
         "TokenResponse": {

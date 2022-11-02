@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = require("mongoose");
-var ArtistSchema = new mongoose_1.Schema({
+const mongoose_1 = require("mongoose");
+const ArtistSchema = new mongoose_1.Schema({
     _id: {
         type: String,
     },
@@ -44,5 +44,5 @@ var ArtistSchema = new mongoose_1.Schema({
     timestamps: true,
     toObject: { virtuals: true },
 });
-var ArtistModel = (0, mongoose_1.model)("Artist", ArtistSchema);
+const ArtistModel = (0, mongoose_1.model)("Artist", ArtistSchema);
 exports.default = ArtistModel;

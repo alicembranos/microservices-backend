@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = require("mongoose");
-var AlbumSchema = new mongoose_1.Schema({
+const mongoose_1 = require("mongoose");
+const AlbumSchema = new mongoose_1.Schema({
     _id: {
         type: String,
     },
@@ -33,5 +33,5 @@ var AlbumSchema = new mongoose_1.Schema({
         ref: "Artist",
     },
 }, { timestamps: true });
-var AlbumModel = (0, mongoose_1.model)("Album", AlbumSchema);
+const AlbumModel = (0, mongoose_1.model)("Album", AlbumSchema);
 exports.default = AlbumModel;

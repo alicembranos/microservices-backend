@@ -26,16 +26,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv_1 = __importDefault(require("dotenv"));
-var logger = __importStar(require("loglevel"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const logger = __importStar(require("loglevel"));
 dotenv_1.default.config();
-var ENV = process.env.NODE_ENV || "development";
+const ENV = process.env.NODE_ENV || "development";
 logger.enableAll();
-var CONFIG = {
+const CONFIG = {
     production: {
         app: {
             PORT: process.env.PORT || 4000,
             PRIVATE_KEY: process.env.JWT_SECRET_KEY,
+            PRIVATE_EXPIRATION_TIME: process.env.JWT_SECRET_TIME,
+            PRIVATE_KEY_REFRESH: process.env.JWT_REFRESH_KEY,
+            PRIVATE_EXPIRATION_TIME_REFRESH: process.env.JWT_REFRESH_TIME,
             MSG_QUEUE_URL: process.env.MSG_QUEUE_URL,
             EXCHANGE_NAME: process.env.EXCHANGE_NAME,
             USER_SERVICE: "user_service",
@@ -56,6 +59,9 @@ var CONFIG = {
         app: {
             PORT: process.env.PORT || 4000,
             PRIVATE_KEY: process.env.JWT_SECRET_KEY,
+            PRIVATE_EXPIRATION_TIME: process.env.JWT_SECRET_TIME,
+            PRIVATE_KEY_REFRESH: process.env.JWT_REFRESH_KEY,
+            PRIVATE_EXPIRATION_TIME_REFRESH: process.env.JWT_REFRESH_TIME,
             MSG_QUEUE_URL: process.env.MSG_QUEUE_URL,
             EXCHANGE_NAME: process.env.EXCHANGE_NAME,
             USER_SERVICE: "user_service",
@@ -76,6 +82,9 @@ var CONFIG = {
         app: {
             PORT: process.env.PORT || 4000,
             PRIVATE_KEY: process.env.JWT_SECRET_KEY,
+            PRIVATE_EXPIRATION_TIME: process.env.JWT_SECRET_TIME,
+            PRIVATE_KEY_REFRESH: process.env.JWT_REFRESH_KEY,
+            PRIVATE_EXPIRATION_TIME_REFRESH: process.env.JWT_REFRESH_TIME,
             MSG_QUEUE_URL: process.env.MSG_QUEUE_URL,
             EXCHANGE_NAME: process.env.EXCHANGE_NAME,
             USER_SERVICE: "user_service",

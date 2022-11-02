@@ -18,7 +18,7 @@ export default (app, channel: Channel) => {
 			const data = await service.signUp({ email, password, username, image, genres });
 			return res.status(200).json({ ok: true, data });
 		} catch (error) {
-			res.status(400).json({ ok: false, msg: handleError(error) });
+			res.status(401).json({ ok: false, msg: handleError(error) });
 		}
 	});
 
@@ -26,6 +26,27 @@ export default (app, channel: Channel) => {
 		try {
 			const { email, password } = req.body;
 			const data = await service.signIn({ email, password });
+			return res.status(200).json({ ok: true, data });
+		} catch (error) {
+			res.status(401).json({ ok: false, msg: handleError(error) });
+		}
+	});
+
+	app.post("/token", async (req: Request, res: Response, _next: NextFunction) => {
+		try {
+			const { refreshToken } = req.body;
+			const data = await service.refreshToken(refreshToken);
+			return res.status(200).json({ ok: true, data });
+		} catch (error) {
+			res.status(400).json({ ok: false, msg: handleError(error) });
+		}
+	});
+
+	app.delete("/logout", auth, async (req: Request, res: Response, _next: NextFunction) => {
+		try {
+			const { refreshToken } = req.body;
+			const token = req.headers["authorization"]?.split(" ")[1] as string;
+			const data = await service.logout(token, refreshToken);
 			return res.status(200).json({ ok: true, data });
 		} catch (error) {
 			res.status(400).json({ ok: false, msg: handleError(error) });

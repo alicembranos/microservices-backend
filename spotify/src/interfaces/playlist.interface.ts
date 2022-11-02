@@ -7,5 +7,4 @@ export default interface IPlaylist {
 	isPublic: boolean;
 	tracks: ITrack[];
 	userId: string;
-	//year get by timestamp createdAt field
 }

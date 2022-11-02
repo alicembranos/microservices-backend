@@ -1,4 +1,3 @@
-import ISearch from "../interfaces/search.interface";
 import { LeanDocument, Model } from "mongoose";
 import { convertParamToObject, selectFieldsToPopulate } from "../utils/index";
 import ITrack from '../interfaces/track.interface';

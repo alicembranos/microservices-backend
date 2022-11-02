@@ -5,8 +5,7 @@ import IPayload from "../interfaces/payload.interface";
 import ISearch from "../interfaces/search.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
-import swaggerUi from "swagger-ui-express";
-import * as swaggerDocument from "../documentation/swagger/swagger.json";
+import redisClient from "./initRedis";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -72,6 +71,12 @@ const convertParamToObject = <T>(model: Model<T>, data: string): ISearch => {
 	}
 };
 
+const existTokenInBlacklist = async (token: string): Promise<boolean> => {
+	const exist = await redisClient.lPos("token-blacklist", token.split(" ")[1]);
+	if (typeof exist === "object" && exist === null) return false;
+	return true;
+};
+
 //Message broker
 const createChannel = async (): Promise<Channel> => {
 	try {
@@ -89,9 +94,6 @@ const publishMessage = (channel: Channel, service: string, msg: string) => {
 	console.log("Sent: ", msg);
 };
 
-const initSwagger = (app) => {
-	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-};
 
 export {
 	selectFieldsToPopulate,
@@ -100,9 +102,9 @@ export {
 	generatePassword,
 	generateSignature,
 	validateSignature,
+	existTokenInBlacklist,
 	createChannel,
 	publishMessage,
 	convertParamToObject,
-	handleError,
-	initSwagger,
+	handleError
 };

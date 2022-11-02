@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es5",
+		"target": "ES2016",
 		"typeRoots": ["./types/express", "./node_modules/@types"],
 		"lib": ["es6"],
 		"moduleResolution": "node",

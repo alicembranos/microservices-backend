@@ -82,7 +82,6 @@ class ChatService {
 				"chats",
 				"current"
 			);
-			console.log(devuelvesTrue, "*********************");
 		}
 
 		await this.repository.updateNestedObjectInArrayNotEqual(
@@ -99,7 +98,6 @@ class ChatService {
 
 		//Update Receiver Use
 		const chatReceiverUser = toUserReceiver?.chats.find((chat: any) => chat.toUser == fromUserId);
-		console.log("chat receiver********", chatReceiverUser);
 		if (chatReceiverUser === undefined) {
 			const chats = { toUser: fromUserId, messages, current: false, pendingMessages: 0 };
 			updatedChatsReceiver = await this.repository.addChat(model, toUser, chats, "chats");

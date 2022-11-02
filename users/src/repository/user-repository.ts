@@ -104,7 +104,6 @@ class User {
 		if (profile) return profile.playlists;
 	}
 
-	//! If works, make it generic with addPlaylist
 	async addChat<T>(
 		model: Model<T>,
 		userId: IUser | Types.ObjectId | string,

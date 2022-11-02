@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -19,280 +8,127 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = require("mongoose");
-var index_1 = __importDefault(require("../models/index"));
+const mongoose_1 = require("mongoose");
+const index_1 = __importDefault(require("../models/index"));
 //Dealing with data base operations
-var User = /** @class */ (function () {
-    function User() {
+class User {
+    createDocument(model, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield model.create(data);
+        });
     }
-    User.prototype.createDocument = function (model, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, model.create(data)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    getAllDocuments(model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield model.find();
         });
-    };
-    User.prototype.getAllDocuments = function (model) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, model.find()];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    }
+    getDocumentById(model, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield model.findById(id);
         });
-    };
-    User.prototype.getDocumentById = function (model, id) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, model.findById(id)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    }
+    getDocumentByField(model, field) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield model.findOne(Object.assign({}, field));
         });
-    };
-    User.prototype.getDocumentByField = function (model, field) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, model.findOne(__assign({}, field))];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    }
+    updateDocument(model, id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const _id = id;
+            return yield model.findOneAndUpdate({ _id }, Object.assign({}, data), { new: true });
         });
-    };
-    User.prototype.updateDocument = function (model, id, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _id;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _id = id;
-                        return [4 /*yield*/, model.findOneAndUpdate({ _id: _id }, __assign({}, data), { new: true })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    }
+    updateDocumentById(model, id, data, property) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield model.findByIdAndUpdate(id, { $set: { [property]: data } }, { new: true });
+            if (profile)
+                return profile[property];
         });
-    };
-    User.prototype.updateDocumentById = function (model, id, data, property) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(id, { $set: (_a = {}, _a[property] = data, _a) }, { new: true })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile[property]];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    deleteDocument(model, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield model.findByIdAndDelete(id);
         });
-    };
-    User.prototype.deleteDocument = function (model, id) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndDelete(id)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
+    }
+    addDocumentToFavorites(userId, doc, propDocument) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const inLibrary = yield index_1.default.User.findById(userId, {
+                [propDocument]: { $elemMatch: { _id: doc._id } },
             });
-        });
-    };
-    User.prototype.addDocumentToFavorites = function (userId, doc, propDocument) {
-        return __awaiter(this, void 0, void 0, function () {
-            var inLibrary;
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0: return [4 /*yield*/, index_1.default.User.findById(userId, (_a = {},
-                            _a[propDocument] = { $elemMatch: { _id: doc._id } },
-                            _a))];
-                    case 1:
-                        inLibrary = _d.sent();
-                        if (!inLibrary) {
-                            return [2 /*return*/, undefined];
-                        }
-                        if (!inLibrary) return [3 /*break*/, 5];
-                        if (!(inLibrary[propDocument].length > 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $pull: (_b = {}, _b[propDocument] = { _id: doc._id }, _b) }, { new: true, multi: false })];
-                    case 2: return [2 /*return*/, _d.sent()];
-                    case 3:
-                        if (!(inLibrary[propDocument].length === 0)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $push: (_c = {}, _c[propDocument] = doc, _c) }, { new: true })];
-                    case 4: return [2 /*return*/, _d.sent()];
-                    case 5: return [2 /*return*/];
+            if (!inLibrary) {
+                return undefined;
+            }
+            if (inLibrary) {
+                if (inLibrary[propDocument].length > 0) {
+                    return yield index_1.default.User.findByIdAndUpdate(userId, { $pull: { [propDocument]: { _id: doc._id } } }, { new: true, multi: false });
                 }
-            });
-        });
-    };
-    User.prototype.addPlaylist = function (userId, doc) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $push: { playlists: doc } }, { new: true })];
-                    case 1:
-                        profile = _a.sent();
-                        if (profile)
-                            return [2 /*return*/, profile.playlists];
-                        return [2 /*return*/];
+                if (inLibrary[propDocument].length === 0) {
+                    return yield index_1.default.User.findByIdAndUpdate(userId, { $push: { [propDocument]: doc } }, { new: true });
                 }
-            });
+            }
         });
-    };
-    User.prototype.removePlaylist = function (userId, doc) {
-        return __awaiter(this, void 0, void 0, function () {
-            var objectId, profile;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        objectId = new mongoose_1.Types.ObjectId(doc._id);
-                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $pull: { playlists: { _id: objectId } } }, { new: true, multi: false })];
-                    case 1:
-                        profile = _a.sent();
-                        if (profile)
-                            return [2 /*return*/, profile.playlists];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    addPlaylist(userId, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield index_1.default.User.findByIdAndUpdate(userId, { $push: { playlists: doc } }, { new: true });
+            if (profile)
+                return profile.playlists;
         });
-    };
-    User.prototype.updatePlaylist = function (userId, doc) {
-        return __awaiter(this, void 0, void 0, function () {
-            var objectId, profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        objectId = new mongoose_1.Types.ObjectId(doc._id);
-                        return [4 /*yield*/, index_1.default.User.findByIdAndUpdate(userId, { $set: (_a = {}, _a["playlists.$[item]"] = doc, _a) }, { arrayFilters: [{ "item._id": objectId }] })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile.playlists];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    removePlaylist(userId, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const objectId = new mongoose_1.Types.ObjectId(doc._id);
+            const profile = yield index_1.default.User.findByIdAndUpdate(userId, { $pull: { playlists: { _id: objectId } } }, { new: true, multi: false });
+            if (profile)
+                return profile.playlists;
         });
-    };
-    //! If works, make it generic with addPlaylist
-    User.prototype.addChat = function (model, userId, doc, property) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $push: (_a = {}, _a[property] = doc, _a) }, { new: true })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile[property]];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    updatePlaylist(userId, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const objectId = new mongoose_1.Types.ObjectId(doc._id);
+            const profile = yield index_1.default.User.findByIdAndUpdate(userId, { $set: { [`playlists.$[item]`]: doc } }, { arrayFilters: [{ "item._id": objectId }] });
+            if (profile)
+                return profile.playlists;
         });
-    };
-    User.prototype.addMessageToChat = function (model, userId, doc, toUserId, property) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $push: (_a = {}, _a["chats.$[outer].".concat(property)] = doc, _a) }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile.chats];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    addChat(model, userId, doc, property) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield model.findByIdAndUpdate(userId, { $push: { [property]: doc } }, { new: true });
+            if (profile)
+                return profile[property];
         });
-    };
-    User.prototype.updateNestedObjectInArrayNotEqual = function (model, userId, value, toUserId, propertyA, propertyB) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $set: (_a = {}, _a["".concat(propertyA, ".$[outer].").concat(propertyB)] = value, _a) }, { arrayFilters: [{ "outer.toUser": { $ne: toUserId } }], new: true })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile[propertyA]];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    addMessageToChat(model, userId, doc, toUserId, property) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield model.findByIdAndUpdate(userId, { $push: { [`chats.$[outer].${property}`]: doc } }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true });
+            if (profile)
+                return profile.chats;
         });
-    };
-    User.prototype.updateNestedObjectInArrayBoolean = function (model, userId, value, toUserId, propertyA, propertyB) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $set: (_a = {}, _a["".concat(propertyA, ".$[outer].").concat(propertyB)] = value, _a) }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile[propertyA]];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    updateNestedObjectInArrayNotEqual(model, userId, value, toUserId, propertyA, propertyB) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield model.findByIdAndUpdate(userId, { $set: { [`${propertyA}.$[outer].${propertyB}`]: value } }, { arrayFilters: [{ "outer.toUser": { $ne: toUserId } }], new: true });
+            if (profile)
+                return profile[propertyA];
         });
-    };
-    User.prototype.updateNestedObjectInArray = function (model, userId, toUserId, propertyA, propertyB) {
-        return __awaiter(this, void 0, void 0, function () {
-            var profile;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, model.findByIdAndUpdate(userId, { $inc: (_a = {}, _a["".concat(propertyA, ".$[outer].").concat(propertyB)] = 1, _a) }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true })];
-                    case 1:
-                        profile = _b.sent();
-                        if (profile)
-                            return [2 /*return*/, profile[propertyA]];
-                        return [2 /*return*/];
-                }
-            });
+    }
+    updateNestedObjectInArrayBoolean(model, userId, value, toUserId, propertyA, propertyB) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield model.findByIdAndUpdate(userId, { $set: { [`${propertyA}.$[outer].${propertyB}`]: value } }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true });
+            if (profile)
+                return profile[propertyA];
         });
-    };
-    return User;
-}());
+    }
+    updateNestedObjectInArray(model, userId, toUserId, propertyA, propertyB) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profile = yield model.findByIdAndUpdate(userId, { $inc: { [`${propertyA}.$[outer].${propertyB}`]: 1 } }, { arrayFilters: [{ "outer.toUser": toUserId }], new: true });
+            if (profile)
+                return profile[propertyA];
+        });
+    }
+}
 exports.default = User;

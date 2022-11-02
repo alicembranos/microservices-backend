@@ -1,5 +1,15 @@
 import User from "../repository/user-repository";
-import { formateData, generatePassword, generateSignature, validatePassword } from "../utils/index";
+import {
+	formateData,
+	generatePassword,
+	generateSignature,
+	generateRefreshSignature,
+	validatePassword,
+	validateRefreshSignature,
+	addTokenToBlacklist,
+	deleteUserCacheToken,
+	handleError,
+} from "../utils/index";
 import { Ilogin, ISignUp } from "../interfaces/auth.interface";
 import database from "../models/index";
 import IAlbum from "../interfaces/album.interface";
@@ -28,7 +38,9 @@ class UserService {
 		if (!validPassword) throw new Error("Invalid credentials");
 
 		const token = await generateSignature({ sub: user._id, username: user.username });
-		return formateData({ token, username: user.username, id: user._id });
+		const refreshToken = await generateRefreshSignature({ sub: user._id, username: user.username });
+
+		return formateData({ token, refreshToken, username: user.username, id: user._id });
 	}
 
 	async signUp(data: ISignUp) {
@@ -54,8 +66,32 @@ class UserService {
 		});
 
 		const token = await generateSignature({ sub: newUser._id, username });
+		const refreshToken = await generateRefreshSignature({ sub: newUser._id, username });
 
-		return formateData({ token, username: newUser.username, id: newUser._id });
+		return formateData({ token, refreshToken, username: newUser.username, id: newUser._id  });
+	}
+
+	async refreshToken(token: string) {
+		if (!token) throw new Error("Unauthorized.");
+		try {
+			const { sub, username } = await validateRefreshSignature(token);
+			const newToken = await generateSignature({ sub, username });
+			return formateData(newToken);
+		} catch (error) {
+			handleError(error);
+		}
+	}
+
+	async logout(token: string, refreshToken: string) {
+		if (!token) throw new Error("Unauthorized.");
+		try {
+			const { sub } = await validateRefreshSignature(refreshToken);
+			await deleteUserCacheToken(sub);
+			await addTokenToBlacklist(token);
+			return formateData("Sucesfully logout");
+		} catch (error) {
+			handleError(error);
+		}
 	}
 
 	async getAll<T>(model: Model<T>) {

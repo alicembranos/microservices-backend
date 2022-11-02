@@ -1,12 +1,12 @@
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import IPayload from "../interfaces/payload.interface";
 import config from "../config/config";
 import amqplib, { Channel } from "amqplib";
 import UserService from "../services/user-service";
-import swaggerUi from "swagger-ui-express";
-import * as swaggerDocument from "../documentation/swagger/swagger.json";
+import { RedisCommandArgument } from "@redis/client/dist/lib/commands";
+import redisClient from "./initRedis";
 
 const selectFieldsToPopulate = <T>(model: Model<T>): string | string[] => {
 	switch (model.modelName) {
@@ -27,7 +27,6 @@ const formateData = <T>(data: T): T | void => {
 	if (data) {
 		return data;
 	}
-	// throw new Error("Data Not found!");
 	console.log("Error: Data not found!");
 };
 
@@ -51,13 +50,76 @@ const validatePassword = async (enteredPassword: string, hashedPassword: string)
 	return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
-const generateSignature = async (payload: IPayload) => {
-	return await jwt.sign(payload, config.app.PRIVATE_KEY as Secret, { expiresIn: "5d" });
+const generateSignature = (payload: IPayload): Promise<string | undefined> => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			payload,
+			config.app.PRIVATE_KEY as Secret,
+			{ expiresIn: config.app.PRIVATE_EXPIRATION_TIME },
+			(error, token) => {
+				if (error) return reject(error);
+				resolve(token);
+			}
+		);
+	});
 };
 
-const validateSignature = (auth: string): IPayload => {
-	const payload = jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret) as IPayload;
-	return payload;
+const generateRefreshSignature = async (payload: IPayload): Promise<string | undefined> => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			payload,
+			config.app.PRIVATE_KEY_REFRESH as Secret,
+			{ expiresIn: config.app.PRIVATE_EXPIRATION_TIME_REFRESH },
+			async (error, token) => {
+				if (error) return reject(error);
+				redisClient.set(
+					payload.sub.toString() as RedisCommandArgument,
+					token as RedisCommandArgument,
+					{ EX: 31104000 }
+				);
+				resolve(token);
+			}
+		);
+	});
+};
+
+const validateSignature = (auth: string): Promise<IPayload> => {
+	return new Promise((resolve, reject) => {
+		jwt.verify(auth.split(" ")[1], config.app.PRIVATE_KEY as Secret, (error, payload) => {
+			if (error) return reject(error);
+			resolve(payload as IPayload);
+		});
+	});
+};
+
+const validateRefreshSignature = async (auth: string): Promise<IPayload> => {
+	return new Promise((resolve, reject) => {
+		jwt.verify(auth, config.app.PRIVATE_KEY_REFRESH as Secret, async (error, payload) => {
+			if (error) return reject(error);
+
+			const refreshToken = await redisClient.get(payload?.sub?.toString() as RedisCommandArgument);
+			if (!refreshToken) reject("Unauthorized");
+			if (refreshToken === auth) {
+				resolve(payload as IPayload);
+			}
+			reject("Unauthorized");
+		});
+	});
+};
+
+const deleteUserCacheToken = async (sub: string | mongoose.Types.ObjectId) => {
+	await redisClient.del(sub.toString());
+};
+
+const addTokenToBlacklist = async (token: string) => {
+	await redisClient.lPush("token-blacklist", token);
+	await redisClient.expire("token-blacklist", 3600, "NX"); //1 hour
+};
+
+const existTokenInBlacklist = async (token: string): Promise<boolean> => {
+	const exist = await redisClient.lPos("token-blacklist", token.split(" ")[1]);
+	if (typeof exist === "object" && exist === null) return false;
+	return true;
 };
 
 //Message broker
@@ -97,9 +159,6 @@ const subscribeMessage = async (channel: Channel, service: UserService) => {
 	);
 };
 
-const initSwagger = (app) => {
-	app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-};
 
 export {
 	selectFieldsToPopulate,
@@ -107,10 +166,14 @@ export {
 	validatePassword,
 	generateSignature,
 	validateSignature,
+	generateRefreshSignature,
+	validateRefreshSignature,
+	deleteUserCacheToken,
+	addTokenToBlacklist,
+	existTokenInBlacklist,
 	generatePassword,
 	handleError,
 	createChannel,
 	publishMessage,
-	subscribeMessage,
-	initSwagger,
+	subscribeMessage
 };

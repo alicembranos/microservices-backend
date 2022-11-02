@@ -8,265 +8,168 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var user_repository_1 = __importDefault(require("../repository/user-repository"));
-var index_1 = require("../utils/index");
-var index_2 = __importDefault(require("../models/index"));
+const user_repository_1 = __importDefault(require("../repository/user-repository"));
+const index_1 = require("../utils/index");
+const index_2 = __importDefault(require("../models/index"));
 //User Business logic
-var UserService = /** @class */ (function () {
-    function UserService() {
+class UserService {
+    constructor() {
         this.repository = new user_repository_1.default();
     }
-    UserService.prototype.signIn = function (data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var email, password, user, validPassword, token;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        email = data.email, password = data.password;
-                        return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { email: email })];
-                    case 1:
-                        user = _a.sent();
-                        if (!user)
-                            throw new Error("User does not exist. Please sign up.");
-                        return [4 /*yield*/, (0, index_1.validatePassword)(password, user.password)];
-                    case 2:
-                        validPassword = _a.sent();
-                        if (!validPassword)
-                            throw new Error("Invalid credentials");
-                        return [4 /*yield*/, (0, index_1.generateSignature)({ sub: user._id, username: user.username })];
-                    case 3:
-                        token = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)({ token: token, username: user.username, id: user._id })];
-                }
-            });
+    signIn(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { email, password } = data;
+            const user = yield this.repository.getDocumentByField(index_2.default.User, { email });
+            if (!user)
+                throw new Error("User does not exist. Please sign up.");
+            const validPassword = yield (0, index_1.validatePassword)(password, user.password);
+            if (!validPassword)
+                throw new Error("Invalid credentials");
+            const token = yield (0, index_1.generateSignature)({ sub: user._id, username: user.username });
+            const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: user._id, username: user.username });
+            return (0, index_1.formateData)({ token, refreshToken, username: user.username, id: user._id });
         });
-    };
-    UserService.prototype.signUp = function (data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var email, password, username, genres, image, user, usernameExist, hashPassword, newUser, token;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        email = data.email, password = data.password, username = data.username, genres = data.genres, image = data.image;
-                        if (!email || !password || !username)
-                            throw new Error("Invalid credentials");
-                        return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { email: email })];
-                    case 1:
-                        user = _a.sent();
-                        if (user)
-                            throw new Error("User already exists");
-                        return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { username: username })];
-                    case 2:
-                        usernameExist = _a.sent();
-                        if (usernameExist)
-                            throw new Error("Username is already used. Please select a new one.");
-                        return [4 /*yield*/, (0, index_1.generatePassword)(password)];
-                    case 3:
-                        hashPassword = _a.sent();
-                        return [4 /*yield*/, this.repository.createDocument(index_2.default.User, {
-                                email: email,
-                                password: hashPassword,
-                                username: username,
-                                genres: genres,
-                                image: image
-                            })];
-                    case 4:
-                        newUser = _a.sent();
-                        return [4 /*yield*/, (0, index_1.generateSignature)({ sub: newUser._id, username: username })];
-                    case 5:
-                        token = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)({ token: token, username: newUser.username, id: newUser._id })];
-                }
+    }
+    signUp(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { email, password, username, genres, image } = data;
+            if (!email || !password || !username)
+                throw new Error("Invalid credentials");
+            //Check if user exist by email
+            const user = yield this.repository.getDocumentByField(index_2.default.User, { email });
+            if (user)
+                throw new Error("User already exists");
+            //Check if user exist by username
+            const usernameExist = yield this.repository.getDocumentByField(index_2.default.User, { username });
+            if (usernameExist)
+                throw new Error("Username is already used. Please select a new one.");
+            const hashPassword = yield (0, index_1.generatePassword)(password);
+            const newUser = yield this.repository.createDocument(index_2.default.User, {
+                email,
+                password: hashPassword,
+                username,
+                genres,
+                image
             });
+            const token = yield (0, index_1.generateSignature)({ sub: newUser._id, username });
+            const refreshToken = yield (0, index_1.generateRefreshSignature)({ sub: newUser._id, username });
+            return (0, index_1.formateData)({ token, refreshToken, username: newUser.username, id: newUser._id });
         });
-    };
-    UserService.prototype.getAll = function (model) {
-        return __awaiter(this, void 0, void 0, function () {
-            var documentResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.getAllDocuments(model)];
-                    case 1:
-                        documentResult = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(documentResult)];
-                }
-            });
+    }
+    refreshToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!token)
+                throw new Error("Unauthorized.");
+            try {
+                const { sub, username } = yield (0, index_1.validateRefreshSignature)(token);
+                const newToken = yield (0, index_1.generateSignature)({ sub, username });
+                return (0, index_1.formateData)(newToken);
+            }
+            catch (error) {
+                (0, index_1.handleError)(error);
+            }
         });
-    };
-    UserService.prototype.get = function (model, id) {
-        return __awaiter(this, void 0, void 0, function () {
-            var documentResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.getDocumentById(model, id)];
-                    case 1:
-                        documentResult = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(documentResult)];
-                }
-            });
+    }
+    logout(token, refreshToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!token)
+                throw new Error("Unauthorized.");
+            try {
+                const { sub } = yield (0, index_1.validateRefreshSignature)(refreshToken);
+                yield (0, index_1.deleteUserCacheToken)(sub);
+                yield (0, index_1.addTokenToBlacklist)(token);
+                return (0, index_1.formateData)("Sucesfully logout");
+            }
+            catch (error) {
+                (0, index_1.handleError)(error);
+            }
         });
-    };
-    UserService.prototype.update = function (model, id, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var username, usernameExist, documentResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        username = data.username;
-                        if (!(username !== undefined)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.repository.getDocumentByField(index_2.default.User, { username: username })];
-                    case 1:
-                        usernameExist = _a.sent();
-                        if (usernameExist)
-                            throw new Error("Username is already used. Please select a new one.");
-                        _a.label = 2;
-                    case 2: return [4 /*yield*/, this.repository.updateDocument(model, id, data)];
-                    case 3:
-                        documentResult = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(documentResult)];
-                }
-            });
+    }
+    getAll(model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const documentResult = yield this.repository.getAllDocuments(model);
+            return (0, index_1.formateData)(documentResult);
         });
-    };
-    UserService.prototype.delete = function (model, id) {
-        return __awaiter(this, void 0, void 0, function () {
-            var documentResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.deleteDocument(model, id)];
-                    case 1:
-                        documentResult = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(documentResult)];
-                }
-            });
+    }
+    get(model, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const documentResult = yield this.repository.getDocumentById(model, id);
+            return (0, index_1.formateData)(documentResult);
         });
-    };
-    UserService.prototype.addToLibrary = function (id, doc, propDocument) {
-        return __awaiter(this, void 0, void 0, function () {
-            var libraryResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.addDocumentToFavorites(id, doc, propDocument)];
-                    case 1:
-                        libraryResult = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(libraryResult)];
-                }
-            });
+    }
+    update(model, id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { username } = data;
+            //Check if user exist by username
+            if (username !== undefined) {
+                const usernameExist = yield this.repository.getDocumentByField(index_2.default.User, { username });
+                if (usernameExist)
+                    throw new Error("Username is already used. Please select a new one.");
+            }
+            const documentResult = yield this.repository.updateDocument(model, id, data);
+            return (0, index_1.formateData)(documentResult);
         });
-    };
-    UserService.prototype.addPlaylist = function (id, doc) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userPlaylists;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.addPlaylist(id, doc)];
-                    case 1:
-                        userPlaylists = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(userPlaylists)];
-                }
-            });
+    }
+    delete(model, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const documentResult = yield this.repository.deleteDocument(model, id);
+            return (0, index_1.formateData)(documentResult);
         });
-    };
-    UserService.prototype.removePlaylist = function (id, doc) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userPlaylists;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.removePlaylist(id, doc)];
-                    case 1:
-                        userPlaylists = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(userPlaylists)];
-                }
-            });
+    }
+    addToLibrary(id, doc, propDocument) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const libraryResult = yield this.repository.addDocumentToFavorites(id, doc, propDocument);
+            return (0, index_1.formateData)(libraryResult);
         });
-    };
-    UserService.prototype.updatePlaylist = function (id, doc) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userPlaylists;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.updatePlaylist(id, doc)];
-                    case 1:
-                        userPlaylists = _a.sent();
-                        return [2 /*return*/, (0, index_1.formateData)(userPlaylists)];
-                }
-            });
+    }
+    addPlaylist(id, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userPlaylists = yield this.repository.addPlaylist(id, doc);
+            return (0, index_1.formateData)(userPlaylists);
         });
-    };
-    UserService.prototype.subscribeEvents = function (payload) {
-        return __awaiter(this, void 0, void 0, function () {
-            var event, data, userId, playlist, library, type, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        console.log("Triggering... User Events");
-                        payload = JSON.parse(payload);
-                        event = payload.event, data = payload.data;
-                        if (!event || !data)
-                            return [2 /*return*/];
-                        userId = data.userId, playlist = data.playlist, library = data.library, type = data.type;
-                        _a = event;
-                        switch (_a) {
-                            case "ADD_TO_LIBRARY": return [3 /*break*/, 1];
-                            case "REMOVE_FROM_LIBRARY": return [3 /*break*/, 1];
-                            case "ADD_TO_PLAYLIST": return [3 /*break*/, 3];
-                            case "UPDATE_PLAYLIST": return [3 /*break*/, 5];
-                            case "REMOVE_FROM_PLAYLIST": return [3 /*break*/, 7];
-                        }
-                        return [3 /*break*/, 9];
-                    case 1: return [4 /*yield*/, this.addToLibrary(userId, library, type)];
-                    case 2:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 3: return [4 /*yield*/, this.addPlaylist(userId, playlist)];
-                    case 4:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 5: return [4 /*yield*/, this.updatePlaylist(userId, playlist)];
-                    case 6:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 7: return [4 /*yield*/, this.removePlaylist(userId, playlist)];
-                    case 8:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 9: return [3 /*break*/, 10];
-                    case 10: return [2 /*return*/];
-                }
-            });
+    }
+    removePlaylist(id, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userPlaylists = yield this.repository.removePlaylist(id, doc);
+            return (0, index_1.formateData)(userPlaylists);
         });
-    };
-    return UserService;
-}());
+    }
+    updatePlaylist(id, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userPlaylists = yield this.repository.updatePlaylist(id, doc);
+            return (0, index_1.formateData)(userPlaylists);
+        });
+    }
+    subscribeEvents(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Triggering... User Events");
+            payload = JSON.parse(payload);
+            const { event, data } = payload;
+            if (!event || !data)
+                return;
+            const { userId, playlist, library, type } = data;
+            switch (event) {
+                case "ADD_TO_LIBRARY":
+                case "REMOVE_FROM_LIBRARY":
+                    yield this.addToLibrary(userId, library, type);
+                    break;
+                case "ADD_TO_PLAYLIST":
+                    yield this.addPlaylist(userId, playlist);
+                    break;
+                case "UPDATE_PLAYLIST":
+                    yield this.updatePlaylist(userId, playlist);
+                    break;
+                case "REMOVE_FROM_PLAYLIST":
+                    yield this.removePlaylist(userId, playlist);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+}
 exports.default = UserService;

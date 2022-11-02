@@ -26,12 +26,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv_1 = __importDefault(require("dotenv"));
-var logger = __importStar(require("loglevel"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const logger = __importStar(require("loglevel"));
 dotenv_1.default.config();
-var ENV = process.env.NODE_ENV || "development";
+const ENV = process.env.NODE_ENV || "development";
 logger.enableAll();
-var CONFIG = {
+const CONFIG = {
     production: {
         app: {
             PORT: process.env.PORT || 4000,

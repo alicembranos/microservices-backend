@@ -3,7 +3,6 @@ import config from "./config/config";
 import connect from "./database/connect";
 import serverApp from "./server";
 import { seedDatabase } from "./database/seed";
-import { initSwagger } from "./utils/index";
 
 const StartServer = async () => {
 	const app = express();
@@ -16,7 +15,7 @@ const StartServer = async () => {
 			// await seedDatabase();
 
 			serverApp(app);
-			initSwagger(app);
+			// initSwagger(app);
 
 			app.listen(config.app.PORT, () => {
 				config.logger.info(`User is Listening at port ${config.app.PORT}`);

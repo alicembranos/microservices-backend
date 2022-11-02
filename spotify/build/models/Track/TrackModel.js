@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose_1 = require("mongoose");
-var TrackSchema = new mongoose_1.Schema({
+const mongoose_1 = require("mongoose");
+const TrackSchema = new mongoose_1.Schema({
     _id: {
         type: String,
     },
@@ -19,7 +19,6 @@ var TrackSchema = new mongoose_1.Schema({
     },
     trackAudio: {
         type: String,
-        // required: true,
     },
     album: {
         type: mongoose_1.Schema.Types.String,
@@ -28,8 +27,8 @@ var TrackSchema = new mongoose_1.Schema({
     },
     image: {
         type: mongoose_1.Schema.Types.String,
-        default: "https://www.rootzwiki.com/attachments/unkownalbum-jpg.19745/"
+        default: "https://res.cloudinary.com/juancarlos/image/upload/v1667322269/descarga_xww0ig.jpg"
     },
 }, { timestamps: true });
-var TrackModel = (0, mongoose_1.model)("Track", TrackSchema);
+const TrackModel = (0, mongoose_1.model)("Track", TrackSchema);
 exports.default = TrackModel;
